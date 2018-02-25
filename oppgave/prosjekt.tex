@@ -1,0 +1,374 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[norsk]{babel}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage{color}
+\usepackage{hyperref}
+
+\frenchspacing
+
+\definecolor{grey}{rgb}{.95, .95, .95}
+\lstset{basicstyle=\footnotesize\ttfamily,language=Python,backgroundcolor=\color{grey}}
+
+\begin{document}
+
+\title{«Poisson Image Editing»}
+\author{Individuell prosjektoppgave \\
+  i IMT3881 Vitenskapelig programmering}
+\date{Våren 2018}
+
+\maketitle
+
+\section{Metoden i generelle trekk}
+
+En rekke problemer i bildebehandling kan løses med en teknikk som
+kalles «Poisson Image Editing»~\cite{Perez:03}. Metoden går i korthet
+ut på at man representerer bildet man ønsker å komme frem til som en
+funksjon $u : \Omega \to C$, der $\Omega \subset \mathbb{R}^2$ er det
+rektangulære området hvor bildet er definert, og $C$ er fargerommet,
+vanligvis $C = [0, 1]$ for gråtonebilder og $C = [0, 1]^3$ for
+fargebilder. Bildet fremkommer som en løsning av Poisson-ligningen
+$$
+\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2}
+\equiv \nabla^2 u = h,
+$$
+der randverdier på $\partial\Omega$ og funksjonen
+$h : \Omega \to \mathbb{R}^{\dim(C)}$ spesifiseres avhengig av hvilket
+problem som skal løses.
+
+En måte å løse Poisson-ligningen på er å iterere seg frem til
+løsningen vha. såkalt gradientnedstigning («gradient descent»). I
+praksis gjøres dette ved å innføre en kunstig tidsparameter og la
+løsningen utvikle seg mot konvergens:
+\begin{equation}
+\frac{\partial u}{\partial t} = \nabla^2 u - h.
+\label{eq:diffusjon}
+\end{equation}
+Når man velger denne fremgangsmåten, må man også velge en initialverdi
+for bildet, $u(x, y, 0) = u_0(x, y)$.
+
+To diskrete numeriske skjemaer for~(\ref{eq:diffusjon}) kan finnes ved
+henholdsvis eksplisitt og implisitt tidsintegrasjon og sentrerte
+differanser for de spatielle deriverte:
+\begin{align}
+  \frac{u^{n+1}_{i,j} - u^n_{i,j}}{\Delta t} &= \frac{1}{\Delta x^2}
+                                               (u^n_{i+1,j} +
+                                               u^n_{i-1,j} +
+                                               u^n_{i,j+1} +
+                                               u^n_{i,j-1} -4 
+                                               u^n_{i,j}) - h_{i,j},
+                                               \label{eq:eksplisitt}  \\
+  \frac{u^{n+1}_{i,j} - u^n_{i,j}}{\Delta t} &= \frac{1}{\Delta x^2}
+                                               (u^{n+1}_{i+1,j} +
+                                               u^{n+1}_{i-1,j} +
+                                               u^{n+1}_{i,j+1} +
+                                               u^{n+1}_{i,j-1} -4 
+                                               u^{n+1}_{i,j}) - h_{i,j}.
+                                               \label{eq:implisitt}
+\end{align}
+Det eksplisitte skjemaet~(\ref{eq:eksplisitt}) er noenlunde rett frem
+å implementere, mens det implisitte~(\ref{eq:implisitt}) er noe mer
+krevende. Sistnevnte løses enklest ved å skrive det på matriseform og
+bruke rutiner for glisne matriser i implementasjonen.
+
+\section{Anvendelser}
+\label{sec:anvendelser}
+
+Her følger en kort beskrivelse av noen av anvendelsene av «Poisson
+Image Editing».
+
+\subsection{Glatting}
+\label{sec:glatting}
+
+Hvis vi tar utgangspunkt i et originalbilde $u_0(x, y)$, kan man
+implementere glatting («blurring») av bildet ved å iterere
+ligning~(\ref{eq:diffusjon}) med $h = 0$ i hele $\Omega$. Bildet vil
+da bli stadig glattere (mer uskarpt) med tiden $t$. Som randverdier
+kan man enten bruke Diriclet med $u(x, y, t) = u_0(x, y)$ på
+$\partial\Omega$ (gir litt skarpere kant enn strengt tatt nødvendig),
+eller, bedre, Neumann med $\partial u/\partial n = 0$ på
+$\partial\Omega$ (symmetri).
+
+\subsection{Inpainting}
+\label{sec:inpainting}
+
+Hvis vi enten mangler noe informasjon i et bilde $u_0(x, y)$, eller
+ønsker å fjerne noe fra det (støy, tekst som er lagt oppå el.l.), kan
+vi gjøre dette ved å fylle inn («inpaint») informasjon i gjeldende
+område basert på informasjonen rundt området. Hvis
+$\Omega_i \subset \Omega$ er området som skal fylles inn, kan dette
+gjøres ved å sette $h = 0$ i $\Omega_i$ og løse
+ligning~(\ref{eq:diffusjon}) i $\Omega_i$ med Dirichlet-betingelsen
+$u(x, y, t) = u_0(x, y)$ på $\partial\Omega_i$.
+
+For å implementere dette er det hensiktsmessig å innføre en maske i
+form av en boolsk array som er sann for alle pixler som er innenfor
+$\Omega_i$ og usann for alle som er utenfor. En slik array kan da
+benyttes som index for et
+«view»\footnote{\url{https://docs.scipy.org/doc/numpy/user/basics.indexing.html}}
+av bildet, og gjøre operasjoner bare på pixlene innenfor eller
+utenfor. F.eks. kan alle pixlene utenfor $\Omega_i$ settes lik
+verdiene fra originalbildet ved å skrive \texttt{u[\textasciitilde
+  omega\_i] = u\_0[\textasciitilde omega\_i]}, der \texttt{omega\_i}
+er den boolske arrayen (masken).
+
+Dersom masken berører kanten av bildet, trenger vi en randbetingelse
+på $\partial\Omega$ også. Dette kan da gjøres på samme måte som for
+glatting (se over).
+
+\subsection{Kontrastforsterkning}
+\label{sec:kontrastforsterkning}
+
+Jo større den lokale kontrasten i et bilde $u$ er, desto større er
+gradienten til bildet, $\nabla u$. For å finne en mer kontrastert
+utgave av originalbildet $u_0$, kan vi altså forsøke finne et bilde
+som har samme gradient som $u_0$, men forsterket med en konstant
+$k > 1$. Dette kan gjøres ved å sette $h = k\nabla^2 u_0$ inn
+i~(\ref{eq:diffusjon}) og løse for $u$. Hensiktsmessige randverdier er
+enten Dirichlet, $u(x, y, t) = u_0(x, y)$ eller, bedre, Neumann,
+$\partial u/\partial n = k\partial u_0/\partial n$ på
+$\partial\Omega$. Merk at iterering av~(\ref{eq:diffusjon}) med
+$k > 1$ fort kan føre til løsninger med $u > 1$ eller $u < 0$, altså
+utenfor det tilgjengelige fargeområdet. Det må derfor innføres som en
+føring at $u \in [0, 1]$. Dette kan i praksis gjøres i koden ved å
+klippe verdiene for $u$ til intervallet i slutten av hver iterasjon.
+
+En mer avansert form for kontrastforsterkning kan vi lage som besrevet
+i~\cite{Fattal:02} ved å innføre en ikkelineær funksjon av gradienten,
+f.eks. $g = f(\nabla u)$, og så la
+$h = \nabla\cdot g = \nabla\cdot(f(\nabla u))$ i
+ligning~(\ref{eq:diffusjon}). Randverdier og føringer blir som
+beskrevet over.
+
+\subsection{Demosaicing}
+\label{sec:utvidelse_1}
+
+Bildesensoren i et digitalkamera er egentlig monokrom, og kan bare
+måle mengden lys som faller inn på den i hver pixel. For å kunne lage
+fargebilder, legger man en mosaikk av fargefiltere over den, slik at i
+hver pixel måles i praksis kun én av fargekanalene, f.eks. R, G og B.
+Og ut av sensoren kommer det altså en gråtonemosaikk.
+
+En slik gråtonemosaikk kan man simulere i Python ved å ta utgangspunkt
+i et fargebilde \texttt{u} representert ved en $M\times N \times 3$
+\texttt{numpy array}. Gråtonemosaikken kan lages som følger:
+\begin{lstlisting}
+mosaic = np.zeros(u.shape[:2])         # Alloker plass
+mosaic[ ::2,  ::2] = u[ ::2,  ::2, 0]  # R-kanal
+mosaic[1::2,  ::2] = u[1::2,  ::2, 1]  # G-kanal
+mosaic[ ::2, 1::2] = u[ ::2, 1::2, 1]  # G-kanal
+mosaic[1::2, 1::2] = u[1::2, 1::2, 2]  # B-kanal
+\end{lstlisting}
+
+Oppgaven til en demosaicing-algoritme er å rekonstruere et fargebilde
+ut av en slik gråtonemosaikk. Én måte å gjøre dette på, er å først
+flytte informasjonen som finnes i mosaikken over i de rette kanalene i
+et fargebilde, for deretter å «inpaint-e» den manglende informasjonen
+vha. inpaintingsmetoden beskrevet over. Det må da altså lages en
+$\Omega_i$ for hver kanal som definerer pixlene som skal fylles inn.
+
+\subsection{Sømløs kloning}
+
+Noen ganger ønsker man av ymse grunner å kunne flytte en del av et
+bilde inn i et annet bilde på en slik måte at det ikke blir synlige
+overganger der objektet er limt inn. Dette kalles gjerne sømløs
+kloning. Hvis vi kaller originalbildet det skal klones inn i for
+$u_0$, og bildet som det skal klones inn fra for $u_1$, kan dette
+formuleres som et Poisson-problem: Finn $u$ slik at $u = u_0$ for
+$x \not\in \Omega_i$ og $\nabla^2 u = \nabla^2 u_1$ i $\Omega_i$.
+Dette kan altså gjøres ved å sette $h = \nabla^2 u_1$ og
+løse~(\ref{eq:diffusjon}) i $\Omega_i$ med Diriclet-betingelsen
+$u = u_0$ på $\partial\Omega_i$. Også her må man huske å klippe slik
+at $u \in [0, 1]$.
+
+For implementasjonen i Pyton bør man også merke seg at $\Omega_i$ ikke
+nødvendigvis behøver å befinne seg på samme sted i $u_0$ og $u_1$.
+Dette kan løses ved bruk av «views» på \texttt{numpy array}-ene.
+
+\subsection{Konvertering av fargebilder til gråtone}
+
+Den vanligste måten å konvertere fargebilder til gråtone er ved å ta
+et (veiet) gjennomsnitt av R, G og B-kanalene. Når fargebilder
+konverteres til gråtonebilder på denne måten, kan det lett skje at noe
+av informasjonen i bildet forsvinner. Særlig gjelder dette der det er
+detaljinformasjon (teksturer, kanter etc.) mellom elementer som i
+hovedsak skiller seg i fargetone og/eller metning, men som i hovedsak
+har samme lyshet.
+
+En litt mer sofistikert teknikk går ut på å søke å konstruere et
+gråtonebilde som har så lik lokal variasjon som det originale
+fargebildet som mulig. Dette kan gjøres ved å konstruere en ny
+gradient $g$ gitt med lengde $||\nabla u_0||/\sqrt{3}$ (hvorfor
+$\sqrt{3}$?) og retning som $\nabla(u_R + u_G + u_B)$, og så la
+$h = \nabla\cdot g$ og løse ligning~(\ref{eq:diffusjon}) for $u$ i
+hele $\Omega$. Her vil det være flere muligheter for spesifikasjon av
+randbetingelsene.
+
+En enda mer sofisikert teknikk for definisjon av $h$ er ved bruk den
+såkalte strukturtensoren til fargebildet, se~\cite{Alsam:08}.
+
+\subsection{Rekonstruksjon og visualisering av HDR-bilder}
+
+Scener i dagslys har ofte en ekstremt høy dynamikk, det vil si
+forskjell mellom mørkeste og lyseste punkt i scenen som skal avbildes.
+Ofte er denne dynamikken så høy at selv en god bildesensor ikke klarer
+å registrere hele dynamikken, og vi får bilder som samtidig er både
+over- og undereksponert, altså bilder der noen områder er helt svarte,
+og andre er helt hvite. En teknikk for å unngå dette for statiske
+scener, er å ta flere bilder (med kameraet på stativ) med ulik
+eksponeringstid, og så sette dem sammen til et HDR-bilde («High
+Dynamic Range») i ettertid. Dette gjøres ved at man estimerer
+kamera-respons-kurven samtidig som man estimerer den faktiske lysheten
+i scenen som et stort, sammensatt minste-kvadraters problem,
+se~\cite{Debevec:97}.
+
+Når man så har fått et slik HDR-bilde støter man på et nytt problem,
+nemlig at de fleste enheter for visning av bilder (skjermer,
+projektorer, skrivere etc.) heller ikke har stor nok dynamikk til å
+vise dem frem. Så dynamikken i bildet må altså komprimeres igjen før
+det kan vises og lagres i vanlige 8-bits-formater. Dette kan gjøres på
+akkurat motsatt måte av kontrastforsterkningen vi innførte i andre del
+av avsnitt~\ref{sec:kontrastforsterkning} med et passende valg av
+gradient-komprimeringsfunksjon, se~\cite{Fattal:02}
+
+\subsection{Anonymisering av bilder med ansikter}
+
+Noen ganger trenger man å anonymisere personene i et bilde før det
+vises frem offentlig. En måte å gjøre dette på, er å gjøre ansiktene
+uskarpe mens resten av bildet beholdes skarpt. Hvis man har en maske
+$\Omega_i$ som beskriver områdene i bildene som inneholder ansikter,
+kan dette gjøres ved å løse ligning~(\ref{eq:diffusjon}) med $h=0$ i
+$\Omega_i$ og Dirichlet-betingelsen $u = u_0$ på $\partial\Omega_i$.
+Utfordringen er å finne masken. Her kan kanskje
+OpenCV\footnote{\url{https://opencv.org/}} være til hjelp.
+
+\subsection{Kantbevarende glatting}
+\label{sec:utvidelse_end}
+
+Noen ganger ønsker man å glatte et bilde uten å gjøre kantene i bildet
+uskarpe. Dette kan gjøres ved å innføre en posisjonsavhengig
+diffusjonsparameter $D : \Omega \to [0, 1]$, der D = 0 gir null
+diffusjon/glatting og $D = 1$ gir full glatting. Diffusjonsparameteren
+kan f.eks. beregnes fra gradienten til bildet som
+\begin{equation}
+  D(x, y) = \frac{1}{1 + \kappa ||\nabla u_0(x, y)||^2}\,,
+\end{equation}
+med $\kappa$ som en passende valgt konstant.
+Diffusjonsligningen~(\ref{eq:diffusjon}) endres da til
+\begin{equation}
+  \label{eq:lokal}
+  \frac{\partial u}{\partial t} = \nabla\cdot(D\nabla u),
+\end{equation}
+og løses for $\Omega$ med f.eks. Dirichletbetingelsen
+$u(x, y) = u_0(x, y)$ på $\partial\Omega$. Merk at det da må lages
+egne numeriske skjemaer for denne modifiserte ligningen. Merk også at
+hvis $D=1$ overalt, vil~(\ref{eq:lokal}) bli identisk
+med~(\ref{eq:diffusjon}) med $h=0$.
+
+Denne utvidede modellen kan også på forskjellig vis brukes til å
+forbedre oppførselen av flere av de tidligere anvendelsene, så her
+åpnes et hav av nye muligheter\dots
+
+\section{Oppgave}
+
+\subsection{Gjennomføring}
+
+«Fork» bitbucket-repoet på vanlig måte: privat fork, men med arvede
+egenskaper, slik at kun du selv og emneansvarlig har innsyn. La både
+kode og rapport bo i repoet. Gjør hyppige og små nok commits til
+repoet slik at det blir mulig å følge utviklingen av prosjektet i
+ettertid, også når man ikke har en fungerende løsning (bruk gjerne
+«branches»). Det vil altså i praksis si flere commits enn man strengt
+tatt ville gjort i en realistisk utviklingssituasjon.
+
+\subsection{Minimumsløsning}
+
+Implementer det eksplisitte skjemaet~(\ref{eq:eksplisitt}) og
+anvendelsene glatting (avsnitt~\ref{sec:glatting}), inpainting
+(avsnitt~\ref{sec:inpainting}) og kontrastforsterkning for
+gråtonebilder (avsnitt~\ref{sec:kontrastforsterkning}) beskrevet over.
+Beskriv problemstillingen, løsningen og resultater i form av
+eksempelbilder i en velformet rapport. Rapporten skal inneholde en
+lenke til det «forkede» repoet.
+
+\subsection{Utvidelser}
+
+Det er ubegrenset med muligheter for å utvide besvarelsen og dermed
+gjøre den bedre:
+\begin{itemize}[noitemsep]
+\item Implementer løsningen også for fargebilder (enkel liten
+  utvidelse).
+\item Implementer de øvrige anvendelsene beskrevet i
+  avsnitt~\ref{sec:utvidelse_1}--\ref{sec:utvidelse_end} (de er
+  stort sett beskrevet i rekkefølge av økende kompleksitet).
+\item Implementer det implisitte numeriske
+  skjemaet~(\ref{eq:implisitt}) vha. glisne matriser («sparse
+  matrices»)\footnote{\url{https://docs.scipy.org/doc/scipy/reference/sparse.html}}
+  og prøv det for alle de implementerte anvendelsene.
+\item Lag en applikasjon med grafisk brukergrensesnitt som gir
+  brukeren mulighet til å utføre alle de implementerte operasjonene
+  interaktivt. Bruk f.eks.
+  PyQt5.\footnote{\url{https://www.riverbankcomputing.com/software/pyqt/intro}}
+\end{itemize}
+
+\subsection{Vurderingskriterier}
+
+Ved vurderingen av prosjektoppgaven vil det bli lagt vekt på
+\begin{itemize}[noitemsep]
+\item Hvilke metoder som er implementert
+  \begin{itemize}[noitemsep]
+  \item Gråtonebilder/fargebilder
+  \item Eksplisitt/implisitt etc.
+  \item Typer randverdier for $\partial\Omega$ og $\partial\Omega_i$
+  \end{itemize}
+\item Hvilke anvendelser som er implementert
+  \begin{itemize}[noitemsep]
+  \item Glatting
+  \item Inpainting
+  \item Kontastforsterkning (flere mulige varianter)
+  \item Demosaicing
+  \item Sømløs kloning
+  \item Farge til gråtone-konvertering
+  \item Rekonstruksjon og visualisering av HDR-bilder 
+  \item Anonymisering av bilder med ansikter
+  \item Kantbevarende glatting
+  \item GUI-applikasjon
+  \end{itemize}
+\item Kvalitet på koden, herunder
+  \begin{itemize}[noitemsep]
+  \item Struktur og gjenbruk av kode
+  \item Gjenbrukbarhet i form av moduler
+  \item Dokumentasjon i form av velformede doc-strings
+  \item Variabelnavn
+  \item Automatiserte (enhets)tester
+  \end{itemize}
+\item Kvalitet på rapporten, herunder
+  \begin{itemize}[noitemsep]
+  \item Struktur
+  \item Språk
+  \item Formler
+  \item Referanser
+  \item Kryssreferanser
+  \item Figurer
+  \item Tabeller
+  \item Kodelistinger
+  \end{itemize}
+\item Prosessen (slik den fremkommer av git-historikken)
+\end{itemize}
+
+\section{Innlevering}
+
+Rapporten innleverers som PDF i Inspera innen fredag 27. april 2018
+kl. 1600. Rapporen \emph{skal} inneholde en lenke til Bitbucket-repoet.
+Bitbucket-repoet må minimum få leve til etter at sensuren er gitt (og
+lenger dersom man skal kunne klage på karakteren).
+
+\bibliographystyle{unsrt}
+\bibliography{prosjekt}
+
+\end{document}
