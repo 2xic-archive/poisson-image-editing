@@ -138,9 +138,9 @@ utenfor det tilgjengelige fargeområdet. Det må derfor innføres som en
 føring at $u \in [0, 1]$. Dette kan i praksis gjøres i koden ved å
 klippe verdiene for $u$ til intervallet i slutten av hver iterasjon.
 
-En mer avansert form for kontrastforsterkning kan vi lage som besrevet
-i~\cite{Fattal:02} ved å innføre en ikkelineær funksjon av gradienten,
-f.eks. $g = f(\nabla u)$, og så la
+En mer avansert form for kontrastforsterkning kan vi lage som
+beskrevet i~\cite{Fattal:02} ved å innføre en ikkelineær funksjon av
+gradienten, f.eks. $g = f(\nabla u)$, og så la
 $h = \nabla\cdot g = \nabla\cdot(f(\nabla u))$ i
 ligning~(\ref{eq:diffusjon}). Randverdier og føringer blir som
 beskrevet over.
@@ -207,7 +207,8 @@ gradient $g$ gitt med lengde $||\nabla u_0||/\sqrt{3}$ (hvorfor
 $\sqrt{3}$?) og retning som $\nabla(u_R + u_G + u_B)$, og så la
 $h = \nabla\cdot g$ og løse ligning~(\ref{eq:diffusjon}) for $u$ i
 hele $\Omega$. Her vil det være flere muligheter for spesifikasjon av
-randbetingelsene.
+randbetingelsene. En naturlig initialverdi vil være gjennomsnittet av
+de tre fargekanalene i originalbildet.
 
 En enda mer sofisikert teknikk for definisjon av $h$ er ved bruk den
 såkalte strukturtensoren til fargebildet, se~\cite{Alsam:08}.
