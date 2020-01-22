@@ -1,4 +1,4 @@
-# IMT3881 2018 Prosjekt
+# IMT3881 2020 Prosjekt
 
 ## Praktisk gjennømføring
 
