@@ -67,6 +67,8 @@ Her følger en kort beskrivelse av noen av anvendelsene av «Poisson Image Editi
 
 Hvis vi tar utgangspunkt i et originalbilde $u_0(x, y)$, kan man implementere glatting («blurring») av bildet ved å iterere ligning~(\ref{eq:diffusjon}) med $h = 0$ i hele $\Omega$. Bildet vil da bli stadig glattere (mer uskarpt) med tiden $t$. Som randverdier kan man enten bruke Diriclet med $u(x, y, t) = u_0(x, y)$ på $\partial\Omega$ (gir litt skarpere kant enn strengt tatt nødvendig), eller, bedre, Neumann med $\partial u/\partial n = 0$ på $\partial\Omega$ (symmetri).
 
+Dersom man ønsker å ha mer kontroll over hvor mye det glattes, kan man istedet benytte noe som kalles «data attachment», og sette $h = \lambda(u - u_0)$. Da vil parameteren $\lambda$ styre hvor glatt bildet maksimalt kan bli selv om det itereres ubegrenset lenge.
+
 \subsection{Inpainting}
 \label{sec:inpainting}
 
