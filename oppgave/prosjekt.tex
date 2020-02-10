@@ -29,14 +29,14 @@ En rekke problemer i bildebehandling kan løses med en teknikk som kalles «Pois
 $$
 \frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} \equiv \nabla^2 u = h,
 $$
-der randverdier på $\partial\Omega$ og funksjonen $h : \Omega \to \mathbb{R}^{\dim(C)}$ spesifiseres avhengig av hvilket problem som skal løses.
+der randverdier på $\partial\Omega$ og funksjonen $h : \Omega \to \mathbb{R}^{\dim(C)}$ spesifiseres avhengig av hvilket problem som skal løses. Randverdiene er av Dirichlet- eller Neumann-typen.
 
 En måte å løse Poisson-ligningen på er å iterere seg frem til løsningen vha. såkalt gradientnedstigning («gradient descent»). I praksis gjøres dette ved å innføre en kunstig tidsparameter og la løsningen utvikle seg mot konvergens:
 \begin{equation}
 \frac{\partial u}{\partial t} = \nabla^2 u - h.
 \label{eq:diffusjon}
 \end{equation}
-Når man velger denne fremgangsmåten, må man også velge en initialverdi for bildet, $u(x, y, 0) = u_0(x, y)$. Randverdiene er vanligvis av Dirichlet- eller Neumann-typen.
+Når man velger denne fremgangsmåten, må man også velge en initialverdi for bildet, $u(x, y, 0) = u_0(x, y)$.
 
 To diskrete numeriske skjemaer for~(\ref{eq:diffusjon}) kan finnes ved henholdsvis eksplisitt og implisitt tidsintegrasjon og sentrerte differanser for de spatielle deriverte:
 \begin{align}
@@ -115,15 +115,17 @@ En litt mer sofistikert teknikk går ut på å søke å konstruere et gråtonebi
 
 En enda mer sofisikert teknikk for definisjon av $h$ er ved bruk den såkalte strukturtensoren til fargebildet, se~\cite{Alsam:08}.
 
-\subsection{Rekonstruksjon og visualisering av HDR-bilder}
-
-Scener i dagslys har ofte en ekstremt høy dynamikk, det vil si forskjell mellom mørkeste og lyseste punkt i scenen som skal avbildes. Ofte er denne dynamikken så høy at selv en god bildesensor ikke klarer å registrere hele dynamikken, og vi får bilder som samtidig er både over- og undereksponert, altså bilder der noen områder er helt svarte, og andre er helt hvite. En teknikk for å unngå dette for statiske scener, er å ta flere bilder (med kameraet på stativ) med ulik eksponeringstid, og så sette dem sammen til et HDR-bilde («High Dynamic Range») i ettertid. Dette gjøres ved at man estimerer kamera-respons-kurven samtidig som man estimerer den faktiske lysheten i scenen som et stort, sammensatt minste-kvadraters problem, se~\cite{Debevec:97}.
-
-Når man så har fått et slik HDR-bilde støter man på et nytt problem, nemlig at de fleste enheter for visning av bilder (skjermer, projektorer, skrivere etc.) heller ikke har stor nok dynamikk til å vise dem frem. Så dynamikken i bildet må altså komprimeres igjen før det kan vises og lagres i vanlige 8-bits-formater. Dette kan gjøres på akkurat motsatt måte av kontrastforsterkningen vi innførte i andre del av avsnitt~\ref{sec:kontrastforsterkning} med et passende valg av gradient-komprimeringsfunksjon, se~\cite{Fattal:02}
-
 \subsection{Anonymisering av bilder med ansikter}
 
 Noen ganger trenger man å anonymisere personene i et bilde før det vises frem offentlig. En måte å gjøre dette på, er å gjøre ansiktene uskarpe mens resten av bildet beholdes skarpt. Hvis man har en maske $\Omega_i$ som beskriver områdene i bildene som inneholder ansikter, kan dette gjøres ved å løse ligning~(\ref{eq:diffusjon}) med $h=0$ i $\Omega_i$ og Dirichlet-betingelsen $u = u_0$ på $\partial\Omega_i$. Utfordringen er å finne masken. Her kan kanskje OpenCV\footnote{\url{https://opencv.org/}} være til hjelp.
+
+\subsection{Rekonstruksjon og visualisering av HDR-bilder}
+
+Scener i dagslys har ofte en ekstremt høy dynamikk, det vil si forskjell mellom mørkeste og lyseste punkt i scenen som skal avbildes. Ofte er denne dynamikken så høy at selv en god bildesensor ikke klarer å registrere hele dynamikken, og vi får bilder som samtidig er både over- og undereksponert, altså bilder der noen områder er helt svarte, og andre er helt hvite. En teknikk for å unngå dette for statiske scener, er å ta flere bilder (med kameraet på stativ) med ulik eksponeringstid, og så sette dem sammen til et HDR-bilde («High Dynamic Range») i ettertid. Dette gjøres ved at man estimerer kamera-respons-kurven samtidig som man estimerer den faktiske lysheten i scenen som et stort, sammensatt minste-kvadraters problem, se~\cite{Debevec:97}. For å unngå ustabiliteter i løsningen som følge av støy i bildene, må man gjerne legge noen føringer om glatthet på kameraresponskurven i tillegg. Debevec og Maliks originalartikkel gjengir en MATLAB-kode for algortimen, så den skulle være grei å implemenentere i Python. Bare husk på at array-er i MATLAB indekseres fra 1, mens de i Python indekseres fra 0. Bruk \texttt{np.linalg.leastsq} til å løse ligningssystemet.
+
+I praksis får man raskt problemer med størrelsen på systemmatrisen $A$. En måte å håndtere dette på, er å bruke færre eksponeringer og vesentlig lavere oppløsning for bildene som brukes for å genrere responskurven, for så å benytte den rekonstruerte responskurven til å rendre fullskala-bildene. Dette er beskrevet i detalj i artikkelen~\cite{Debevec:97}. Et annet praktisk problem man raskt kommer borti er at de ulike eksponeringene ikke er helt nøyaktig opplinjert og at man derfor må korrigere for dette først. Dette gjelder ikke for eksempelbildene som er vedlagt oppgaven – de er allerede opplinjert.
+
+Når man så har fått et slik HDR-bilde støter man på et nytt problem, nemlig at de fleste enheter for visning av bilder (skjermer, projektorer, skrivere etc.) heller ikke har stor nok dynamikk til å vise dem frem. Så dynamikken i bildet må altså komprimeres igjen før det kan vises og lagres i vanlige 8-bits-formater. Dette kan gjøres på akkurat motsatt måte av kontrastforsterkningen vi innførte i andre del av avsnitt~\ref{sec:kontrastforsterkning} med et passende valg av gradient-komprimeringsfunksjon, se~\cite{Fattal:02}
 
 \subsection{Kantbevarende glatting}
 \label{sec:utvidelse_end}
@@ -146,7 +148,7 @@ Denne utvidede modellen kan også på forskjellig vis brukes til å forbedre opp
 
 \subsection{Gjennomføring}
 
-Prosjektet gjøres i grupper à 1–4 studenter. Én på gruppen lager en privat fork GitLab-repoet og inkluder din de andre på gruppen som «developer»s. La både kode og rapport bo i repoet. Gjør hyppige og små nok commits til repoet slik at det blir mulig å følge utviklingen av prosjektet i ettertid, også når man ikke har en fungerende løsning (bruk gjerne «branches»). Det vil altså i praksis si flere commits enn man strengt tatt ville gjort i en realistisk utviklingssituasjon.
+Prosjektet gjøres i grupper à 1–4 studenter. Én på gruppen lager en privat fork GitLab-repoet og inkluder din de andre på gruppen som «developer»s. La både kode og rapport bo i repoet. Gjør hyppige og små nok commits til repoet slik at det blir mulig å følge utviklingen av prosjektet i ettertid, også når man ikke har en fungerende løsning (bruk gjerne «branches»). Det vil altså i praksis si flere commits enn man strengt tatt ville gjort i en realistisk utviklingssituasjon. Bruk saksbehandlingssystem og kanban-tavle i GitLab for å holde orden på fremdriften, og bruk «smart commits» for å koble koden til saksbehandlinssytemet.
 
 \subsection{Minimumsløsning}
 
@@ -204,7 +206,7 @@ Ved vurderingen av prosjektoppgaven vil det bli lagt vekt på
   \item tabeller
   \item kodelistinger
   \end{itemize}
-\item prosessen (slik den fremkommer av git-historikken)
+\item prosessen (slik den fremkommer av git-historikken og saksbehandlingssystemet)
 \end{itemize}
 
 \section{Innlevering}
