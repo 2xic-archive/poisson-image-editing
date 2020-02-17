@@ -1,0 +1,10 @@
+language: python
+install:
+  - export COVERALLS_SERVICE_NAME=travis-pro
+  - export COVERALLS_REPO_TOKEN=gVyy0M8m40KHfJonzjb0c0pzpachxU2TA
+  - pip install pytest
+  - pip install pytest-cov
+  - pip install coveralls
+script:
+  - pytest --cov=src/
+  - coveralls
