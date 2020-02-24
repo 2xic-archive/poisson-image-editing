@@ -1,0 +1,29 @@
+#+begin_src python :results output
+import sys
+print(sys.version)
+#+end_src
+
+#+RESULTS:
+: 3.8.1 (v3.8.1:1b293b6006, Dec 18 2019, 14:08:53)
+: [Clang 6.0 (clang-600.0.57)]
+
+#+begin_src python :results file
+import matplotlib, numpy
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import blurring
+import sys
+print(sys.version)
+
+image = blurring.blur("lena.png").fit(1)
+#fig=plt.figure(figsize=(4,2))
+#x=numpy.linspace(-15,15)
+#plt.plot(numpy.sin(x)/x)
+#fig.tight_layout()
+plt.imshow(image)
+plt.savefig('python-matplot-fig.png')
+return 'python-matplot-fig.png' # return filename to org-mode
+#+end_src
+
+#+RESULTS:
+[[file:python-matplot-fig.png]]
