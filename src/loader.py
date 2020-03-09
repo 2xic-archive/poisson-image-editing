@@ -20,7 +20,7 @@ class ImageLoader:
   #      self.covert_single_shape()
    #     self.convert_black_and_white()
         
-        self.convert_color()
+ #       self.convert_color()
 #        self.data[self.data < 0] = 0
  #       self.data[1 < self.data] = 1
     
@@ -51,11 +51,18 @@ class ImageLoader:
         [TODO:description]
         """
         if(data is None):
-            return self.data
+            data = self.data
         data[data < 0] = 0
         data[1 < data] = 1
         return data
 
+    def get_laplance(self):
+        laplace = self.data[0:-2, 1:-1] \
+                + self.data[2:, 1:-1] \
+                + self.data[1:-1, 0:-2] \
+                + self.data[1:-1, 2:]   \
+                - 4 * self.data[1:-1, 1:-1]
+        return laplace
 
     def get_data():
         """
