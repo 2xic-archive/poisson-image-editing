@@ -1,4 +1,6 @@
 import loader
+import numpy as np
+from PIL import Image
 class blur(loader.ImageLoader):
     def __init__(self, path):
         loader.ImageLoader.__init__(self, path)
@@ -31,4 +33,10 @@ class blur(loader.ImageLoader):
         """
         for i in range(epochs):
             self.eksplisitt()
-        return self.data
+        return self#.data
+
+    def save(self, name):
+        from PIL import Image
+        im = Image.fromarray(np.uint8(self.data))#Image.fromarray(self.data, 'RGB')
+        im.save(name)#"your_file.jpeg")
+        return name

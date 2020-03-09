@@ -17,34 +17,45 @@ class ImageLoader:
         image.load()
         self.data = np.asarray(image, dtype="float64").copy()#, dtype="inter")
 
-        #self.covert_single_shape()
-        #self.convert_black_and_white()
+  #      self.covert_single_shape()
+   #     self.convert_black_and_white()
+        
         self.convert_color()
-        self.data[self.data < 0] = 0
-        self.data[1 < self.data] = 1
+#        self.data[self.data < 0] = 0
+ #       self.data[1 < self.data] = 1
     
-    def covert_single_shape(self):
+    def covert_single_shape(self, data=None):
         """
         [TODO:summary]
 
         [TODO:description]
         """
-        self.data = np.sum(self.data.astype(float), 2) / (3 * 255)
+        if(data is None):
+            data = self.data
+        data = np.sum(data.astype(float), 2) / (3 * 255)
         #return self.data
+        return data
 
-    def convert_color(self):
-        self.data = self.data.astype(float) / 255
-        self.data[self.data < 0] = 0
-        self.data[1 < self.data] = 1
+    def convert_color(self, data=None):
+        if(data is None):
+            data = self.data
+        data = data.astype(float) / 255
+        data[data < 0] = 0
+        data[1 < data] = 1
+        return data
 
-    def convert_black_and_white(self):
+    def convert_black_and_white(self, data=None):
         """
         [TODO:summary]
 
         [TODO:description]
         """
-        self.data[self.data < 0] = 0
-        self.data[1 < self.data] = 1
+        if(data is None):
+            return self.data
+        data[data < 0] = 0
+        data[1 < data] = 1
+        return data
+
 
     def get_data():
         """
@@ -53,5 +64,8 @@ class ImageLoader:
         [TODO:description]
         """
         return self.image_data
+
+
+
 
 
