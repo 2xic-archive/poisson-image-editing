@@ -3,16 +3,7 @@ import numpy as np
 from PIL import Image
 class blur(loader.ImageLoader):
     def __init__(self, path, color=False):
-        loader.ImageLoader.__init__(self, path)
-        
-        self.color = color
-        
-        if not color:
-            self.data = self.covert_single_shape()
-            self.data = self.convert_black_and_white()    
-        else:
-  #          self.data = self.covert_single_shape()
-            self.data = self.convert_color()    
+        loader.ImageLoader.__init__(self, path, color)
         self.alpha = 0.25
         
     def eksplisitt(self):

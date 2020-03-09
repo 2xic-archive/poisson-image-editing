@@ -2,7 +2,7 @@ from PIL import Image
 import numpy as np
 
 class ImageLoader:
-    def __init__(self, path):
+    def __init__(self, path, color=True):
         """
         [TODO:summary]
 
@@ -17,6 +17,13 @@ class ImageLoader:
         image.load()
         self.data = np.asarray(image, dtype="float64").copy()#, dtype="inter")
 
+        if not color:
+            self.data = self.covert_single_shape()
+            self.data = self.convert_black_and_white()    
+        else:
+  #          self.data = self.covert_single_shape()
+            self.data = self.convert_color()    
+        self.color = color
   #      self.covert_single_shape()
    #     self.convert_black_and_white()
         
@@ -44,6 +51,11 @@ class ImageLoader:
         data[1 < data] = 1
         return data
 
+    def add_nosise(self, noise_level=0.05):
+        self.data = self.data + noise_level *np.random.randn(*self.data.shape)
+        self.data [self.data  < 0] = 0
+        self.data [1 < self.data ] = 1
+
     def convert_black_and_white(self, data=None):
         """
         [TODO:summary]
@@ -56,12 +68,14 @@ class ImageLoader:
         data[1 < data] = 1
         return data
 
-    def get_laplance(self):
-        laplace = self.data[0:-2, 1:-1] \
-                + self.data[2:, 1:-1] \
-                + self.data[1:-1, 0:-2] \
-                + self.data[1:-1, 2:]   \
-                - 4 * self.data[1:-1, 1:-1]
+    def get_laplance(self, data=None):
+        if(data is None):
+            data = self.data
+        laplace = data[0:-2, 1:-1] \
+                + data[2:, 1:-1] \
+                + data[1:-1, 0:-2] \
+                + data[1:-1, 2:]   \
+                - 4 * data[1:-1, 1:-1]
         return laplace
 
     def get_data():
