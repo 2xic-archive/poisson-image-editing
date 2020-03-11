@@ -30,13 +30,13 @@ class App(QMainWindow):
 
 		import blurring_qt as blur_window
 		import inpaiting_qt as inpait_window
-
+		import contrast_qt as contrast_window
 		self.blak = blurring.blur(self.image)
 		self.WINDOWS = {
-			"Blurring":blur_window.blur_window(),
-			"Inpaiting": inpait_window.inpait_window()
+			"Blurring" : blur_window.blur_window(),
+			"Inpaiting" : inpait_window.inpait_window(),
+			"Contrasting" : contrast_window.contrast_window()
 		}
-
 
 		self.initUI()
 
@@ -81,6 +81,10 @@ class App(QMainWindow):
 			VIEW.show()
 			self.hide()
 
+	def showExtra(self):
+		self.setGeometry(0, 0 , self.pixmap.width() + 200, self.pixmap.height() + 200)
+		self.center()
+		
 	@pyqtSlot()
 	def on_click(self):
 		self.i = 0

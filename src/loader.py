@@ -17,7 +17,7 @@ class ImageLoader:
         image.load()
         self.data = np.asarray(image, dtype="float64").copy()#, dtype="inter")
 
-        if not color:
+        if not color and not len(self.data.shape) == 2:
             self.data = self.covert_single_shape()
             self.data = self.convert_black_and_white()    
         else:
