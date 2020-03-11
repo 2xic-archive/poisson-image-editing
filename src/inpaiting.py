@@ -7,17 +7,18 @@ class inpait(loader.ImageLoader):
 		loader.ImageLoader.__init__(self, path, color)
 
 		self.alpha = 0.25
-		self.mask = self.destroy_information()
-		self.original_data = np.copy(self.data)
+#		self.mask = self.destroy_information()
 
-	def destroy_information(self):
+	def destroy_information(self, strength=2):
+		self.original_data = np.copy(self.data)
 		noise = np.random.randint(0, 10, size=self.data.shape)
 		mask = np.zeros(self.data.shape)
 
-		mask[2 < noise ] = 1
-		mask[noise < 2] = 0
-		print(mask)
+		mask[strength < noise ] = 1
+		mask[noise < strength] = 0
+#		print(mask)
 		self.data *= mask
+		self.mask = mask
 		return mask
 
 	def eksplisitt(self):
