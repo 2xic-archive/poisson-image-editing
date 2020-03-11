@@ -63,13 +63,13 @@
 			<div class="row">
 				<div class="tab">
 					<button id="blur" class="tablinks" onclick="handleFunction(event, 'Blur')">Blur</button>
-					<button class="tablinks" onclick="handleFunction(event, 'Something')">Something</button>
+					<button class="tablinks" onclick="handleFunction(event, 'Inpaint')">Inpaint</button>
 				</div>			
 
 				<div id="Blur" class="tabcontent">
 					<h3>Blur</h3>
 					<form  id="myForm" target="ifrm1"> 
-						<input type="hidden" name="bagel" value="{{path}}">
+						<input type="hidden" name="image_info" value="{{path}}">
 						<div class="slidecontainer">
 							<input type="range" min="1" max="100" value="50" class="slider" id="myRange" name="myRange">
 						</div>
@@ -77,8 +77,23 @@
 					</form>
 				</div>
 
-				<div id="Something" class="tabcontent">
-					<h3>Something</h3>
+				<div id="Inpaint" class="tabcontent">
+					<h3>Add noise</h3>
+					<form  id="myForm" target="ifrm1"> 
+						<input type="hidden" name="image_info" value="{{path}}">
+						<div class="slidecontainer">
+							<input type="range" min="1" max="100" value="50" class="slider" id="myRange" name="myRange">
+						</div>
+						<button onclick="sub('/noise')">send</button>
+					</form>
+					<h3>Recover</h3>
+					<form  id="myForm" target="ifrm1"> 
+						<input type="hidden" name="image_info" value="{{path}}">
+						<div class="slidecontainer">
+							<input type="range" min="1" max="100" value="50" class="slider" id="myRange" name="myRange">
+						</div>
+						<button onclick="sub('/inpait')">send</button>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -91,13 +106,13 @@
 
 		<script type="text/javascript">
 			var last_active_element = null;
-			function sub(){
+			function sub(destination){
 				//	console.log("hei");
 				var xhr = new XMLHttpRequest();
-				xhr.open("POST", "/blur"); 
+				xhr.open("POST", destination); 
 				xhr.onload = function(event){ 
 					console.log("Success, server responded with: " + event.target.response);
-					if(event.target.response != "Bagel"){
+					if(event.target.response != "bad_return"){
 						document.getElementById("bilde").src = event.target.response;
 					}
 				};
