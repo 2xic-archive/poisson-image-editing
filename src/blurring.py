@@ -1,6 +1,7 @@
 import loader
 import numpy as np
 from PIL import Image
+
 class blur(loader.ImageLoader):
     def __init__(self, path, color=False):
         loader.ImageLoader.__init__(self, path, color)
@@ -40,3 +41,7 @@ class blur(loader.ImageLoader):
         im = Image.fromarray(np.uint8(self.data))
         im.save(name)
         return name
+
+
+
+
