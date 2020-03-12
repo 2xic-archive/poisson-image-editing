@@ -78,13 +78,13 @@ class ImageLoader:
                 - 4 * data[1:-1, 1:-1]
         return laplace
 
-    def get_data():
+    def get_data(self):
         """
         [TODO:summary]
 
         [TODO:description]
         """
-        return self.image_data
+        return self.data
 
 
 
