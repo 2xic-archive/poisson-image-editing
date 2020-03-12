@@ -1,7 +1,7 @@
 from PIL import Image
 import numpy as np
 
-class ImageLoader:
+class ImageHandler:
     def __init__(self, path, color=True):
         """
         [TODO:summary]
@@ -13,23 +13,17 @@ class ImageLoader:
         path : String
             [TODO:description]
         """
+        self.path = path
         image = Image.open(path)
         image.load()
-        self.data = np.asarray(image, dtype="float64").copy()#, dtype="inter")
-
+        self.data = np.asarray(image, dtype="float64").copy()
         if not color and not len(self.data.shape) == 2:
             self.data = self.covert_single_shape()
             self.data = self.convert_black_and_white()    
         else:
-  #          self.data = self.covert_single_shape()
             self.data = self.convert_color()    
         self.color = color
-  #      self.covert_single_shape()
-   #     self.convert_black_and_white()
-        
- #       self.convert_color()
-#        self.data[self.data < 0] = 0
- #       self.data[1 < self.data] = 1
+
     
     def covert_single_shape(self, data=None):
         """
@@ -68,15 +62,11 @@ class ImageLoader:
         data[1 < data] = 1
         return data
 
-    def get_laplance(self, data=None):
-        if(data is None):
-            data = self.data
-        laplace = data[0:-2, 1:-1] \
-                + data[2:, 1:-1] \
-                + data[1:-1, 0:-2] \
-                + data[1:-1, 2:]   \
-                - 4 * data[1:-1, 1:-1]
-        return laplace
+    def save(self, name):
+        from PIL import Image
+        im = Image.fromarray(np.uint8(self.data))
+        im.save(name)
+        return name
 
     def get_data(self):
         """
@@ -86,7 +76,7 @@ class ImageLoader:
         """
         return self.data
 
-
-
+    def __repr__(self):
+        return self.path
 
 

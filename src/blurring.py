@@ -1,13 +1,15 @@
-import loader
+import image_handler
+import poisson
 import numpy as np
 from PIL import Image
 
-class blur(loader.ImageLoader):
+class blur(image_handler.ImageHandler, poisson.poisson):
     def __init__(self, path, color=False):
-        loader.ImageLoader.__init__(self, path, color)
+        image_handler.ImageHandler.__init__(self, path, color)
+        poisson.poisson.__init__(self)
         self.alpha = 0.25
         
-    def eksplisitt(self):
+    def iteration(self):
         """
         [TODO:summary]
 
@@ -33,15 +35,5 @@ class blur(loader.ImageLoader):
             The iteration count
         """
         for i in range(epochs):
-            self.eksplisitt()
+            self.iteration()
         return self
-
-    def save(self, name):
-        from PIL import Image
-        im = Image.fromarray(np.uint8(self.data))
-        im.save(name)
-        return name
-
-
-
-

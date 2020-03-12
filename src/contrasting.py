@@ -1,14 +1,17 @@
-import loader
+import image_handler
+import poisson
 import numpy as np
 from PIL import Image
-class contrast(loader.ImageLoader):
+
+class contrast(image_handler.ImageHandler, poisson.poisson):
     def __init__(self, path, color=False):
-        loader.ImageLoader.__init__(self, path, color)
+        image_handler.ImageHandler.__init__(self, path, color)
+        poisson.poisson.__init__(self)
         self.alpha = 0.25
         self.k = 1
         self.u0 = np.copy(self.data)
     
-    def eksplisitt(self):
+    def iteration(self):
         """
         [TODO:summary]
 
@@ -19,9 +22,6 @@ class contrast(loader.ImageLoader):
      						   # ((laplace) - (self.k * self.u0[1:-1, 1:-1])) * self.alpha <- guess i had it backwards?
      						   #	TODO: check if this is correct. 
         self.data.clip(0, 1)
-
-        #(self.u0 - (laplace
-
 
         """
         TODO : Implement Neumann
@@ -43,5 +43,5 @@ class contrast(loader.ImageLoader):
             The iteration count
         """
         for i in range(epochs):
-            self.eksplisitt()
+            self.iteration()
         return self
