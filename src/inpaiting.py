@@ -1,10 +1,12 @@
-import loader
+import image_handler
+import poisson
 import numpy as np
 from PIL import Image
 
-class inpait(loader.ImageLoader):
+class inpait(image_handler.ImageHandler, poisson.poisson):
 	def __init__(self, path, color=False):
-		loader.ImageLoader.__init__(self, path, color)
+		image_handler.ImageHandler.__init__(self, path, color)
+		poisson.poisson.__init__(self)
 
 		self.alpha = 0.25
 		self.mask = None
@@ -22,7 +24,7 @@ class inpait(loader.ImageLoader):
 		self.mask = mask
 		return mask
 
-	def eksplisitt(self):
+	def iteration(self):
 		laplace = self.get_laplance(self.original_data)
 		self.original_data[1:-1, 1:-1] += self.alpha * laplace
 		"""
@@ -37,4 +39,4 @@ class inpait(loader.ImageLoader):
 			# TODO: In the future you should be able to set a mask manually. 
 			raise Exception("You need to destroy infomation in the image before you run this function")
 		for i in range(epochs):
-			self.eksplisitt()
+			self.iteration()
