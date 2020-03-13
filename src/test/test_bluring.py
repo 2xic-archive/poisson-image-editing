@@ -1,13 +1,5 @@
-import os
-import sys
+from test import *
 import numpy as np
-
-PATH = os.path.dirname(os.path.abspath(__file__)) 
-PATH += "/" if not PATH.endswith("/") else ""
-
-print(PATH)
-sys.path.append(PATH + "../")
-
 import unittest
 import blurring
 

@@ -22,8 +22,11 @@ class ImageHandler:
             self.data = self.convert_black_and_white()    
         else:
             self.data = self.convert_color()    
+        self.data_copy = self.data.copy()
         self.color = color
 
+    def reset(self):
+        self.data = self.data_copy.copy()
     
     def covert_single_shape(self, data=None):
         """

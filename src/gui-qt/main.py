@@ -20,7 +20,6 @@ class App(QMainWindow):
 
 	def __init__(self, parrent=None):
 		super().__init__()
-	
 		self.image = '../test_images/lena.png'
 		self.title = self.image
 		self.left = 0
@@ -28,36 +27,25 @@ class App(QMainWindow):
 		self.width = 640
 		self.height = 480
 
+		self.epoch = 0
+		self.timer = QTimer(self)
+
+	def get_avaible_windows(self, INFILE):
+		self.WINDOWS = {
+		}
 		import blurring_qt as blur_window
 		import inpaiting_qt as inpait_window
 		import contrast_qt as contrast_window
-		self.blak = blurring.blur(self.image)
-		self.WINDOWS = {
-			"Blurring" : blur_window.blur_window(),
-			"Inpaiting" : inpait_window.inpait_window(),
-			"Contrasting" : contrast_window.contrast_window()
-		}
-
-		self.initUI()
-
-
-	def initUI(self):
-		self.setWindowTitle(self.title)
-
-		self.label = QLabel(self)
-		pixmap = pil2pixmap(Image.fromarray(255 * self.blak.data))
-		self.label.setPixmap(pixmap)
-		self.label.setGeometry(0, 30, pixmap.width(), pixmap.height());
-
-		self.mode = QComboBox(self)
-		for keys in self.WINDOWS.keys():
-			self.mode.addItem(keys)
-
-		self.mode.setGeometry(0, 0, pixmap.width(), 30)
-		self.mode.currentIndexChanged.connect(self.modeChange)
-
-		self.setGeometry(self.left, self.top, pixmap.width(), pixmap.height() + 150)
-		self.center()
+		import demonsaic_qt as demonsaic_window
+		if (blur_window.__file__ not in INFILE):
+			self.WINDOWS["Blurring"] = blur_window.blur_window()
+		if (inpait_window.__file__ not in INFILE):
+			self.WINDOWS["Inpaiting"] = inpait_window.inpait_window()
+		if (contrast_window.__file__ not in INFILE):
+			self.WINDOWS["Contrasting"] = contrast_window.contrast_window()
+		if (demonsaic_window.__file__ not in INFILE):
+			self.WINDOWS["Demonsaicing"] = demonsaic_window.demonsaic_window()
+		return self.WINDOWS
 
 	#	https://stackoverflow.com/questions/20243637/pyqt4-center-window-on-active-screen
 	def center(self):
@@ -67,33 +55,46 @@ class App(QMainWindow):
 		frameGm.moveCenter(centerPoint)
 		self.move(frameGm.topLeft())
 
-#	informing the user
-	def epochsChange(self):
+	def epochs_change(self):
 		size = self.epochSlider.value()
 		self.epoch_label.setText("Epochs ({})".format(size))
 
-	def modeChange(self, i):
+	def mode_change(self, _):
 		NEW_VIEW = (self.mode.currentText())
 		VIEW = self.WINDOWS.get(NEW_VIEW, None)
 		if(VIEW == None):
 			print("not ready")
 		else:
+			VIEW.initUI()
 			VIEW.show()
 			self.hide()
 
-	def showExtra(self):
-		self.setGeometry(0, 0 , self.pixmap.width() + 200, self.pixmap.height() + 200)
-		self.center()
-		
+	def update_image(self):
+		if(self.epoch < self.epochSlider.value()):
+			self.method.fit(1)
+			self.label.setPixmap(pil2pixmap(Image.fromarray(255 * self.method.data)))
+			self.epoch += 1
+		else:	
+			self.reset_button.setEnabled(True)
+			self.timer.stop()
+
 	@pyqtSlot()
-	def on_click(self):
-		self.i = 0
+	def reset_image(self):
+		self.reset_button.setEnabled(False)
+		self.method.reset()
+		self.label.setPixmap(pil2pixmap(Image.fromarray(255 * self.method.data)))
+
+	@pyqtSlot()
+	def run_method(self):
+		self.epoch = 0
 		self.timer.timeout.connect(self.update_image)
 		self.timer.start(100)
 
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
-	ex = App()
+	from blurring_qt import blur_window
+	ex = blur_window()
+	ex.initUI()
 	ex.show()
 	sys.exit(app.exec_())
 
