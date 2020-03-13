@@ -36,7 +36,7 @@ class App(QMainWindow):
 		import blurring_qt as blur_window
 		import inpaiting_qt as inpait_window
 		import contrast_qt as contrast_window
-		import demonsaic_qt as demonsaic_window
+		import demosaic_qt as demonsaic_window
 		if (blur_window.__file__ not in INFILE):
 			self.WINDOWS["Blurring"] = blur_window.blur_window()
 		if (inpait_window.__file__ not in INFILE):
@@ -72,7 +72,7 @@ class App(QMainWindow):
 	def update_image(self):
 		if(self.epoch < self.epochSlider.value()):
 			self.method.fit(1)
-			self.label.setPixmap(pil2pixmap(Image.fromarray(255 * self.method.data)))
+			self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))
 			self.epoch += 1
 		else:	
 			self.reset_button.setEnabled(True)
