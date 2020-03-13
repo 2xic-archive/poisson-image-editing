@@ -5,12 +5,22 @@ from PIL import Image
 
 class inpait(image_handler.ImageHandler, poisson.poisson):
 	def __init__(self, path, color=False):
-		image_handler.ImageHandler.__init__(self, path, color)
+		if not path is None:
+			image_handler.ImageHandler.__init__(self, path, color)
 		poisson.poisson.__init__(self)
 
 		self.alpha = 0.25
 		self.mask = None
 #		self.mask = self.destroy_information()
+
+	def set_data(self, data):
+		self.data = data
+
+	def set_mask(self, mask):
+		self.mask = mask
+
+	def set_orignal(self, original):
+		self.original_data = original
 
 	def destroy_information(self, strength=2):
 		self.original_data = np.copy(self.data)
@@ -32,11 +42,17 @@ class inpait(image_handler.ImageHandler, poisson.poisson):
 			original value = 1 
 			infomation lost = 0 
 		"""
+#		print(self.data is None)
+#		print(self.mask is None)
+#		print(self.original_data is None)		
 		self.data = (self.data * (self.mask)) + abs(self.original_data * (1 - self.mask))
 
-	def fit(self, epochs=1):
+	def fit(self, epochs=1, mask=None):
+		if not mask is None:
+			self.mask = mask
 		if(self.mask is None):
-			# TODO: In the future you should be able to set a mask manually. 
-			raise Exception("You need to destroy infomation in the image before you run this function")
+			raise Exception("You need to set a mask")
 		for i in range(epochs):
 			self.iteration()
+		return self.data
+

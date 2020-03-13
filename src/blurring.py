@@ -3,6 +3,9 @@ import poisson
 import numpy as np
 from PIL import Image
 
+
+#   TODO: Add support for "data attachment"
+
 class blur(image_handler.ImageHandler, poisson.poisson):
     def __init__(self, path, color=False):
         image_handler.ImageHandler.__init__(self, path, color)
