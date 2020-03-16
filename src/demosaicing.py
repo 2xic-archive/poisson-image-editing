@@ -1,7 +1,6 @@
 import image_handler
 import poisson
 import numpy as np
-
 from inpaiting import *
 
 class demosaic(image_handler.ImageHandler, poisson.poisson):
@@ -32,6 +31,13 @@ class demosaic(image_handler.ImageHandler, poisson.poisson):
 		self.rgb_mosaic[:, :, 1] = self.mosaic[:, :]
 		self.rgb_mosaic[:, :, 1] = self.mosaic[:, :]
 		self.rgb_mosaic[:, :, 2] = self.mosaic[:, :]
+
+		self.mask = np.ones(np.shape(self.mosaic) + (3, ))
+		self.mask[ ::2, ::2, 0] = 0
+		self.mask[1::2, ::2, 1] = 0
+		self.mask[ ::2, 1::2, 1] = 0
+		self.mask[1::2, 1::2, 2] = 0
+
 		return self.mosaic
 
 
@@ -41,22 +47,13 @@ class demosaic(image_handler.ImageHandler, poisson.poisson):
 
 		[TODO:description]
 		"""
-
-		mask = np.ones(np.shape(self.rgb_mosaic))
-		mask[ ::2, ::2, 0] = 0
-		mask[1::2, ::2, 1] = 0
-		mask[ ::2, 1::2, 1] = 0
-		mask[1::2, 1::2, 2] = 0
-
+		self.inpait.alpha = 0.05
+		self.inpait.set_demosaicing()
 		for i in range(3):
-			self.inpait.set_data(self.results[:, :, i])
-			self.inpait.set_mask(mask[:, :, i])
-			self.inpait.set_orignal(self.mosaic[:, :])
-
-			self.results[:, :, i] = self.inpait.fit()
+			self.results[:, :, i] = self.inpait.fit(self.rgb_mosaic[:, :, i], self.results[:, :, i], self.mask[:, :, i])
 		self.data = self.results
 
-	def fit(self,epochs):
+	def fit(self,epochs=1):
 		"""
 		[TODO:summary]
 

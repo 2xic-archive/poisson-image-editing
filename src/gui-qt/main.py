@@ -15,19 +15,21 @@ sys.path.append("../")
 import blurring
 from PIL import Image
 from general import *
+import os
 
 class App(QMainWindow):
 
 	def __init__(self, parrent=None):
 		super().__init__()
 		self.image = '../test_images/lena.png'
-		self.title = self.image
+		self.title = os.path.basename(self.image)
 		self.left = 0
 		self.top = 0
 		self.width = 640
 		self.height = 480
 
 		self.epoch = 0
+		self.total_epochs = 0
 		self.timer = QTimer(self)
 
 	def get_avaible_windows(self, INFILE):
@@ -56,8 +58,8 @@ class App(QMainWindow):
 		self.move(frameGm.topLeft())
 
 	def epochs_change(self):
-		size = self.epochSlider.value()
-		self.epoch_label.setText("Epochs ({})".format(size))
+		epochs = self.epochSlider.value()
+		self.epoch_label.setText("Epochs ({}) (Total {})".format(epochs, self.total_epochs))
 
 	def mode_change(self, _):
 		NEW_VIEW = (self.mode.currentText())
@@ -71,9 +73,11 @@ class App(QMainWindow):
 
 	def update_image(self):
 		if(self.epoch < self.epochSlider.value()):
-			self.method.fit(1)
+			self.method.fit(epochs=1)
 			self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))
 			self.epoch += 1
+			self.total_epochs += 1
+			self.epochs_change()
 		else:	
 			self.reset_button.setEnabled(True)
 			self.timer.stop()
