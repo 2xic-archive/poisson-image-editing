@@ -7,7 +7,7 @@ class contrast(image_handler.ImageHandler, poisson.poisson):
     def __init__(self, path, color=False):
         image_handler.ImageHandler.__init__(self, path, color)
         poisson.poisson.__init__(self)
-        self.alpha = 0.25
+        self.alpha = 0.1
         self.k = 1
         self.u0 = np.copy(self.data)
     
@@ -18,10 +18,10 @@ class contrast(image_handler.ImageHandler, poisson.poisson):
         [TODO:description]
         """
         laplace = self.get_laplance()
+        #    TODO: check if this is correct. 
         self.data[1:-1, 1:-1] += (self.u0[1:-1, 1:-1] - (self.k * laplace)) * self.alpha
      						   # ((laplace) - (self.k * self.u0[1:-1, 1:-1])) * self.alpha <- guess i had it backwards?
-     						   #	TODO: check if this is correct. 
-        self.data.clip(0, 1)
+        self.data = self.data.clip(0, 1)
 
         """
         TODO : Implement Neumann
@@ -31,7 +31,7 @@ class contrast(image_handler.ImageHandler, poisson.poisson):
 #        self.data[0, :] = self.data[1, :]      #
 #        self.data[-1, :] = self.data[-2 , :]   #
 
-    def fit(self,epochs):
+    def fit(self,epochs=1):
         """
         [TODO:summary]
 
