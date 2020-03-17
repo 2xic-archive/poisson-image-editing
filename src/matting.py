@@ -25,7 +25,7 @@ class matting(image_handler.ImageHandler, poisson.poisson):
 		print(self.area)
 
 	def get_area(self):
-
+		pass
 
 	def iteration(self):
 		"""
