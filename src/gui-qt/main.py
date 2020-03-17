@@ -40,6 +40,7 @@ class App(QMainWindow):
 		import contrast_qt as contrast_window
 		import demosaic_qt as demonsaic_window
 		import matting_qt as matting_window
+		import grayscale_qt as grayscale_window
 		if (blur_window.__file__ not in INFILE):
 			self.WINDOWS["Blurring"] = blur_window.blur_window()
 		if (inpait_window.__file__ not in INFILE):
@@ -50,6 +51,8 @@ class App(QMainWindow):
 			self.WINDOWS["Demonsaicing"] = demonsaic_window.demonsaic_window()
 		if (matting_window.__file__ not in INFILE):
 			self.WINDOWS["Matting"] = matting_window.matting_window()
+		if (grayscale_window.__file__ not in INFILE):
+			self.WINDOWS["Grayscale"] = grayscale_window.grayscale_window()
 		return self.WINDOWS
 
 	#	https://stackoverflow.com/questions/20243637/pyqt4-center-window-on-active-screen
@@ -99,10 +102,10 @@ class App(QMainWindow):
 
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
-	#from blurring_qt import blur_window
-	#ex = blur_window()
-	from matting_qt import matting_window
-	ex = matting_window()
+	from blurring_qt import blur_window
+	ex = blur_window()
+	#from matting_qt import matting_window
+	#ex = matting_window()
 	ex.initUI()
 	ex.show()
 	sys.exit(app.exec_())
