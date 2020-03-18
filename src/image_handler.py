@@ -2,7 +2,7 @@ from PIL import Image
 import numpy as np
 
 class ImageHandler:
-    def __init__(self, path, color=True):
+    def __init__(self, path=None, color=True):
         """
         [TODO:summary]
 
@@ -13,17 +13,21 @@ class ImageHandler:
         path : String
             [TODO:description]
         """
-        self.path = path
-        image = Image.open(path)
-        image.load()
-        self.data = np.asarray(image, dtype="float64").copy()
-        if not color and not len(self.data.shape) == 2:
-            self.data = self.covert_single_shape()
-            self.data = self.convert_black_and_white()    
-        else:
-            self.data = self.convert_color()    
-        self.data_copy = self.data.copy()
-        self.color = color
+        if not path == None:
+            self.path = path
+            image = Image.open(path)
+            image.load()
+            self.data = np.asarray(image, dtype="float64").copy()
+            if not color and not len(self.data.shape) == 2:
+                self.data = self.covert_single_shape()
+                self.data = self.convert_black_and_white()    
+            else:
+                self.data = self.convert_color()    
+            self.data_copy = self.data.copy()
+            self.color = color
+
+    def set_data(self, data):
+        self.data = data
 
     def reset(self):
         self.data = self.data_copy.copy()

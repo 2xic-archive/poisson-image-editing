@@ -26,6 +26,8 @@ class blur(image_handler.ImageHandler, poisson.poisson):
         self.data[0, :] = self.data[1, :]      #
         self.data[-1, :] = self.data[-2 , :]   #
 
+        return self.data
+
     def fit(self,epochs):
         """
         [TODO:summary]
