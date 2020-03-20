@@ -1,5 +1,5 @@
-import demosaicing
-from general_window import *
+from backend import demosaicing
+from gui.general_window import *
 
 
 class demonsaic_window(general_window):

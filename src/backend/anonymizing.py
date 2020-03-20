@@ -1,17 +1,20 @@
 import os
-import blurring
-import image_handler
-import poisson
+from engine import image_handler, poisson
+from backend import blurring
+#import image_handler
+#import poisson
 
-
+'''
 def get_path():
 	dir_path = os.path.dirname(os.path.realpath(__file__)) + "/"
 	return dir_path
+'''
+from gui.general import get_path
 
 
 def get_mask(input_image, path):
 	from cv2 import CascadeClassifier, imread, cvtColor, COLOR_BGR2GRAY
-	face_cascade = CascadeClassifier(get_path() + '../files/haarcascade_frontalface_default.xml')
+	face_cascade = CascadeClassifier(get_path(__file__) + '../files/haarcascade_frontalface_default.xml')
 	img = imread(path)
 	gray = cvtColor(img, COLOR_BGR2GRAY)
 	faces = face_cascade.detectMultiScale(gray, 1.1, 4)

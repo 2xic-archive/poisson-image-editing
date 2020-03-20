@@ -1,15 +1,14 @@
-import image_handler
-import poisson
+from engine import image_handler
+from engine import poisson
 import numpy as np
-from inpaiting import *
-
+from backend import inpaiting
 
 class demosaic(image_handler.ImageHandler, poisson.poisson):
     def __init__(self, path, color=True):
         image_handler.ImageHandler.__init__(self, path, color)
         poisson.poisson.__init__(self)
         self.alpha = 0.25
-        self.inpaint = inpaint(None)
+        self.inpaint = inpaiting.inpaint(None)
 
         self.simulate()
         self.inpaint.data = self.mosaic

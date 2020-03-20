@@ -1,8 +1,9 @@
 from PyQt5.QtWidgets import QComboBox, QLabel
 from PyQt5.QtWidgets import QPushButton, QSlider
 from PyQt5.QtCore import Qt
-from general import *
-
+#from general import *
+from gui.app_data import *
+from gui.general import pil2pixmap
 
 class screen_element:
     def __init__(self, element):
@@ -16,8 +17,10 @@ class screen_element:
         return self.element, (self.height, self.width), self.x, self.y
 
 
-class interface:
+class interface_class(App):
     def __init__(self):
+        App.__init__(self)
+       # super().__init__()
         self.screen_elements = [
 
         ]

@@ -1,3 +1,4 @@
+'''
 import os
 import sys
 
@@ -8,3 +9,4 @@ sys.path.append(PATH + "../engine/")
 sys.path.append(PATH + "../backend/")
 sys.path.append(PATH + "../gui/")
 sys.path.append(PATH + "../gui/interface/")
+'''

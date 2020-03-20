@@ -1,12 +1,12 @@
-from test import *
+##from test import *
 import numpy as np
 import unittest
-import inpaiting
+from backend import inpaiting
+import os
 
 class test_inpaiting(unittest.TestCase):
 	def test_fit(self):
-		path = os.path.dirname(os.path.abspath(__file__))
-		inpaint_object = inpaiting.inpaint(PATH + "../files/test_images/lena.png", False)
+		inpaint_object = inpaiting.inpaint("./files/test_images/lena.png", False)
 		old_image = inpaint_object.get_data().copy()
 		try:
 			inpaint_object.fit(1)

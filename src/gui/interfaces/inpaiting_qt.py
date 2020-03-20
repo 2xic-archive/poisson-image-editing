@@ -1,5 +1,5 @@
-import inpaiting
-from general_window import *
+from backend import inpaiting
+from gui.general_window import *
 from extra.median_filter import median_filter
 
 class inpait_window(general_window):

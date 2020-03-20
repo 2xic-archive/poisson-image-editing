@@ -1,5 +1,5 @@
-import contrasting
-from general_window import *
+from backend import contrasting
+from gui.general_window import *
 from extra.local_adaptive_histogram import *
 
 

@@ -1,5 +1,5 @@
-import anonymizing
-from general_window import *
+from backend import anonymizing
+from gui.general_window import *
 
 
 class anonymizing_window(general_window):

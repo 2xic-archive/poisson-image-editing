@@ -1,6 +1,6 @@
-import image_handler
+from engine import image_handler
 import numpy as np
-import poisson
+from engine import poisson
 
 
 class inpaint(image_handler.ImageHandler, poisson.poisson):

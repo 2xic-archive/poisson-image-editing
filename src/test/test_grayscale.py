@@ -1,12 +1,13 @@
-from test import *
+#from test import *
 import numpy as np
 import unittest
-import grayscale
+from backend import grayscale
+import os
 
 class test_grayscale(unittest.TestCase):
 	def test_fit(self):
-		path = os.path.dirname(os.path.abspath(__file__))
-		grayscale_object = grayscale.grayscale(PATH + "../files/test_images/lena.png")
+#		path = os.path.dirname(os.path.abspath(__file__))
+		grayscale_object = grayscale.grayscale("./files/test_images/lena.png")
 		old_image = grayscale_object.get_data().copy()
 		grayscale_object.fit(1)
 		self.assertFalse(np.all(old_image == grayscale_object))
