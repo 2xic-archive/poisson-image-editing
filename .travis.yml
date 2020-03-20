@@ -1,13 +1,23 @@
 language: python
+
+python:
+  - 3.7
+
 install:
   - export COVERALLS_SERVICE_NAME=travis-pro
   - export COVERALLS_REPO_TOKEN=gVyy0M8m40KHfJonzjb0c0pzpachxU2TA
+  - sudo apt-get update
+  - sudo apt-get -y install python3-pyqt5
+  - sudo apt-get -y install pyqt5-dev-tools
+  - sudo apt-get -y install qttools5-dev-tools
+  - pip install --upgrade pip setuptools
   - pip install pytest
   - pip install pylint
   - pip install pytest-cov
+  - pip install pytest-qt
   - pip install coveralls
   - pip install -r requirements.txt 
-  - python -m pylint --disable=R,C,W,E1136,E1101,E1137,W0312 src/*.py || rc=$?;
+  - cd src && python -m pylint --disable=R,C,W,E1136,E1101,E1137,W0312 src/*.py || rc=$?;
   - if [[ $(($rc & 3)) -ne 0 ]] ; then echo "syntax error" && exit -1; else echo "syntax okay"; fi
 script:
   - pytest --cov=src/
