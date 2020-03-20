@@ -93,11 +93,15 @@ class App(QMainWindow):
 			self.reset_button.setEnabled(True)
 			self.timer.stop()
 
+	def show_extra(self):
+		self.setGeometry(0, 0 , self.pixmap.width() + self.PADDING, self.height)
+		self.center()
+
 	@pyqtSlot()
-	def reset_image(self):
+	def reset_image_extra(self):
 		self.reset_button.setEnabled(False)
 		self.method.reset()
-		self.label.setPixmap(pil2pixmap(Image.fromarray(255 * self.method.data)))
+		self.label.setPixmap(pil2pixmap(self.pixmap_converter(self.method.data)))
 
 	@pyqtSlot()
 	def run_method(self):
