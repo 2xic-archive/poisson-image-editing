@@ -13,3 +13,8 @@ def pil2pixmap(im):
 	qim = QImage(data, im.size[0], im.size[1], QImage.Format_RGBA8888)
 	pixmap = QPixmap.fromImage(qim)
 	return pixmap
+
+import os
+def get_path(file):
+	dir_path = os.path.dirname(os.path.realpath(file)) + "/"
+	return dir_path
