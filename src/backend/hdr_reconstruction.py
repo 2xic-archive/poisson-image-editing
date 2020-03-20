@@ -7,6 +7,18 @@ from PIL import Image
 
 
 class hdr_reconstruction(image_handler.ImageHandler, poisson.poisson):
+    """
+    This class describes a HDR image.
+
+    This contains all the functions needed to perform HDR reconstruction on a image over multiple iterations
+
+    Parameters
+    ----------
+    path : str
+        path to a image file
+    color : bool
+        if the image should be shown with colors
+    """
     def __init__(self, path, color=False):
         image_handler.ImageHandler.__init__(self, path, color)
         poisson.poisson.__init__(self)
@@ -14,18 +26,17 @@ class hdr_reconstruction(image_handler.ImageHandler, poisson.poisson):
         
     def iteration(self):
         """
-        [TODO:summary]
+        Does one iteration of the method.
 
-        [TODO:description]
         """
         raise Exception("implement")
         return self.data
 
     def fit(self,epochs):
         """
-        [TODO:summary]
+        Makes multiple iterations of the method
 
-        [TODO:description]
+        Calls iteration as many times as spesifed in by the parameter epochs
 
         Parameters
         ----------

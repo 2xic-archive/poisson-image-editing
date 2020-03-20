@@ -11,20 +11,17 @@ from PIL import Image
 class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 	"""
 	This class describes a blured image.
+
+	This contains all the functions needed to blur a image over multiple iterations
+
+	Parameters
+	----------
+	path : str
+		path to a image file
+	color : bool
+		if the image should be shown with colors
 	"""
 	def __init__(self, path, color=False):
-		"""
-		Defines a (blured) image
-
-		This contains all the functions needed to blur a image over multiple iterations
-
-		Parameters
-		----------
-		path : str
-			path to a image file
-		color : bool
-			if the image should be shown with colors
-		"""
 		image_handler.ImageHandler.__init__(self, path, color)
 		poisson.poisson.__init__(self)
 		boundary.Boundary.__init__(self)

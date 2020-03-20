@@ -8,21 +8,29 @@ import os
 from PIL import Image
 from PyQt5.QtWidgets import QApplication, QFileDialog
 
-def get_path():
-    dir_path = os.path.dirname(os.path.realpath(__file__)) + "/"
-    return dir_path
 
 from gui.app_data import *
-#print(interface_class)
 
 class general_window(interface_class):
+    """
+    Convers the input into a format QT liks
+
+    Parameters
+    ----------
+    pixmap_converter : lambda
+        a lambda function used to parse a image into QT
+    load_extra : lambda
+        a lambda function used to parse a load extra content
+    """
     def __init__(self, pixmap_converter=None, load_extra=None):
-#        App.__init__(self)
         interface_class.__init__(self)
         self.pixmap_converter = pixmap_converter
         self.load_extra = load_extra
 
     def init_UI(self):
+        """
+        initialize the UI
+        """
         self.setWindowTitle(self.title)
         """
 		Showing the possible modes

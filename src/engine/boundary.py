@@ -3,6 +3,14 @@ class Boundary:
         pass
 
     def neumann(self, data=None):
+        """
+        Preform a neumann boundary
+
+        Parameters
+        ----------
+        data : ndarray
+            The data to preform the boundary on
+        """
         if data is None:
             data = self.data
         data[:, 0] = data[:, 1]      # Neumann randbetingelse
