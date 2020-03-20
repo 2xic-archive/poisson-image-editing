@@ -1,5 +1,7 @@
 # IMT3881 2020 Prosjekt
-<div style="text-align:center"><img src="readme/hello.png" /></div>
+<p align="center">
+	<img src="readme/hello.png" />
+</p>
 
 [![Build Status](https://travis-ci.com/2xic/vitprog-prosjekt.svg?token=vVVuYFCatTDiKBZ8eAMA&branch=Brage)](https://github.com/2xic/vitprog-prosjekt)
 [![Coverage Status](https://coveralls.io/repos/github/2xic/vitprog-prosjekt/badge.svg?branch=Brage&t=HoNjAi)](https://coveralls.io/github/2xic/vitprog-prosjekt?branch=Brage)
