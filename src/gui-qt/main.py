@@ -27,8 +27,6 @@ class App(QMainWindow):
 		self.title = os.path.basename(self.image)
 		self.left = 0
 		self.top = 0
-		self.width = 640
-		self.height = 480
 
 		self.epoch = 0
 		self.total_epochs = 0
@@ -99,6 +97,7 @@ class App(QMainWindow):
 
 	@pyqtSlot()
 	def reset_image_extra(self):
+		self.total_epochs = 0
 		self.reset_button.setEnabled(False)
 		self.method.reset()
 		self.label.setPixmap(pil2pixmap(self.pixmap_converter(self.method.data)))
@@ -113,8 +112,6 @@ if __name__ == '__main__':
 	app = QApplication(sys.argv)
 	from blurring_qt import blur_window
 	ex = blur_window()
-	#from matting_qt import matting_window
-	#ex = matting_window()
 	ex.initUI()
 	ex.show()
 	sys.exit(app.exec_())
