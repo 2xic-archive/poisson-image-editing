@@ -6,6 +6,14 @@ From the book "Computer Vision - Algorithms and Applications" by Springer
 
 
 def intensity(img):
+    """
+    Gets the normalized image intensity
+
+    Parameters
+    ----------
+    img : ndarray
+        The image to get the intensity from
+    """
     intensity_scale = np.zeros(256, np.int32)
     for y in range(0, img.shape[0]):
         for x in range(0, img.shape[1]):
@@ -16,6 +24,14 @@ def intensity(img):
 
 
 def contrast_enhancement(img):
+    """
+    Preform a local adpative histogram on input
+
+    Parameters
+    ----------
+    img : ndarray
+        The image to preform the action on
+    """
     if len(img.shape) == 2:
         img = img.reshape(img.shape + (1,))
     if np.max(img) <= 1:

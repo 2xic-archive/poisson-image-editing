@@ -6,32 +6,43 @@ from PIL import Image
 
 
 class non_edge_blurr(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
-    def __init__(self, path, color=False):
-        image_handler.ImageHandler.__init__(self, path, color)
-        poisson.poisson.__init__(self)
-        boundary.Boundary.__init__(self)
-        self.alpha = 0.25
-        
-    def iteration(self):
-        """
-        [TODO:summary]
+	"""
+	This class describes a edge edge preserving blurred image.
 
-        [TODO:description]
-        """
-        raise Exception("implement")
-        return self.data
+	This contains all the functions needed to preform a edge preserving blur on a image over multiple iterations
 
-    def fit(self,epochs):
-        """
-        [TODO:summary]
+	Parameters
+	----------
+	path : str
+		path to a image file
+	color : bool
+		if the image should be shown with colors
+	"""
+	def __init__(self, path, color=False):
+		image_handler.ImageHandler.__init__(self, path, color)
+		poisson.poisson.__init__(self)
+		boundary.Boundary.__init__(self)
+		self.alpha = 0.25
+		
+	def iteration(self):
+		"""
+		Does one iteration of the method.
 
-        [TODO:description]
+		"""
+		raise Exception("implement")
+		return self.data
 
-        Parameters
-        ----------
-        epochs : int
-            The iteration count
-        """
-        for i in range(epochs):
-            self.iteration()
-        return self
+	def fit(self,epochs):
+		"""
+		Makes multiple iterations of the method
+
+		Calls iteration as many times as spesifed in by the parameter epochs
+
+		Parameters
+		----------
+		epochs : int
+			The iteration count
+		"""
+		for i in range(epochs):
+			self.iteration()
+		return self

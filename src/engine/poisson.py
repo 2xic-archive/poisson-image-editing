@@ -3,6 +3,14 @@ class poisson:
         pass
 
     def get_laplace(self, data=None):
+        """
+        Gets the laplace
+
+        Parameters
+        ----------
+        data : ndarray
+            The data to get the laplace from
+        """
         if data is None:
             data = self.data
         laplace = data[0:-2, 1:-1] \

@@ -4,61 +4,71 @@ from engine import poisson
 from gui.general import get_path
 
 class matting(image_handler.ImageHandler, poisson.poisson):
-    def __init__(self, target_path="./files/test_images/target.png", source_path="./files/test_images/source.png",
-                 color=True):
-        target_path = get_path(__file__) + "../files/test_images/target.png"
-        source_path = get_path(__file__) + "../files/test_images/source.png"
+	"""
+	This class describes a matting image.
 
-        image_handler.ImageHandler.__init__(self, target_path, color)
-        poisson.poisson.__init__(self)
-        self.alpha = 0.2
+	This contains all the functions needed to merge a image over another image over multiple iterations
 
-        # the bird
-        self.source = image_handler.ImageHandler(source_path, color)
-        self.target = self.data.copy()
+	Parameters
+	----------
+	target_path : str
+		path to the target image
+	source_path : str
+		path to a souce image to add on the target
+	color : bool
+		if the image should be shown with colors
+	"""
+	def __init__(self, target_path="./files/test_images/target.png", source_path="./files/test_images/source.png",
+				 color=True):
+		target_path = get_path(__file__) + "../files/test_images/target.png"
+		source_path = get_path(__file__) + "../files/test_images/source.png"
 
-        # NOTE : If this is wide the effect will go badly (I tried without having this set and you
-        # get a ugly border)
-        # NOTE2 : I realized that it is because the photo contained a black border
-        # TODO : Make it possible to set/define these values in GUI
-        self.area = (
-            (200, 50),
-            (250, 130),
-        )
-        print(self.area)
+		image_handler.ImageHandler.__init__(self, target_path, color)
+		poisson.poisson.__init__(self)
+		self.alpha = 0.2
 
-    def get_area(self):
-        pass
+		# the bird
+		self.source = image_handler.ImageHandler(source_path, color)
+		self.target = self.data.copy()
 
-    def iteration(self):
-        """
-		[TODO:summary]
+		# NOTE : If this is wide the effect will go badly (I tried without having this set and you
+		# get a ugly border)
+		# NOTE2 : I realized that it is because the photo contained a black border
+		# TODO : Make it possible to set/define these values in GUI
+		self.area = (
+			(200, 50),
+			(250, 130),
+		)
+		print(self.area)
 
-		[TODO:description]
+	def iteration(self):
 		"""
-        crop_area = lambda x: x[self.area[0][0]:self.area[1][0],
-                              self.area[0][1]:self.area[1][1]]
+		Does one iteration of the method.
 
-        target_laplace = self.get_laplace(crop_area(self.target))
-        source_laplace = self.get_laplace(crop_area(self.source.data))
-        working_area = crop_area(self.data)
-        working_area[1:-1, 1:-1] += (target_laplace - source_laplace) * self.alpha
+		"""
+		crop_area = lambda x: x[self.area[0][0]:self.area[1][0],
+							  self.area[0][1]:self.area[1][1]]
 
-        # TODO : make this "nice"
-        self.data[self.area[0][0]:self.area[1][0],
-        self.area[0][1]:self.area[1][1]] = working_area.clip(0, 1)
+		target_laplace = self.get_laplace(crop_area(self.target))
+		source_laplace = self.get_laplace(crop_area(self.source.data))
+		working_area = crop_area(self.data)
+		working_area[1:-1, 1:-1] += (target_laplace - source_laplace) * self.alpha
 
-    def fit(self, epochs=1):
-        """
-		[TODO:summary]
+		# TODO : make this "nice"
+		self.data[self.area[0][0]:self.area[1][0],
+		self.area[0][1]:self.area[1][1]] = working_area.clip(0, 1)
 
-		[TODO:description]
+	def fit(self, epochs=1):
+		"""
+		Makes multiple iterations of the method
+
+		Calls iteration as many times as spesifed in by the parameter epochs
 
 		Parameters
 		----------
 		epochs : int
 			The iteration count
 		"""
-        for i in range(epochs):
-            self.iteration()
-        return self
+		for i in range(epochs):
+			self.iteration()
+		return self

@@ -1,18 +1,20 @@
 import os
 from engine import image_handler, poisson
 from backend import blurring
-#import image_handler
-#import poisson
 
-'''
-def get_path():
-	dir_path = os.path.dirname(os.path.realpath(__file__)) + "/"
-	return dir_path
-'''
 from gui.general import get_path
 
 
-def get_mask(input_image, path):
+def get_mask(path):
+	"""
+	Get the mask to blur a face
+
+
+	Parameters
+	----------
+	path : str
+		path to the image file to anonymize
+	"""	
 	from cv2 import CascadeClassifier, imread, cvtColor, COLOR_BGR2GRAY
 	face_cascade = CascadeClassifier(get_path(__file__) + '../files/haarcascade_frontalface_default.xml')
 	img = imread(path)
@@ -24,30 +26,38 @@ def get_mask(input_image, path):
 
 class anonymous(image_handler.ImageHandler, poisson.poisson):
 	"""
+	This class describes a anymous image.
 
+	This contains all the functions needed to anonymize a image over multiple iterations
+
+	Parameters
+	----------
+	path : str
+		path to a image file
+	color : bool
+		if the image should be shown with colors
 	"""
 	def __init__(self, path, color=False):
 		image_handler.ImageHandler.__init__(self, path, color)
 		poisson.poisson.__init__(self)
 		self.alpha = 0.1
-		self.mask = get_mask(self.data, path)
+		self.mask = get_mask(path)
 		self.u0 = self.data.copy()
 
 	def iteration(self):
 		"""
-		[TODO:summary]
+		Does one iteration of the method.
 
-		[TODO:description]
-		"""		
+		"""
 		blur = blurring.blur(None)
 		blur.set_data(self.data.copy()[self.mask[0]:self.mask[1], self.mask[2]:self.mask[3]])
 		self.data[self.mask[0]:self.mask[1], self.mask[2]:self.mask[3]] = blur.iteration()
 
 	def fit(self,epochs):
 		"""
-		[TODO:summary]
+		Makes multiple iterations of the method
 
-		[TODO:description]
+		Calls iteration as many times as spesifed in by the parameter epochs
 
 		Parameters
 		----------

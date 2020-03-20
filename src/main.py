@@ -17,6 +17,11 @@ import numpy as np
 import os
 from PyQt5.QtWidgets import QApplication, QFileDialog
 
+"""
+main.py
+====================================
+The core module of the project
+"""
 if __name__ == '__main__':
     from gui.interfaces.blurring_qt import blur_window
     app = QApplication(sys.argv)
