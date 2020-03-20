@@ -16,10 +16,12 @@ import blurring
 from PIL import Image
 from general import *
 import os
+from general import pil2pixmap
+from PIL import Image
+from interface import interface
 
 class App(QMainWindow):
-
-	def __init__(self, parrent=None):
+	def __init__(self, parrent=None, image='../test_images/lena.png'):
 		super().__init__()
 		self.image = '../test_images/lena.png'
 		self.title = os.path.basename(self.image)
@@ -41,7 +43,7 @@ class App(QMainWindow):
 		import demosaic_qt as demonsaic_window
 		import matting_qt as matting_window
 		import grayscale_qt as grayscale_window
-		import anonymousing_qt as anonymousing_window
+#		import anonymousing_qt as anonymousing_window
 		if (blur_window.__file__ not in INFILE):
 			self.WINDOWS["Blurring"] = blur_window.blur_window()
 		if (inpait_window.__file__ not in INFILE):
@@ -54,8 +56,8 @@ class App(QMainWindow):
 			self.WINDOWS["Matting"] = matting_window.matting_window()
 		if (grayscale_window.__file__ not in INFILE):
 			self.WINDOWS["Grayscale"] = grayscale_window.grayscale_window()
-		if (anonymousing_window.__file__ not in INFILE):
-			self.WINDOWS["Anoymousing"] = anonymousing_window.anonymous_window()
+#		if (anonymousing_window.__file__ not in INFILE):
+#			self.WINDOWS["Anoymousing"] = anonymousing_window.anonymous_window()
 		return self.WINDOWS
 
 	#	https://stackoverflow.com/questions/20243637/pyqt4-center-window-on-active-screen

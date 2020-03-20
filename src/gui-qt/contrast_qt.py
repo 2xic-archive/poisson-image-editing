@@ -1,17 +1,66 @@
 from main import *
 from extra.local_adaptive_histogram import *
 import contrasting
+from general_window import general_window
 
-class contrast_window(App):
+class contrast_window(general_window):
 	def __init__(self, parent=None):	
-		App.__init__(self)
-
+		general_window.__init__(self, load_extra=lambda x: self.load_extra_now())
 		self.image = '../test_images/contrast.jpg'
-		self.title = self.image
-		self.contrast = contrasting.contrast(self.image)
-		self.input_image = self.contrast.get_data().copy()
-		self.method = self.contrast
+		self.method = contrasting.contrast(self.image)
+		self.input_image = self.method.get_data().copy()
+		self.height = 0
+#		self.initUI()	
+#		self.load_extra_now()
+#		self.loaded = False
 
+	def load_extra_now(self):
+#		if not self.loaded:
+#			self.loaded = True
+#			self.initUI()
+#			print(self.label)
+#			print("???")
+		"""
+		Load the extra
+		"""
+
+		_, self.heigth = self.position()
+		self.extra_button = self.add_button("Extra", lambda x: QTimer.singleShot(100, lambda: self.show_extra()))
+		self.update_geometry(self.pixmap.width(), 30)			
+		self.reset_heigth()
+
+
+		self.PADDING = self.pixmap.width() + 30
+
+		self.extra_label, self.extra_pixmap = self.add_image(self.method.data, (lambda x : self.pixmap_converter(x)) if not self.pixmap_converter is None else (lambda x: Image.fromarray(255 * x)))
+		self.update_geometry(self.pixmap.width(), self.pixmap.height(), x=self.PADDING, y=self.label.pos().y())
+
+		self.extra_action_button = self.add_button("Local adaptive histogram", lambda x: QTimer.singleShot(100, lambda: self.update_image_histogram()))
+		self.update_geometry(self.pixmap.width(), 30, x=self.PADDING, y=self.action_button.pos().y())			
+		#QPushButton('Local adaptive histogram', self)
+#		self.extra_action_button.setMinimumWidth(180)
+
+#		self.extra_action_button.move(self.PADDING , self.action_button.pos().y())
+#		self.extra_action_button.clicked.connect(lambda x: QTimer.singleShot(100, lambda: self.update_image_histogram()))
+
+#		self.	
+
+	#	self.extra_label = QLabel(self)
+	#	self.extra_pixmap = pil2pixmap(Image.fromarray(255 * self.contrast.data))
+	#	self.extra_label.setPixmap(self.pixmap)
+	#	self.extra_label.setGeometry(self.PADDING, 30, self.extra_pixmap.width(), self.extra_pixmap.height());
+
+
+#		App.__init__(self)
+#		self.image = '../test_images/contrast.jpg'
+#		self.title = self.image
+#		self.contrast = contrasting.contrast(self.image)
+#		self.input_image = self.contrast.get_data().copy()
+#		self.method = self.contrast
+
+
+
+	'''
 	def initUI(self):
 		self.setWindowTitle(self.title)
 		"""
@@ -89,10 +138,13 @@ class contrast_window(App):
 		
 		self.setGeometry(0, 0 , self.pixmap.width(), self.pixmap.height() + 200)
 		self.center()
+	'''
 
 	def update_image_histogram(self):
 		self.extra_label.setPixmap(pil2pixmap(Image.fromarray(255 * contrast_enhancment(self.input_image))))
 
 	def show_extra(self):
-		self.setGeometry(0, 0 , self.pixmap.width() + self.PADDING, self.pixmap.height() + 200)
+		print("WE OUT HERE???")
+		self.setGeometry(0, 0 , self.pixmap.width() + self.PADDING, self.heigth)
 		self.center()
+

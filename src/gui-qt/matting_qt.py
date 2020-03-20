@@ -1,14 +1,17 @@
-from PIL import Image
-from main import *
-from general import pil2pixmap
+#from PIL import Image
+#from main import *
+from general_window import *
 import matting
+#from general import pil2pixmap
 
-class matting_window(App):
+
+
+class matting_window(general_window):
 	def __init__(self, parent=None):	
-		App.__init__(self)
-		self.matting = matting.matting(self.image)
-		self.method = self.matting
+		general_window.__init__(self, lambda x: Image.fromarray((x * 255).astype(np.uint8), mode = 'RGBA'))
+		self.method = matting.matting(self.image)
 
+	'''
 	def initUI(self):
 		self.setWindowTitle(self.title)
 
@@ -69,3 +72,5 @@ class matting_window(App):
 
 		self.setGeometry(0, 0 , self.pixmap.width(), self.pixmap.height() + 150)
 		self.center()
+	'''
+
