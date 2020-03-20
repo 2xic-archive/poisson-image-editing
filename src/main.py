@@ -39,7 +39,8 @@ class App(QMainWindow):
         import matting_qt as matting_window
         import grayscale_qt as grayscale_window
         import anonymizing_qt as anonymizing_window
-
+        import hdr_qt as hdr_window
+        import non_edge_blurring_qt as non_edge_blurring
         self.WINDOWS = {
 
         }
@@ -57,6 +58,12 @@ class App(QMainWindow):
             self.WINDOWS["Grayscale"] = grayscale_window.grayscale_window()
         if anonymizing_window.__file__ not in INFILE:
             self.WINDOWS["Anonymous"] = anonymizing_window.anonymizing_window()
+        if anonymizing_window.__file__ not in INFILE:
+            self.WINDOWS["Edge preserving blur"] = anonymizing_window.anonymizing_window()
+        if non_edge_blurring.__file__ not in INFILE:
+            self.WINDOWS["Edge preserving blur"] = non_edge_blurring.non_edge_blurring_window()
+        if non_edge_blurring.__file__ not in INFILE:
+            self.WINDOWS["HDR"] = hdr_window.hdr_window()
         return self.WINDOWS
 
     #	https://stackoverflow.com/questions/20243637/pyqt4-center-window-on-active-screen
