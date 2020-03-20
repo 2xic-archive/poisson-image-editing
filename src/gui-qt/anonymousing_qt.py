@@ -2,10 +2,12 @@ import anonymousing
 from PIL import Image
 from main import *
 from general import pil2pixmap
+from interface import *
 
-class anonymous_window(App):
+class anonymous_window(App, interface):
 	def __init__(self, parent=None):	
 		App.__init__(self)
+		interface.__init__(self)
 		self.anonymous = anonymousing.anonymous(self.image)
 		self.method = self.anonymous
 
