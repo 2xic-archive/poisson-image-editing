@@ -1,4 +1,5 @@
 from main import *
+from interface import *
 class general_window(App, interface):
 	def __init__(self, pixmap_converter=None, load_extra=None):
 		App.__init__(self)
@@ -39,15 +40,20 @@ class general_window(App, interface):
 		self.action_button = self.add_button("Run", self.run_method)
 		self.update_geometry(self.pixmap.width(), 30)
 		"""
-		Showing the run reset
+		Showing the reset button
 		"""
 		self.reset_button = self.add_button("Reset", lambda x: QTimer.singleShot(100, lambda: self.reset_image()), setEnabled=False)
 		self.update_geometry(self.pixmap.width(), 30)			
 
 		"""
+		Showing the custom file button
+		"""
+		self.reset_button = self.add_button("Open", lambda x: QTimer.singleShot(100, lambda: self.show_file_dialog()), setEnabled=True)
+		self.update_geometry(self.pixmap.width(), 30)			
+
+		"""
 		Position all the elements
 		"""
-
 		if not self.load_extra is None:
 			self.load_extra(None)
 
@@ -55,6 +61,3 @@ class general_window(App, interface):
 		self.setGeometry(0, 0 , width, height)
 		self.center()
 	#	self.setFixedSize(self.size())
-
-
-

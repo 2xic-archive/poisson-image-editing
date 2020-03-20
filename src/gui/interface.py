@@ -1,13 +1,8 @@
 
-import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QComboBox
-from PyQt5.QtGui import QIcon, QPixmap, QImage
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QSlider, QMainWindow
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtCore import Qt, QTimer
-from PIL.ImageQt import ImageQt
+from PyQt5.QtWidgets import QComboBox, QLabel
+from PyQt5.QtWidgets import QPushButton, QSlider
+from PyQt5.QtCore import Qt
 from general import *
-from PIL import Image
 
 class screen_element:
 	def __init__(self, element):

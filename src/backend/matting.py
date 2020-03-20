@@ -4,8 +4,8 @@ import numpy as np
 
 class matting(image_handler.ImageHandler, poisson.poisson):
 	def __init__(self, path, color=True):
-		path = "../test_images/target.png"
-		source = "../test_images/source.png"
+		path = "./files/test_images/target.png"
+		source = "./files/test_images/source.png"
 
 		image_handler.ImageHandler.__init__(self, path, color)
 		poisson.poisson.__init__(self)
@@ -17,6 +17,7 @@ class matting(image_handler.ImageHandler, poisson.poisson):
 
 		# NOTE : If this is wide the effect will go badly (I tried without having this set and you 
 		# get a ugly border)
+		# NOTE2 : I realized that it is because the photo contained a black border 
 		# TODO : Make it possible to set/define these values in GUI
 		self.area = (
 			(200, 50),

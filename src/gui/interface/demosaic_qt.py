@@ -1,8 +1,4 @@
 import demosaicing
-from PIL import Image
-from main import *
-from general import pil2pixmap
-
 from general_window import *
 
 class demonsaic_window(general_window):
