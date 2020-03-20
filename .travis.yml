@@ -21,8 +21,11 @@ install:
   - pip install coveralls
   - pip install -r requirements.txt 
   - cd src
-  - python -m pylint --disable=R,C,W,E1136,E1101,E1137,W0312 *.py || rc=$?;
-  - if [[ $(($rc & 3)) -ne 0 ]] ; then echo "syntax error" && exit -1; else echo "syntax okay"; fi
+  - python -m pylint --disable=R,C,W,E1136,E1101,E1137,W0312 *.py
+  - rc=$?
+  - echo $rc
+  - if [ $(($rc)) -ne 1 ]; then echo "syntax error" && exit -1; else echo "syntax okay"; fi
+
 script:
 #  - cd src
   - python -m pytest --cov=./
