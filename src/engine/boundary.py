@@ -1,4 +1,7 @@
 class Boundary:
+    """
+    This class describes the boundary conditions
+    """
     def __init__(self):
         pass
 

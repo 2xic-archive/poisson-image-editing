@@ -1,4 +1,7 @@
 class poisson:
+    """
+    This class describes the abstracts part of the poisson equation
+    """
     def __init__(self):
         pass
 
