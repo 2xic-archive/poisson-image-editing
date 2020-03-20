@@ -6,7 +6,7 @@ import inpaiting
 class test_inpaiting(unittest.TestCase):
 	def test_fit(self):
 		path = os.path.dirname(os.path.abspath(__file__))
-		inpait_object = inpaiting.inpait(PATH + "../test_images/lena.png", False)
+		inpait_object = inpaiting.inpait(PATH + "../files/test_images/lena.png", False)
 		old_image = inpait_object.get_data().copy()
 		try:
 			inpait_object.fit(1)
