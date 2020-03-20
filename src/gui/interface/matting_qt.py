@@ -1,5 +1,5 @@
-from general_window import *
 import matting
+from general_window import *
 
 class matting_window(general_window):
 	def __init__(self, parent=None):	

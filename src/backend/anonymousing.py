@@ -15,7 +15,7 @@ class anonymous(image_handler.ImageHandler, poisson.poisson):
 	
 	def get_mask(self, input_image, path):
 		from cv2 import CascadeClassifier, imread, cvtColor, COLOR_BGR2GRAY
-		face_cascade = CascadeClassifier('../haarcascade_frontalface_default.xml')
+		face_cascade = CascadeClassifier('./files/haarcascade_frontalface_default.xml')
 		img = imread(path)
 		gray = cvtColor(img, COLOR_BGR2GRAY)
 		faces = face_cascade.detectMultiScale(gray, 1.1, 4)

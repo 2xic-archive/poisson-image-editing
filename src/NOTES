@@ -1,0 +1,2 @@
+# make it check for unused variables also in travis
+autoflake --in-place --remove-all-unused-imports *.py
