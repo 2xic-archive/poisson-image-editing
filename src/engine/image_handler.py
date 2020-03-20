@@ -3,6 +3,9 @@ from PIL import Image
 
 
 class ImageHandler:
+    """
+    This class describes the abstracts functions for a image
+    """
     def __init__(self, path=None, color=True):
         """
 		[TODO:summary]

@@ -3,6 +3,9 @@ from gui.general_window import *
 from extra.median_filter import median_filter
 
 class inpait_window(general_window):
+	"""
+	This class describes an inpait window.
+	"""
 	def __init__(self, parent=None):	
 		general_window.__init__(self, load_extra=lambda x: self.load_extra_now())
 		self.method = inpaiting.inpaint(self.image)
