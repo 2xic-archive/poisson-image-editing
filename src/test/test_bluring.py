@@ -11,7 +11,7 @@ class test_blur(unittest.TestCase):
 		blur_object.fit(1)
 		self.assertFalse(np.all(old_image == blur_object))
 
-
+'''
 from pytestqt import qt_compat
 from pytestqt.qt_compat import qt_api
 
@@ -27,4 +27,4 @@ def test_basics(qtbot):
 	ex.show()
 	assert ex.isVisible()
 	assert ex.windowTitle() == "W1"
-	
+'''
