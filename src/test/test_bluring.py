@@ -21,7 +21,7 @@ from pytestqt.qt_compat import qt_api
 def test_basics(qtbot):
 	from blurring_qt import blur_window
 	ex = blur_window()
-	ex.initUI()
+	ex.init_UI()
 	ex.show()
 	assert ex.isVisible()
 	assert ex.windowTitle() == "lena.png"

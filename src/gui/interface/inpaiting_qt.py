@@ -5,7 +5,7 @@ from extra.median_filter import median_filter
 class inpait_window(general_window):
 	def __init__(self, parent=None):	
 		general_window.__init__(self, load_extra=lambda x: self.load_extra_now())
-		self.method = inpaiting.inpait(self.image)
+		self.method = inpaiting.inpaint(self.image)
 		self.input_image = self.method.get_data().copy()
 
 	def load_extra_now(self):
