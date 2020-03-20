@@ -1,7 +1,7 @@
-import image_handler
+from engine import image_handler
 import numpy as np
-import poisson
-import boundary
+from engine import poisson
+from engine import boundary
 
 class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
     def __init__(self, path, color=True):

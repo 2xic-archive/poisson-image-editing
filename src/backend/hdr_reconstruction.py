@@ -1,7 +1,7 @@
 # TODO : http://www.pauldebevec.com/Research/HDR/debevec-siggraph97.pdf
-import image_handler
-import poisson
-import boundary
+from engine import image_handler
+from engine import poisson
+from engine import boundary
 import numpy as np
 from PIL import Image
 

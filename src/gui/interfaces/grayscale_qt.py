@@ -1,5 +1,5 @@
-import grayscale
-from general_window import *
+from backend import grayscale
+from gui.general_window import *
 
 
 class grayscale_window(general_window):

@@ -1,11 +1,24 @@
-from main import *
-from interface import *
+from gui.interface import interface_class
+from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import QTimer
+import numpy as np
+import os
 
+from PIL import Image
+from PyQt5.QtWidgets import QApplication, QFileDialog
 
-class general_window(App, interface):
+def get_path():
+    dir_path = os.path.dirname(os.path.realpath(__file__)) + "/"
+    return dir_path
+
+from gui.app_data import *
+#print(interface_class)
+
+class general_window(interface_class):
     def __init__(self, pixmap_converter=None, load_extra=None):
-        App.__init__(self)
-        interface.__init__(self)
+#        App.__init__(self)
+        interface_class.__init__(self)
         self.pixmap_converter = pixmap_converter
         self.load_extra = load_extra
 

@@ -1,6 +1,6 @@
-import blurring
-from general_window import *
-
+#import .blurring
+from gui.general_window import *
+from backend import blurring
 
 class blur_window(general_window):
     def __init__(self, parent=None):

@@ -1,5 +1,5 @@
-import hdr_reconstruction
-from general_window import *
+from backend import hdr_reconstruction
+from gui.general_window import *
 
 class hdr_window(general_window):
     def __init__(self, parent=None):

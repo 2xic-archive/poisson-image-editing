@@ -1,12 +1,7 @@
 import os
-import image_handler
-import poisson
-
-
-def get_path(file):
-    dir_path = os.path.dirname(os.path.realpath(file)) + "/"
-    return dir_path
-
+from engine import image_handler
+from engine import poisson
+from gui.general import get_path
 
 class matting(image_handler.ImageHandler, poisson.poisson):
     def __init__(self, target_path="./files/test_images/target.png", source_path="./files/test_images/source.png",

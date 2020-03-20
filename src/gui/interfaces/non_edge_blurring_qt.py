@@ -1,5 +1,5 @@
-import non_edge_blurring
-from general_window import *
+from backend import non_edge_blurring
+from gui.general_window import *
 
 
 class non_edge_blurring_window(general_window):
