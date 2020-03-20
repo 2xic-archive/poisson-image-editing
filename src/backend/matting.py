@@ -2,17 +2,24 @@ import image_handler
 import poisson
 import numpy as np
 
-class matting(image_handler.ImageHandler, poisson.poisson):
-	def __init__(self, path, color=True):
-		path = "./files/test_images/target.png"
-		source = "./files/test_images/source.png"
+import os
+def get_path(file):
+	dir_path = os.path.dirname(os.path.realpath(file)) + "/"
+	return dir_path
 
-		image_handler.ImageHandler.__init__(self, path, color)
+class matting(image_handler.ImageHandler, poisson.poisson):
+	def __init__(self, target_path="./files/test_images/target.png", source_path="./files/test_images/source.png", color=True):
+#		path = "./files/test_images/target.png"
+#		source = "./files/test_images/source.png"
+		target_path = get_path(__file__)  + "../files/test_images/target.png"
+		source_path = get_path(__file__)  + "../files/test_images/source.png"
+
+		image_handler.ImageHandler.__init__(self, target_path, color)
 		poisson.poisson.__init__(self)
 		self.alpha = 0.2
 
 		# the bird
-		self.source = image_handler.ImageHandler(source, color)
+		self.source = image_handler.ImageHandler(source_path, color)
 		self.target = self.data.copy()
 
 		# NOTE : If this is wide the effect will go badly (I tried without having this set and you 

@@ -4,7 +4,7 @@ import numpy as np
 from inpaiting import *
 
 class demosaic(image_handler.ImageHandler, poisson.poisson):
-	def __init__(self, path, color=False):
+	def __init__(self, path, color=True):
 		image_handler.ImageHandler.__init__(self, path, color)
 		poisson.poisson.__init__(self)
 		self.alpha = 0.25

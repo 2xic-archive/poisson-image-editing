@@ -16,9 +16,12 @@ from general import pil2pixmap
 from PIL import Image
 from PyQt5.QtWidgets import QApplication, QFileDialog, QWidget
 
+def get_path():
+	dir_path = os.path.dirname(os.path.realpath(__file__)) + "/"
+	return dir_path
 
 class App(QMainWindow):
-	def __init__(self, parrent=None, image='./files/test_images/lena.png'):
+	def __init__(self, parrent=None, image=get_path() + './files/test_images/lena.png'):
 		super().__init__()
 		self.image = image
 		self.title = os.path.basename(self.image)
@@ -54,7 +57,7 @@ class App(QMainWindow):
 		if (grayscale_window.__file__ not in INFILE):
 			self.WINDOWS["Grayscale"] = grayscale_window.grayscale_window()
 		if (anonymizing_window.__file__ not in INFILE):
-			self.WINDOWS["Anoymousing"] = anonymizing_window.anonymous_window()
+			self.WINDOWS["Anoymousing"] = anonymizing_window.anonymizing_window()
 		return self.WINDOWS
 
 	#	https://stackoverflow.com/questions/20243637/pyqt4-center-window-on-active-screen

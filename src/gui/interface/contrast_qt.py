@@ -5,7 +5,7 @@ from extra.local_adaptive_histogram import *
 class contrast_window(general_window):
 	def __init__(self, parent=None):	
 		general_window.__init__(self, load_extra=lambda x: self.load_extra_now())
-		self.image = '../test_images/contrast.jpg'
+		self.image = get_path(__file__) + '../../files/test_images/contrast.jpg'
 		self.method = contrasting.contrast(self.image)
 		self.input_image = self.method.get_data().copy()
 		self.height = 0
@@ -28,7 +28,7 @@ class contrast_window(general_window):
 		self.update_geometry(self.pixmap.width(), 30, x=self.PADDING, y=self.action_button.pos().y())			
 
 	def update_image_histogram(self):
-		self.extra_label.setPixmap(pil2pixmap(Image.fromarray(255 * contrast_enhancment(self.input_image))))
+		self.extra_label.setPixmap(pil2pixmap(Image.fromarray(255 * contrast_enhancement(self.input_image))))
 
 	def show_extra(self):
 		self.setGeometry(0, 0 , self.pixmap.width() + self.PADDING, self.heigth)
