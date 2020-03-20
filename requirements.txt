@@ -1,3 +1,5 @@
 Pillow
 numpy
 PyQt5
+opencv-python
+scipy

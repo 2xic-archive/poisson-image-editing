@@ -3,6 +3,10 @@ import numpy as np
 import unittest
 import blurring
 
+from pyvirtualdisplay import Display
+display = Display(visible=0, size=(1366, 768))
+display.start()
+
 class test_blur(unittest.TestCase):
 	def test_fit(self):
 		path = os.path.dirname(os.path.abspath(__file__))
@@ -11,20 +15,13 @@ class test_blur(unittest.TestCase):
 		blur_object.fit(1)
 		self.assertFalse(np.all(old_image == blur_object))
 
-'''
 from pytestqt import qt_compat
 from pytestqt.qt_compat import qt_api
 
 def test_basics(qtbot):
-#	assert qt_api.QApplication.instance() is not None
-#	widget = qt_api.QWidget()
-#	qtbot.addWidget(widget)
-#	widget.setWindowTitle("W1")
-#	widget.show()
 	from blurring_qt import blur_window
 	ex = blur_window()
 	ex.initUI()
 	ex.show()
 	assert ex.isVisible()
-	assert ex.windowTitle() == "W1"
-'''
+	assert ex.windowTitle() == "lena.png"
