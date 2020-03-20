@@ -34,4 +34,3 @@ class contrast_window(general_window):
 	def show_extra(self):
 		self.setGeometry(0, 0 , self.pixmap.width() + self.PADDING, self.heigth)
 		self.center()
-
