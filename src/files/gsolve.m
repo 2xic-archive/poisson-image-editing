@@ -21,16 +21,26 @@ for i=1:size(Z,1)
         k=k+1;
 	end 
 end
-disp(b);
-
+%disp(b);
+disp("real index")
+disp(k)
 A(k,129) = 1;
 k=k+1;
 
 for i=1:n-2
-	A(k,i)=l*w(i+1); A(k,i+1)=-2*l*w(i+1); A(k,i+2)=l*w(i+1); k=k+1;
+	A(k,i)=l*w(i+1);
+    A(k,i+1)=-2*l*w(i+1);
+    A(k,i+2)=l*w(i+1);
+    k=k+1;
 end
+writematrix(Z,'z_tab.txt','Delimiter','tab')
+
+writematrix(A,'a_tab.txt','Delimiter','tab')
+writematrix(b,'b_tab.txt','Delimiter','tab')
 
 x = A\b;
-
+%disp("abro")
+%disp(A)
+%disp(x)
 g = x(1:n);
 lE = x(n+1:size(x,1));
