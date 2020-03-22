@@ -39,7 +39,8 @@ class hdr_handler:
 		]
 		for i in range(len(self.images)):
 			self.images[i].data *= 255
-			self.images[i].data = np.ceil(self.images[i].data)
+#			self.images[i].data
+			self.images[i].data = self.images[i].data.astype(np.uint8) #np.ceil(self.images[i].data)
 #			assert(1 < self.images[i].data.max())
 
 		# make sure we have all images in the correct interval between 0 and 255
@@ -83,6 +84,9 @@ class hdr_handler:
 			#	print(Z.shape)
 			#	print(self.get_pixel(image.data, sample_space).shape)
 				Z[:, index, channel] = self.get_pixel(image.data, sample_space)#.reshape()
+		import scipy.io
+	#	scipy.io.savemat('./files/Z.mat', dict(Z=Z))
+	#	exit(0)
 		return Z
 
 	def get_radiance(self):
@@ -90,6 +94,7 @@ class hdr_handler:
 		for channel in range(3):
 			g, lE =  self.gsolve(self.Z[:, :, channel])
 			self.radiance[:, channel] = g[:]
+
 		return self.radiance
 
 	def gsolve(self, Z):
@@ -135,8 +140,11 @@ class hdr_handler:
 #		x = matlab_mdivide(A,b)[-1]
 #		print(A.shape)
 #		print(b.shape)
+
 		from scipy.optimize import nnls
 		x = (nnls(A, b[:, 0]))[0]
+
+
 #		print(x.shape)
 	#	exit(0)
 #		print(x)
@@ -151,8 +159,31 @@ class hdr_handler:
 		return self.images[j][i]
 	'''
 
-	def get_radiance(self):
-		pass
+	def look_up_pixel(self, radiance, image):
+		out_image = np.zeros((image.shape))
+		for i in range(image.shape[0]):
+			for j in range(image.shape[1]):
+				out_image[i, j] = radiance[int(image[i, j]) - 1]
+		return out_image
+	'''
+	Equation 6 from the paper
+	'''
+	def get_radiance_log(self, radiance):
+		x = np.ones(self.images[0].data.shape)
+		y = np.zeros(self.images[0].data.shape)
+
+		for index, i in enumerate(self.images):
+			g = i.data.copy()
+			for rgb in range(3):
+				g[:, :, rgb] = self.look_up_pixel(radiance[:, rgb], g[:, :, rgb])
+			g -= self.B[index]
+			f =  np.vectorize(weigth_function)
+			wi = f(g.copy())
+			x += wi * g
+			y += wi
+#		print(np.max(x/y))
+		rad = (x/y)
+		return rad #(x/y).clip(0, 255)
 
 	def get_shutter_speed(self, j):
 		#	From matlab: 
