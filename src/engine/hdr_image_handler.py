@@ -3,6 +3,7 @@ import numpy as np
 from engine import image_handler
 from itertools import combinations
 
+# NOTE : THIS DOES NOT SEEM TO WORK 
 #https://stackoverflow.com/questions/33559946/numpy-vs-mldivide-matlab-operator
 def matlab_mdivide(A, b):
 	num_vars = A.shape[1]
@@ -19,7 +20,7 @@ def matlab_mdivide(A, b):
 				print(sol)
 			except np.linalg.LinAlgError:     
 				pass                    # picked bad variables, can't solve
-		print(sol.shape, num_vars)
+	#	print(sol.shape, num_vars)
 	return sol
 
 # as defined in equation 3
@@ -87,10 +88,8 @@ class hdr_handler:
 	def get_radiance(self):
 		self.radiance = np.zeros((255, 3))
 		for channel in range(3):
-			#print()
 			g, lE =  self.gsolve(self.Z[:, :, channel])
-			self.radiance[:, channel] = g[:, 0]
-	#		print(lE)
+			self.radiance[:, channel] = g[:]
 		return self.radiance
 
 	def gsolve(self, Z):
@@ -104,23 +103,20 @@ class hdr_handler:
 	#	print(Z.shape[0] * Z.shape[1] )
 	#	print(A.shape)
 	#	exit(0)
-		k = 0
+		k = 1
 		for i in range(Z.shape[0]):
 			for j in range(Z.shape[1]):
 				Z_ij = int(Z[i, j])
 				w_ij = weigth_function(Z_ij + 1)
 				A[k, Z_ij + 1] = w_ij
 				A[k, n + 1] = -w_ij
-#				if( self.B[j] == 0):
-#					raise Exception("oh no")
-				b[k] = w_ij * self.B[j]#, j]
+
+				b[k, 0] = w_ij * self.B[j]
 				k += 1
-#		print(k)
-#		print(b.shape)
-#		exit(0)
+
 		A[k, 129] = 1
 		k += 1
-		for i in range(0, n -1 ):
+		for i in range(0, n -2 ):
 			A[k, i] = self.l * weigth_function(i + 1)
 			A[k, i + 1] = -2 * self.l * weigth_function(i + 1)
 			A[k, i + 2] = self.l * weigth_function(i + 1)
@@ -135,10 +131,14 @@ class hdr_handler:
 #		np.savetxt("filename_Z", Z, newline=" ")
 #		np.savetxt("filename_A", A, newline=" ")
 #		np.savetxt("filename_b", b, newline=" ")
-		
-		x= np.linalg.lstsq(A,b)[0]
-#		print(A)
-#		print(b)
+#		print(A[np.nonzero(A)].shape)
+#		x = matlab_mdivide(A,b)[-1]
+#		print(A.shape)
+#		print(b.shape)
+		from scipy.optimize import nnls
+		x = (nnls(A, b[:, 0]))[0]
+#		print(x.shape)
+	#	exit(0)
 #		print(x)
 #		exit(0)
 		g = x[1:n]
@@ -150,6 +150,9 @@ class hdr_handler:
 		# %  Z(i,j) is the pixel values of pixel location number i in image j
 		return self.images[j][i]
 	'''
+
+	def get_radiance(self):
+		pass
 
 	def get_shutter_speed(self, j):
 		#	From matlab: 

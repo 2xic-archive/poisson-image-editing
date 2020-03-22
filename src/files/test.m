@@ -33,7 +33,7 @@ Z = zeros(sample_size, length(image_path), 3);
 % gets the sample space
 for index = 1:length(image_path)
     for channel = 0:2
-    	disp(images{index}(sample_space + (channel) * xy))
+    %	disp(images{index}(sample_space + (channel) * xy))
         Z(:, index, channel+1) = images{index}(sample_space + (channel) * xy);
     end
 end
@@ -49,6 +49,10 @@ end
 figure
 plot(radiance(:, 1), 'r');
 title('R');
+
+figure
+plot(radiance(:, 2), 'g');
+title('g');
 
 
 
