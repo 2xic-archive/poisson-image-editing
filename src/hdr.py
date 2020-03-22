@@ -7,24 +7,34 @@ x = hdr_image_handler.hdr_handler()
 
 radiance = x.get_radiance()
 
+#	Loading this works
+radiance = scipy.io.loadmat("./files/matlab_radiance.mat")["radiance"]
+
+
+
+#print(matlab["radiance"].shape)
+#exit(0)
 # Figure 7 in the paper
-PLOT_RESPONSE_FUNCTIONS = False
+'''
+PLOT_RESPONSE_FUNCTIONS = True
 if(PLOT_RESPONSE_FUNCTIONS):
 	for i in range(3):
 		plt.subplot(3, 1, i + 1)
 		plt.plot(radiance[:, i])
 	plt.show()
 
-scipy.io.savemat('./files/rad.mat', dict(radiance=radiance))
-
 exit(0)
+'''
+
+#scipy.io.savemat('./files/rad.mat', dict(radiance=radiance))
+
+#exit(0)
 import numpy as np
 
 rad = x.get_radiance_log(radiance)
-plt.imshow(rad)
-plt.show()
-
-scipy.io.savemat('test.mat', dict(rad=rad))
+#plt.imshow(rad)
+#plt.show()
+#scipy.io.savemat('test.mat', dict(rad=rad))
 
 # normalize the image
 for i in range(3):

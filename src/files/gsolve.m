@@ -1,5 +1,5 @@
 % from http://www.pauldebevec.com/Research/HDR/debevec-siggraph97.pdf
-function [g] = gsolve(Z,B,l,w) 
+function [g] = gsolve(Z,B,l,w,index) 
 %disp(Z);
 
 n = 256;
@@ -27,8 +27,17 @@ for i=1:n-2
     k=k+1;
 end
 disp(nnz(A));
+%fname = sprintf('matlab_A_%d.mat',index);
+%save(fname, A)
+%fnameb = sprintf('matlab_b_%d.mat',index);
+%save(fnameb, b)
+save(['matlab_a ',num2str(index),'.mat'],'A');
+save(['matlab_b ',num2str(index),'.mat'],'b');
 
 x = A\b;
+
+save(['matlab_x ',num2str(index),'.mat'],'x');
+
 
 g = x(1:n);
 %lE = x(n+1:size(x,1));

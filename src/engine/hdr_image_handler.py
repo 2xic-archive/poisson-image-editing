@@ -2,6 +2,7 @@
 import numpy as np
 from engine import image_handler
 from itertools import combinations
+import scipy.io
 
 # NOTE : THIS DOES NOT SEEM TO WORK 
 #https://stackoverflow.com/questions/33559946/numpy-vs-mldivide-matlab-operator
@@ -40,7 +41,7 @@ class hdr_handler:
 		for i in range(len(self.images)):
 			self.images[i].data *= 255
 #			self.images[i].data
-			self.images[i].data = self.images[i].data.astype(np.uint8) #np.ceil(self.images[i].data)
+			self.images[i].data = self.images[i].data.astype(np.uint8).astype(np.float64) #np.ceil(self.images[i].data)
 #			assert(1 < self.images[i].data.max())
 
 		# make sure we have all images in the correct interval between 0 and 255
@@ -56,8 +57,10 @@ class hdr_handler:
 		self.pixel_area = self.images[0].data.shape
 		self.pixel_area = self.pixel_area[0] * self.pixel_area[1]
 		self.l = 100 # is lamdba, the constant that determines the amount of smoothness
+		
 	
-		self.Z = self.sample()
+		self.Z = scipy.io.loadmat("./files/Z.mat")["Z"]
+		#self.sample()
 
 	def get_pixel(self, image, sample):
 		results = np.zeros(sample.shape)
@@ -85,19 +88,19 @@ class hdr_handler:
 			#	print(self.get_pixel(image.data, sample_space).shape)
 				Z[:, index, channel] = self.get_pixel(image.data, sample_space)#.reshape()
 		import scipy.io
-	#	scipy.io.savemat('./files/Z.mat', dict(Z=Z))
-	#	exit(0)
+		scipy.io.savemat('./files/Z.mat', dict(Z=Z))
+		exit(0)
 		return Z
 
 	def get_radiance(self):
 		self.radiance = np.zeros((255, 3))
 		for channel in range(3):
-			g, lE =  self.gsolve(self.Z[:, :, channel])
+			g, lE =  self.gsolve(self.Z[:, :, channel], channel)
 			self.radiance[:, channel] = g[:]
 
 		return self.radiance
 
-	def gsolve(self, Z):
+	def gsolve(self, Z, index):
 		
 #		print(Z)
 #		exit(0)
@@ -140,15 +143,20 @@ class hdr_handler:
 #		x = matlab_mdivide(A,b)[-1]
 #		print(A.shape)
 #		print(b.shape)
-
+		
 		from scipy.optimize import nnls
+
+		a_matlab = scipy.io.loadmat("./files/matlab_a {}.mat".format(index + 1))["A"]	
+		b_matlab = scipy.io.loadmat("./files/matlab_b {}.mat".format(index + 1))["b"]	
+		x_matlab = scipy.io.loadmat("./files/matlab_x {}.mat".format(index + 1))["x"]	
+		print((b - b_matlab).sum())
+		print((A - a_matlab).sum())
+#		print(b_matlab)
 		x = (nnls(A, b[:, 0]))[0]
-
-
-#		print(x.shape)
-	#	exit(0)
-#		print(x)
+		print((x_matlab - x).sum())
+		exit(0)
 #		exit(0)
+
 		g = x[1:n]
 		lE = x[n+1:x.shape[0]]
 		return g, lE

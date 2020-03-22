@@ -33,18 +33,17 @@ sample_space = ceil(rand(1, sample_size)*xy);
 %for index = 1:length(image_path)
 %    for channel = 0:2
     %	disp(images{index}(sample_space + (channel) * xy))
-%        Z(:, index, channel+1) = images{index}(sample_space + (channel) * xy);
-%    end
+ %       Z(:, index, channel+1) = images{index}(sample_space + (channel) * xy);
+ %   end
 %end
 load('Z.mat')
 
 % gets the radiance form the gsolver
-%radiance = zeros(256, 3);
-%for channel = 1:3
-%    radiance(:, channel) = gsolve(Z(:,:,channel), B, l, @weigth);
-%end
-load('rad.mat')
-
+radiance = zeros(256, 3);
+for channel = 1:3
+    radiance(:, channel) = gsolve(Z(:,:,channel), B, l, @weigth, channel);
+end
+save 'matlab_radiance.mat' radiance 
 
 % do the same for the rest of the function, we only check one here as a test.
 figure
