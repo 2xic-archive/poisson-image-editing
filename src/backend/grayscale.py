@@ -24,9 +24,9 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		self.alpha = 0.25
 
 		self.avg = self.data.copy().mean(axis=2)
-		self.h = self.h()
+	#	self.h = self.h()
 		self.results = np.zeros((self.data.shape[:2]))
-		self.data = self.data.mean(axis=2)
+		#self.data = self.data.mean(axis=2)
 
 
 	def h(self):
@@ -35,30 +35,38 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 #		sx = ndimage.sobel(self.data, axis=0, mode='constant')
 #		sy = ndimage.sobel(self.data, axis=1, mode='constant')
 
-		g = np.sum(self.get_gradient(self.data) / np.sqrt(3))
+		g = np.sum(self.data_copy[:, :, i] for i in range(self.data_copy.shape[-1]))/np.sqrt(3)
 
-		rgb_gradient = np.sum(self.data[:, :, i] for i in range(self.data.shape[-1]))
+
+		#np.sum(self.get_gradient(self.data_copy) / np.sqrt(3))
+	#	return g
+		rgb_gradient = np.sum(self.data_copy[:, :, i] for i in range(self.data_copy.shape[-1]))
 		rgb_sx, rgb_sy = self.get_gradient(rgb_gradient) 
 
-		h = (rgb_sx + rgb_sy)
+		h = rgb_sx + rgb_sy
 		return h * g
-
 
 	def iteration(self):
 		"""
 		Does one iteration of the method.
 
 		"""
-		laplace = self.get_laplace()
-	#	laplace = laplace[:, :, 0] if (len(laplace.shape) == 3) else laplace
 
-	#	avg = self.data_copy.mean(axis=2)
+		"""
+			Reset the dimension on first round
+		"""
+		if(len(np.shape(self.data)) == 3):
+			self.data = self.data.mean(axis=2)
 
-		self.data[1:-1, 1:-1] += (laplace - self.h[1:-1, 1:-1]) * self.alpha
-		self.data = self.neumann(self.data).clip(0, 1)
+		h = self.h() 
+		laplace = self.get_laplace(self.data)
+
+		self.data[1:-1, 1:-1] += (laplace - h[1:-1, 1:-1]) * self.alpha
+		self.data = self.neumann(self.data)
+		self.data = self.data.clip(0, 1)
 
 
-	#
+
 	def fit(self, epochs):
 		"""
 		Makes multiple iterations of the method
