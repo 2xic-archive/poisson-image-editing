@@ -23,13 +23,21 @@ class non_edge_blurr(image_handler.ImageHandler, poisson.poisson, boundary.Bound
 		poisson.poisson.__init__(self)
 		boundary.Boundary.__init__(self)
 		self.alpha = 0.25
-		
+
+	def D(self, k=10):
+		fraction = 1 / \
+					1 + k + (self.get_gradient(self.data_copy)) ** 2
+		return fraction
+
 	def iteration(self):
 		"""
 		Does one iteration of the method.
 
 		"""
-		raise Exception("implement")
+		laplace = self.get_laplace()
+		self.data[1:-1, 1:-1] += self.alpha * (laplace * self.D()[1:-1, 1:-1])
+		self.data = self.neumann(self.data).clip(0,1)
+#		raise Exception("implement")
 		return self.data
 
 	def fit(self,epochs):
