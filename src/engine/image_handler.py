@@ -36,12 +36,19 @@ class ImageHandler:
     def reset(self):
         self.data = self.data_copy.copy()
 
-    def get_gradient(self, data=None):
+    def get_gradient_norm(self, data=None):
+        if(data is None):
+            data = self.data
+        #   https://stackoverflow.com/questions/38809852/can-i-use-numpy-gradient-function-with-images
+        gx, gy = self.get_gradient(data)
+        return np.sqrt(gx ** 2 + gy ** 2)
+
+    def get_gradient(self, data):
         if(data is None):
             data = self.data
         #   https://stackoverflow.com/questions/38809852/can-i-use-numpy-gradient-function-with-images
         gx, gy = np.gradient(data)
-        return np.sqrt(gx ** 2 + gy ** 2)
+        return gx, gy
 
     def covert_single_shape(self, data=None):
         """
