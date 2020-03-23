@@ -35,8 +35,8 @@ class non_edge_blurr(image_handler.ImageHandler, poisson.poisson, boundary.Bound
 
 		"""
 		laplace = self.get_laplace()
-		self.data[1:-1, 1:-1] += self.alpha * (laplace * self.D()[1:-1, 1:-1])
-		self.data = self.neumann(self.data).clip(0,1)
+		self.data[1:-1, 1:-1] += (self.alpha * (laplace * self.D()[1:-1, 1:-1])).clip(0,1)
+		self.data = self.neumann(self.data)
 #		raise Exception("implement")
 		return self.data
 
