@@ -26,21 +26,23 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		self.avg = self.data.copy().mean(axis=2)
 		self.h = self.h()
 		self.results = np.zeros((self.data.shape[:2]))
+		self.data = self.data.mean(axis=2)
+
 
 	def h(self):
-		# TODO : Remove need for scipy
-		from scipy import ndimage
-		sx = ndimage.sobel(self.data, axis=0, mode='constant')
-		sy = ndimage.sobel(self.data, axis=1, mode='constant')
+#		# TODO : Remove need for scipy
+#		from scipy import ndimage
+#		sx = ndimage.sobel(self.data, axis=0, mode='constant')
+#		sy = ndimage.sobel(self.data, axis=1, mode='constant')
 
-		g = np.sum(np.sqrt(sx ** 2 + sy ** 2) / np.sqrt(3))
+		g = np.sum(self.get_gradient(self.data) / np.sqrt(3))
 
-		rgb_gradient = np.sum(self.data[:, :, 0] for i in range(self.data.shape[-1]))
-		rgb_sx = ndimage.sobel(rgb_gradient, axis=0, mode='constant')
-		rgb_sy = ndimage.sobel(rgb_gradient, axis=1, mode='constant')
+		rgb_gradient = np.sum(self.data[:, :, i] for i in range(self.data.shape[-1]))
+		rgb_sx, rgb_sy = self.get_gradient(rgb_gradient) 
 
 		h = (rgb_sx + rgb_sy)
-		return h
+		return h * g
+
 
 	def iteration(self):
 		"""
@@ -48,12 +50,13 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 
 		"""
 		laplace = self.get_laplace()
-		laplace = laplace[:, :, 0] if (len(laplace.shape) == 3) else laplace
+	#	laplace = laplace[:, :, 0] if (len(laplace.shape) == 3) else laplace
 
-		self.results[1:-1, 1:-1] += (laplace[:, :] - self.h[1:-1, 1:-1]) * self.alpha
-		self.results = self.neumann(self.results)
+	#	avg = self.data_copy.mean(axis=2)
 
-		self.data = self.results.clip(0, 1)
+		self.data[1:-1, 1:-1] += (laplace - self.h[1:-1, 1:-1]) * self.alpha
+		self.data = self.neumann(self.data).clip(0, 1)
+
 
 	#
 	def fit(self, epochs):

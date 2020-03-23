@@ -4,6 +4,12 @@ from engine import image_handler
 from itertools import combinations
 import scipy.io
 
+
+"""
+TODO : I now see that multiple solutions to the problem is mentioned in the project description	*awkward* will try them out
+"""
+
+
 # NOTE : THIS DOES NOT SEEM TO WORK 
 #https://stackoverflow.com/questions/33559946/numpy-vs-mldivide-matlab-operator
 def matlab_mdivide(A, b):

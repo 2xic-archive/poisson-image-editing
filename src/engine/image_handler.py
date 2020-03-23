@@ -47,7 +47,7 @@ class ImageHandler:
         if(data is None):
             data = self.data
         #   https://stackoverflow.com/questions/38809852/can-i-use-numpy-gradient-function-with-images
-        gx, gy = np.gradient(data)
+        gx, gy = np.gradient(data, axis=[0, 1])
         return gx, gy
 
     def covert_single_shape(self, data=None):
