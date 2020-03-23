@@ -9,6 +9,8 @@ from gui.general import *
 from PIL import Image
 from gui import interface
 
+import time
+
 class App(QMainWindow):
     """
     Standard application interface
@@ -137,6 +139,10 @@ class App(QMainWindow):
         """
         self.setGeometry(0, 0, self.pixmap.width() + self.PADDING, self.height)
         self.center()
+
+    def sceenshot(self):
+        p =  self.grab()
+        p.save("{}.png".format(time.time()), 'png')
 
     @pyqtSlot()
     def reset_image_extra(self):

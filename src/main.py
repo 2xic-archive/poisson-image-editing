@@ -26,7 +26,9 @@ if __name__ == '__main__':
     from gui.interfaces.blurring_qt import blur_window
     app = QApplication(sys.argv)
     ex = blur_window()
+
     ex.init_UI()
-    ex.show()
-    sys.exit(app.exec_())
+    ex.sceenshot()
+#    ex.show()
+#    sys.exit(app.exec_())
     print("running")

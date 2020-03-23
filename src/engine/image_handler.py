@@ -88,7 +88,7 @@ class ImageHandler:
         return data
 
     def save(self, name):
-        im = Image.fromarray(np.uint8(self.data))
+        im = Image.fromarray(np.uint8(255 * self.data))
         im.save(name)
         return name
 
