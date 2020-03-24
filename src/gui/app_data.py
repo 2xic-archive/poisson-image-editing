@@ -112,6 +112,7 @@ class App(QMainWindow):
             self.epoch += 1
             self.total_epochs += 1
             self.epochs_change()
+            self.reset_button.setEnabled(True)
         else:
             self.reset_button.setEnabled(True)
             self.timer.stop()
@@ -162,3 +163,11 @@ class App(QMainWindow):
         self.epoch = 0
         self.timer.timeout.connect(self.update_image)
         self.timer.start(100)
+
+    def reset_image(self):
+        self.total_epochs = 0
+        self.reset_button.setEnabled(False)
+        self.method.reset()
+        self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))
+
+

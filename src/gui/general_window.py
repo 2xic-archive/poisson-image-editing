@@ -74,7 +74,7 @@ class general_window(interface_class):
         """
 		Showing the custom file button
 		"""
-        self.reset_button = self.add_button("Open", lambda x: QTimer.singleShot(100, lambda: self.show_file_dialog()),
+        self.open_button = self.add_button("Open", lambda x: QTimer.singleShot(100, lambda: self.show_file_dialog()),
                                             setEnabled=True)
         self.update_geometry(self.pixmap.width(), 30)
 

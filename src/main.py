@@ -28,7 +28,7 @@ if __name__ == '__main__':
     ex = blur_window()
 
     ex.init_UI()
-    ex.sceenshot()
-#    ex.show()
-#    sys.exit(app.exec_())
+#    ex.sceenshot()
+    ex.show()
+    sys.exit(app.exec_())
     print("running")
