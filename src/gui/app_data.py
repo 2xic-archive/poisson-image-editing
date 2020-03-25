@@ -1,5 +1,7 @@
+from typing import Union
+
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, QTimer
 from PyQt5.QtCore import QTimer
 import numpy as np
 import os
@@ -20,18 +22,21 @@ class App(QMainWindow):
     image : ndarray
         The image to open
     """
+    image: str
+    title: str
+    total_epochs: int
+    epoch: int
+
     def __init__(self, image=get_path(__file__) + '../files/test_images/lena.png'):
         super().__init__()
         self.image = image
         self.title = os.path.basename(self.image)
-        self.left = 0
-        self.top = 0
 
         self.epoch = 0
         self.total_epochs = 0
         self.timer = QTimer(self)
 
-    def get_avaible_windows(self, INFILE):
+    def get_available_windows(self, INFILE):
         """
         Get all the windows
 
@@ -40,6 +45,7 @@ class App(QMainWindow):
         INFILE : str
             Makes sure we don't reload the file recursively
         """
+
         import gui.interfaces.blurring_qt as blur_window
         import gui.interfaces.inpaiting_qt as inpait_window
         import gui.interfaces.contrast_qt as contrast_window
@@ -79,18 +85,18 @@ class App(QMainWindow):
         """
         Center the window
 
-        """       
-        frameGm = self.frameGeometry()
+        """
+        frame_geometry = self.frameGeometry()
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        centerPoint = QApplication.desktop().screenGeometry(screen).center()
-        frameGm.moveCenter(centerPoint)
-        self.move(frameGm.topLeft())
+        center = QApplication.desktop().screenGeometry(screen).center()
+        frame_geometry.moveCenter(center)
+        self.move(frame_geometry.topLeft())
 
     def epochs_change(self):
         """
         Updates the epoch label
         """
-        epochs = self.epochSlider.value()
+        epochs: int = self.epochSlider.value()
         self.epoch_label.setText("Epochs ({}) (Total {})".format(epochs, self.total_epochs))
 
     def mode_change(self, _):
@@ -123,10 +129,10 @@ class App(QMainWindow):
         """
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "",
+        file_name, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "",
                                                   "All Files (*);;JPEG (*.jpeg);;jpg (*.jpg);;png (*.png)",
                                                   options=options)
-        if fileName:
+        if file_name:
             """
             TODO : Add custom files
             Should not be 2 hard, however we have to figure how the image should be displayed as QT else will crash
@@ -141,8 +147,11 @@ class App(QMainWindow):
         self.setGeometry(0, 0, self.pixmap.width() + self.PADDING, self.height)
         self.center()
 
-    def sceenshot(self):
-        p =  self.grab()
+    def screenshot(self):
+        """
+        Takes a screenshot of the current QWindow
+        """
+        p = self.grab()
         p.save("{}.png".format(time.time()), 'png')
 
     @pyqtSlot()
@@ -169,5 +178,3 @@ class App(QMainWindow):
         self.reset_button.setEnabled(False)
         self.method.reset()
         self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))
-
-

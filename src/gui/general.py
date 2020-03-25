@@ -1,6 +1,7 @@
 from PyQt5.QtGui import QImage, QPixmap
 import os
 
+
 # from :
 #	https://stackoverflow.com/questions/28086613/pillow-pil-to-qimage-conversion-python-exe-has-stopped-working
 #	https://stackoverflow.com/questions/34697559/pil-image-to-qpixmap-conversion-issue
@@ -22,7 +23,8 @@ def pil2pixmap(input_image):
     pixmap = QPixmap.fromImage(qim)
     return pixmap
 
-def get_path(file):
+
+def get_path(file: str) -> str:
     """
     Get the path to current file
 

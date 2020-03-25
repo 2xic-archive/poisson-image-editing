@@ -109,7 +109,7 @@ class interface_class(App):
         """
         mode = QComboBox(self)
         mode.addItem("Change mode")
-        for keys in self.get_avaible_windows(__file__):
+        for keys in self.get_available_windows(__file__):
             mode.addItem(keys)
         mode.currentIndexChanged.connect(action)
 

@@ -25,8 +25,8 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		image_handler.ImageHandler.__init__(self, path, color)
 		poisson.poisson.__init__(self)
 		boundary.Boundary.__init__(self)
-		self.alpha = 0.25
-		self.lambda_size = 0
+		self.alpha: float = 0.25
+		self.lambda_size: float = 0
 
 	def set_lambda_size(self, lambda_size):
 		"""
@@ -37,7 +37,7 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		lambda_size : float
 			The lambda parameter
 		"""
-		self.lambda_size = lambda_size
+		self.lambda_size = "test"#lambda_size
 		
 	def iteration(self):
 		"""
