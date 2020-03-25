@@ -30,7 +30,6 @@ install:
 script:
   - python -m pytest --cov=./
   - coveralls
-  - cd src
   - mypy main.py ./gui/
 
 

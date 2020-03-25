@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt
 #from general import *
 from gui.app_data import *
 from gui.general import pil2pixmap
+from typing import Callable
 
 class screen_element:
     """
@@ -180,7 +181,7 @@ class interface_class(App):
         self.screen_elements.append(screen_element(label))
         return label
 
-    def add_slider(self, text, action):
+    def add_slider(self, text, action: Callable):
         """
         Creates a QSlider 
 
@@ -188,7 +189,8 @@ class interface_class(App):
         ----------
         text : str
             set the QSlider tool tip
-
+        action : lambda
+            set the button action
         Returns
         -------
         QSlider

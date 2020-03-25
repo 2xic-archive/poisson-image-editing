@@ -1,5 +1,5 @@
 from engine import poisson, boundary, image_handler
-#engine.image_handler import ImageHandler
+from engine.image_handler import ImageHandler
 #import poisson
 #import boundary
 import numpy as np
@@ -27,6 +27,7 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		boundary.Boundary.__init__(self)
 		self.alpha: float = 0.25
 		self.lambda_size: float = 0
+		#self.data_copy = self.data.copy()
 
 	def set_lambda_size(self, lambda_size):
 		"""

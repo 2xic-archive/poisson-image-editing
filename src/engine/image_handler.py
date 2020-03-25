@@ -32,6 +32,7 @@ class ImageHandler:
 
     def set_data(self, data):
         self.data = data
+        self.data_copy = self.data.copy()
 
     def reset(self):
         self.data = self.data_copy.copy()

@@ -3,6 +3,7 @@ from engine import image_handler, poisson
 from backend import blurring
 
 from gui.general import get_path
+from engine.image_handler import ImageHandler
 
 
 def get_mask(path):
