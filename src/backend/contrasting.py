@@ -3,7 +3,7 @@ from engine import image_handler
 import numpy as np
 
 
-class contrast(image_handler.ImageHandler, poisson.poisson):
+class Contrast(image_handler.ImageHandler, poisson.poisson):
 	"""
 	This class describes a contrast image.
 
@@ -23,7 +23,7 @@ class contrast(image_handler.ImageHandler, poisson.poisson):
 		self.k = 1
 		self.u0 = np.copy(self.data)
 
-	def iteration(self):
+	def iteration(self) -> None:
 		"""
 		Does one iteration of the method.
 

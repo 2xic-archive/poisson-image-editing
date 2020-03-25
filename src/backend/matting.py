@@ -1,7 +1,9 @@
-import os
+from __future__ import annotations
+
 from engine import image_handler
 from engine import poisson
 from gui.general import get_path
+
 
 class matting(image_handler.ImageHandler, poisson.poisson):
 	"""
@@ -41,7 +43,7 @@ class matting(image_handler.ImageHandler, poisson.poisson):
 		)
 		print(self.area)
 
-	def iteration(self):
+	def iteration(self) -> None:
 		"""
 		Does one iteration of the method.
 
@@ -58,7 +60,7 @@ class matting(image_handler.ImageHandler, poisson.poisson):
 		self.data[self.area[0][0]:self.area[1][0],
 		self.area[0][1]:self.area[1][1]] = working_area.clip(0, 1)
 
-	def fit(self, epochs=1):
+	def fit(self, epochs=1) -> matting:
 		"""
 		Makes multiple iterations of the method
 

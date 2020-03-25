@@ -1,4 +1,4 @@
-import backend
+from backend import  grayscale
 from gui.general_window import *
 
 
@@ -8,4 +8,4 @@ class grayscale_window(general_window):
 	"""
 	def __init__(self, parent=None):
 		general_window.__init__(self, (lambda x: Image.fromarray((x * 255).astype(np.uint8))))
-		self.method = backend.grayscale.grayscale(self.image)
+		self.method = grayscale.grayscale(self.image)

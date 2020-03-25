@@ -9,7 +9,7 @@ class demonsaic_window(general_window):
 	def __init__(self, parent=None):
 		general_window.__init__(self, (lambda x: Image.fromarray((x * 255).astype(np.uint8))),
 								load_extra=lambda x: self.load_extra_now())
-		self.method = demosaicing.demosaic(self.image, color=True)
+		self.method = demosaicing.Demosaic(self.image, color=True)
 		self.input_image = self.method.get_data().copy()
 
 	def load_extra_now(self):

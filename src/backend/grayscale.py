@@ -3,8 +3,9 @@ import numpy as np
 from engine import poisson
 from engine import boundary
 
+
 class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
-	"""
+    """
 	This class describes a grayscaled image.
 
 	This contains all the functions needed to make a color image into a grayscaled image over multiple iterations
@@ -16,59 +17,49 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 	color : bool
 		if the image should be shown with colors
 	"""
-	def __init__(self, path, color=True):
-		image_handler.ImageHandler.__init__(self, path, color)
-		poisson.poisson.__init__(self)
-		boundary.Boundary.__init__(self)
 
-		self.alpha = 0.25
+    def __init__(self, path, color=True):
+        image_handler.ImageHandler.__init__(self, path, color)
+        poisson.poisson.__init__(self)
+        boundary.Boundary.__init__(self)
 
-		self.avg = self.data.copy().mean(axis=2)
-	#	self.h = self.h()
-		self.results = np.zeros((self.data.shape[:2]))
-		#self.data = self.data.mean(axis=2)
+        self.alpha = 0.25
 
+        self.avg = self.data.copy().mean(axis=2)
+        self.results = np.zeros((self.data.shape[:2]))
 
-	def h(self):
-#		# TODO : Remove need for scipy
-#		from scipy import ndimage
-#		sx = ndimage.sobel(self.data, axis=0, mode='constant')
-#		sy = ndimage.sobel(self.data, axis=1, mode='constant')
+    # self.data = self.data.mean(axis=2)
 
-		g = np.sum(self.data_copy[:, :, i] for i in range(self.data_copy.shape[-1]))/np.sqrt(3)
+    def h(self):
+        g = np.sum(self.data_copy[:, :, i] for i in range(self.data_copy.shape[-1])) / np.sqrt(3)
 
+        rgb_gradient = np.sum(self.data_copy[:, :, i] for i in range(self.data_copy.shape[-1]))
+        rgb_sx, rgb_sy = self.get_gradient(rgb_gradient)
 
-		#np.sum(self.get_gradient(self.data_copy) / np.sqrt(3))
-	#	return g
-		rgb_gradient = np.sum(self.data_copy[:, :, i] for i in range(self.data_copy.shape[-1]))
-		rgb_sx, rgb_sy = self.get_gradient(rgb_gradient) 
+        h = rgb_sx + rgb_sy
+        return h * g
 
-		h = rgb_sx + rgb_sy
-		return h * g
-
-	def iteration(self):
-		"""
+    def iteration(self):
+        """
 		Does one iteration of the method.
 
 		"""
 
-		"""
+        """
 			Reset the dimension on first round
 		"""
-		if(len(np.shape(self.data)) == 3):
-			self.data = self.data.mean(axis=2)
+        if len(np.shape(self.data)) == 3:
+            self.data = self.data.mean(axis=2)
 
-		h = self.h() 
-		laplace = self.get_laplace(self.data)
+        h = self.h()
+        laplace = self.get_laplace(self.data)
 
-		self.data[1:-1, 1:-1] += (laplace - h[1:-1, 1:-1]) * self.alpha
-		self.data = self.neumann(self.data)
-		self.data = self.data.clip(0, 1)
+        self.data[1:-1, 1:-1] += (laplace - h[1:-1, 1:-1]) * self.alpha
+        self.data = self.neumann(self.data)
+        self.data = self.data.clip(0, 1)
 
-
-
-	def fit(self, epochs):
-		"""
+    def fit(self, epochs):
+        """
 		Makes multiple iterations of the method
 
 		Calls iteration as many times as spesifed in by the parameter epochs
@@ -78,6 +69,6 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		epochs : int
 			The iteration count
 		"""
-		for i in range(epochs):
-			self.iteration()
-		return self
+        for _ in range(epochs):
+            self.iteration()
+        return self

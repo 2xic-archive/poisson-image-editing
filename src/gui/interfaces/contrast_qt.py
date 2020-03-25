@@ -10,7 +10,7 @@ class contrast_window(general_window):
 	def __init__(self, parent=None):
 		general_window.__init__(self, load_extra=lambda x: self.load_extra_now())
 		self.image = get_path(__file__) + '../../files/test_images/contrast.jpg'
-		self.method = contrasting.contrast(self.image)
+		self.method = contrasting.Contrast(self.image)
 		self.input_image = self.method.get_data().copy()
 		self.height = 0
 

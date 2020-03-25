@@ -1,11 +1,12 @@
 import numpy as np
+from nptyping import Array
 
 """
 From the book "Computer Vision - Algorithms and Applications" by Springer
 """
 
 
-def intensity(img):
+def intensity(img) -> Array:
     """
     Gets the normalized image intensity
 
@@ -23,9 +24,9 @@ def intensity(img):
     return intensity_scale / (img.shape[0] * img.shape[1] * img.shape[2])
 
 
-def contrast_enhancement(img):
+def contrast_enhancement(img: Array) -> Array:
     """
-    Preform a local adpative histogram on input
+    Preform a local adaptive histogram on input
 
     Parameters
     ----------

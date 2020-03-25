@@ -1,12 +1,4 @@
 from engine import poisson, boundary, image_handler
-from engine.image_handler import ImageHandler
-#import poisson
-#import boundary
-import numpy as np
-from PIL import Image
-
-
-#   TODO: Add support for "data attachment"
 
 class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 	"""
@@ -29,7 +21,7 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		self.lambda_size: float = 0
 		#self.data_copy = self.data.copy()
 
-	def set_lambda_size(self, lambda_size):
+	def set_lambda_size(self, lambda_size) -> None:
 		"""
 		Sets the lambda fro data attachment
 
@@ -38,7 +30,7 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		lambda_size : float
 			The lambda parameter
 		"""
-		self.lambda_size = "test"#lambda_size
+		self.lambda_size = lambda_size
 		
 	def iteration(self):
 		"""
