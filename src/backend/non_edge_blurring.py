@@ -4,6 +4,7 @@ from engine import poisson
 from engine import boundary
 import numpy as np
 from PIL import Image
+from nptyping import Array
 
 
 class non_edge_blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
@@ -26,12 +27,12 @@ class non_edge_blur(image_handler.ImageHandler, poisson.poisson, boundary.Bounda
         boundary.Boundary.__init__(self)
         self.alpha = 0.25
 
-    def D(self, k=25):
+    def D(self, k=25) -> Array:
         fraction = 1 / \
                    1 + k * (self.get_gradient_norm(self.data_copy)) ** 2
         return fraction
 
-    def iteration(self):
+    def iteration(self) -> Array: 
         """
 		Does one iteration of the method.
 
@@ -49,7 +50,7 @@ class non_edge_blur(image_handler.ImageHandler, poisson.poisson, boundary.Bounda
 
         return self.data
 
-    def fit(self, epochs):
+    def fit(self, epochs) -> non_edge_blur:
         """
 		Makes multiple iterations of the method
 

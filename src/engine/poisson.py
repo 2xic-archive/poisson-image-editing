@@ -20,8 +20,8 @@ class poisson:
             The data to get the laplace from
         """
         if data is None:
-            raise Exception("Data not set")
-#            data = self.data
+#            raise Exception("Data not set")
+            data = self.data
         laplace = data[0:-2, 1:-1] \
                   + data[2:, 1:-1] \
                   + data[1:-1, 0:-2] \

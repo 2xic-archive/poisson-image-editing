@@ -4,7 +4,7 @@ from engine import poisson
 from engine import boundary
 import numpy as np
 from PIL import Image
-
+from nptyping import Array
 
 class hdr_reconstruction(image_handler.ImageHandler, poisson.poisson):
 	"""
@@ -24,7 +24,7 @@ class hdr_reconstruction(image_handler.ImageHandler, poisson.poisson):
 		poisson.poisson.__init__(self)
 		self.alpha = 0.25
 		
-	def iteration(self):
+	def iteration(self) -> Array:
 		"""
 		Does one iteration of the method.
 
@@ -32,7 +32,7 @@ class hdr_reconstruction(image_handler.ImageHandler, poisson.poisson):
 		raise Exception("implement")
 		return self.data
 
-	def fit(self,epochs):
+	def fit(self,epochs) -> hdr_reconstruction:
 		"""
 		Makes multiple iterations of the method
 

@@ -19,8 +19,8 @@ class Boundary:
             The data to preform the boundary on
         """
         if data is None:
-            raise Exception("Data not set")
-#            data = self.data
+#            raise Exception("Data not set")
+            data = self.data
         # Neumann randbetingelse
         data[:, 0] = data[:, 1]
         data[:, -1] = data[:, -2]

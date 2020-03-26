@@ -2,7 +2,7 @@ from engine import image_handler
 import numpy as np
 from engine import poisson
 from engine import boundary
-
+from nptyping import Array
 
 class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
     """
@@ -30,7 +30,7 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 
     # self.data = self.data.mean(axis=2)
 
-    def h(self):
+    def h(self) -> Array:
         g = np.sum(self.data_copy[:, :, i] for i in range(self.data_copy.shape[-1])) / np.sqrt(3)
 
         rgb_gradient = np.sum(self.data_copy[:, :, i] for i in range(self.data_copy.shape[-1]))
@@ -39,7 +39,7 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
         h = rgb_sx + rgb_sy
         return h * g
 
-    def iteration(self):
+    def iteration(self) -> None: 
         """
 		Does one iteration of the method.
 
@@ -58,7 +58,7 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
         self.data = self.neumann(self.data)
         self.data = self.data.clip(0, 1)
 
-    def fit(self, epochs):
+    def fit(self, epochs) -> grayscale:
         """
 		Makes multiple iterations of the method
 

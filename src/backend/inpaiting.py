@@ -1,7 +1,7 @@
 from engine import image_handler
 import numpy as np
 from engine import poisson
-
+from nptyping import Array
 
 class inpaint(image_handler.ImageHandler, poisson.poisson):
     """
@@ -43,7 +43,7 @@ class inpaint(image_handler.ImageHandler, poisson.poisson):
 		"""
         self.data = data
 
-    def set_mask(self, mask):
+    def set_mask(self, mask) -> None:
         """
 		Sets the mask used by the class
 
@@ -54,7 +54,7 @@ class inpaint(image_handler.ImageHandler, poisson.poisson):
 		"""
         self.mask = mask
 
-    def set_orignal(self, original):
+    def set_orignal(self, original) -> None:
         """
 		Sets the original verison of the data used by the class
 
@@ -65,7 +65,7 @@ class inpaint(image_handler.ImageHandler, poisson.poisson):
 		"""
         self.original_data = original
 
-    def destroy_information(self, strength=2):
+    def destroy_information(self, strength=2) -> Array:
         """
 		Destroys parts of the image
 
@@ -85,7 +85,7 @@ class inpaint(image_handler.ImageHandler, poisson.poisson):
         self.original_data = np.copy(self.data)
         return mask
 
-    def iteration(self):
+    def iteration(self) -> None:
         """
 		Does one iteration of the method.
 
@@ -105,7 +105,7 @@ class inpaint(image_handler.ImageHandler, poisson.poisson):
         else:
             self.data = (self.data * (self.mask)) + abs(self.original_data * (1 - self.mask))
 
-    def fit(self, original=None, data=None, mask=None, epochs:int=1):
+    def fit(self, original=None, data=None, mask=None, epochs:int=1) -> Array:
         """
 		Makes multiple iterations of the method
 
