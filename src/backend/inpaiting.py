@@ -30,7 +30,8 @@ class inpaint(image_handler.ImageHandler, poisson.poisson):
         self.mode = "inpait"
 
     def set_demosaicing(self) -> None:
-        self.mode = "demosaicing"
+        #self.mode = "demosaicing"
+        pass
 
     def set_data(self, data) -> None:
         """

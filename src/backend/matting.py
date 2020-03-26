@@ -22,8 +22,8 @@ class matting(image_handler.ImageHandler, poisson.poisson):
 	"""
 	def __init__(self, target_path="./files/test_images/target.png", source_path="./files/test_images/source.png",
 				 color=True):
-		target_path = get_path(__file__) + "../files/test_images/target.png"
-		source_path = get_path(__file__) + "../files/test_images/source.png"
+		target_path = "./files/test_images/target.png"
+		source_path = "./files/test_images/source.png"
 
 		image_handler.ImageHandler.__init__(self, target_path, color)
 		poisson.poisson.__init__(self)
@@ -42,6 +42,12 @@ class matting(image_handler.ImageHandler, poisson.poisson):
 			(250, 130),
 		)
 		print(self.area)
+
+	def reset_full(self) -> None:
+		self.source.reset()# = image_handler.ImageHandler(self.source_path, color)
+		self.reset()
+#		self.target = self.data.copy()
+
 
 	def iteration(self) -> None:
 		"""

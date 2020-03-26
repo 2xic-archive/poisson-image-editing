@@ -129,6 +129,10 @@ class ImageHandler:
         im.save(name)
         return name
 
+    def show(self):
+        Image.fromarray(np.uint8(255 * self.data)).show()
+      #  Image.fromarray((255 * self.data)).show()
+
     def get_data(self):
         """
 		[TODO:summary]

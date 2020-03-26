@@ -1,3 +1,4 @@
+from __future__ import annotations
 # TODO : http://www.pauldebevec.com/Research/HDR/debevec-siggraph97.pdf
 from engine import image_handler
 from engine import poisson
