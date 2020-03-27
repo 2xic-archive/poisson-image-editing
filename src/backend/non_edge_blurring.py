@@ -27,9 +27,9 @@ class non_edge_blur(image_handler.ImageHandler, poisson.poisson, boundary.Bounda
         boundary.Boundary.__init__(self)
         self.alpha = 0.25
 
-    def D(self, k=25) -> Array:
+    def D(self, k=100) -> Array:
         fraction = 1 / \
-                   1 + k * (self.get_gradient_norm(self.data_copy)) ** 2
+                   (1 + k * (self.get_gradient_norm(self.data_copy)) ** 2)
         return fraction
 
     def iteration(self) -> Array: 
@@ -39,10 +39,12 @@ class non_edge_blur(image_handler.ImageHandler, poisson.poisson, boundary.Bounda
 		"""
         laplace = self.get_laplace()
 
-        d_x, d_y = self.get_gradient(self.D())
-        combined = (d_x + d_y)[1:-1, 1:-1]
+    #    print("D {}", self.D().max())
 
+        d_x, d_y = self.get_gradient(self.D())
         data_x, data_y = self.get_gradient(self.data)
+        combined = (d_x  + d_y )[1:-1, 1:-1]
+
         combined *= (data_x + data_y)[1:-1, 1:-1]
 
         self.data[1:-1, 1:-1] += (self.alpha * (laplace * self.D()[1:-1, 1:-1]) + combined).clip(0, 1)
