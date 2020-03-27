@@ -20,6 +20,8 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 	"""
 
     def __init__(self, path, color=True):
+        assert color == True, "we can only grayscale images that have color"
+
         image_handler.ImageHandler.__init__(self, path, color)
         poisson.poisson.__init__(self)
         boundary.Boundary.__init__(self)

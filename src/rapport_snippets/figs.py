@@ -1,4 +1,5 @@
 import os
+import sys
 
 """
 	Makes it easy to export results to latex 
@@ -73,13 +74,12 @@ def compile_doc(method, alpha_epochs, path, path_latex="", extra=lambda x: x, re
 			extra(method)
 			FILE_PATH = "alpha_{}_epoch_{}.png".format(alpha, epoch)
 
-#			if not os.path.isfile(path + "source.png"):
-#				method.save(path + "/target.png")
-#				method.source.save(path + "/source.png")
-			if not (os.path.isfile(path + "/" + FILE_PATH)):
+			if not (os.path.isfile(path + "/" + FILE_PATH)) or "ow" in sys.argv:
 				method.fit(epochs=epoch)
 				method.data = method.data.clip(0, 1)
 				method.save(path + "/" + FILE_PATH)
+			else:
+				print("{}\n\tFile already exist (add sys arg ow to overwrite)".format(FILE_PATH))
 
 			#	"example-image-c"
 			results_doc.add_row_element(subfigure(path=path_latex + FILE_PATH, text="$\\alpha = {}$\\newline Iteration $= {}$".format(alpha, epoch)))

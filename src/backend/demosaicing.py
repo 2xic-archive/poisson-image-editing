@@ -33,6 +33,11 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson):
         self.results[:, :, 1] = self.mosaic
         self.results[:, :, 2] = self.mosaic
 
+    def reset(self):
+        self.data = self.data_copy.copy()
+        self.simulate()
+        self.inpaint.data = self.mosaic        
+
     def simulate(self):
         """
 		Simualtes a image into a state where we can preform demosaic
