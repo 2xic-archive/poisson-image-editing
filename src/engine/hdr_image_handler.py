@@ -14,11 +14,14 @@ def matlab_mdivide(A, b):
     num_vars = A.shape[1]
     rank = np.linalg.matrix_rank(A)
     sol = None
+ #   return np.linalg.lstsq(A, b)[-1]
     if rank == num_vars:
+#        print("just return")
         sol = np.linalg.lstsq(A, b)[-1]  # not under-determined
     else:
         sol = np.zeros((num_vars, 1))
         print("??")
+        print(len(combinations(range(num_vars), rank)))
         for nz in combinations(range(num_vars), rank):  # the variables not set to zero
             try:
                 sol[nz, :] = np.asarray(np.linalg.solve(A[:, nz], b))
@@ -49,6 +52,9 @@ class hdr_handler:
             image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00256.png'),
             image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00512.png')
         ]
+        for i in self.images:
+            i.resize(scale=4)
+
         for i in range(len(self.images)):
             self.images[i].data *= 255
             self.images[i].data = self.images[i].data.astype(np.uint8).astype(
@@ -56,7 +62,7 @@ class hdr_handler:
 
         # make sure we have all images in the correct interval between 0 and 255
         for i in range(len(self.images)):
-            assert (1 < self.images[i].data.max())
+            assert (1 < self.images[i].data.max() <= 255)
 
         self.B = np.array([
             np.log(64),
@@ -70,6 +76,10 @@ class hdr_handler:
         self.l = 100  # is lamdba, the constant that determines the amount of smoothness
 
         self.Z = scipy.io.loadmat("./files/Z.mat")["Z"]
+        #self.Z = scipy.io.loadmat("./files/Z.mat")["Z"]
+#        print(self.sample().shape)
+#        scipy.io.savemat('./files/Z.mat', dict(Z=self.sample()))
+#        exit(0)
 
     # self.sample()
 
@@ -103,9 +113,9 @@ class hdr_handler:
                 #	print(Z.shape)
                 #	print(self.get_pixel(image.data, sample_space).shape)
                 Z[:, index, channel] = self.get_pixel(image.data, sample_space)  # .reshape()
-        import scipy.io
-        scipy.io.savemat('./files/Z.mat', dict(Z=Z))
-        exit(0)
+#        import scipy.io
+#        scipy.io.savemat('./files/Z.mat', dict(Z=Z))
+#        exit(0)
         return Z
 
     def get_radiance(self):
@@ -117,7 +127,7 @@ class hdr_handler:
         self.radiance = np.zeros((255, 3))
         for channel in range(3):
             g, lE = self.gsolve(self.Z[:, :, channel], channel)
-            self.radiance[:, channel] = g[:]
+            self.radiance[:, channel] = g[:, 0]
 
         return self.radiance
 
@@ -151,18 +161,41 @@ class hdr_handler:
             k += 1
 
         A[k, 129] = 0
-
         from scipy.optimize import nnls
+        from scipy.optimize import leastsq
+
+
+        LOAD_COMMAND = "load('./files/Ab.mat');"
+        #LOAD_B_COMMAND = "load('b.mat');"
+        scipy.io.savemat('./files/Ab.mat', dict(A=A, b=b))
+        STORE_COMMAND = "save(['./files/matlab_x.mat'],'x');"
+
+        COMMAND = LOAD_COMMAND + "x=A\\b; " + STORE_COMMAND + "exit;"
+        import os
+        os.system("/Applications/MATLAB_R2019a.app/bin/matlab -nodisplay -r \"{}\"".format(COMMAND))
+        print(COMMAND)
+        x = scipy.io.loadmat("./files/matlab_x.mat")["x"]
+#        print(x)
+ #       exit(0)
+
+        '''
+        print(A.shape)
+        print(b.shape)
 
         a_matlab = scipy.io.loadmat("./files/matlab_a {}.mat".format(index + 1))["A"]
         b_matlab = scipy.io.loadmat("./files/matlab_b {}.mat".format(index + 1))["b"]
         x_matlab = scipy.io.loadmat("./files/matlab_x {}.mat".format(index + 1))["x"]
         print((b - b_matlab).sum())
         print((A - a_matlab).sum())
-
-        x = (nnls(A, b[:, 0]))[0]
-        print((x_matlab - x).sum())
-        exit(0)
+        '''
+ #       print(A.shape)
+#        print(b.shape)
+ #       x = (nnls(A, b[:, 0]))[0]
+  #      print(leastsq(A, b))
+   #     x = leastsq(A, b[:, 0])#[0]
+     #   x = matlab_mdivide(A, b[:, 0])
+      #  print("lstsq", (x_matlab - x).sum())
+       # exit(0)
 
         g = x[1:n]
         lE = x[n + 1:x.shape[0]]

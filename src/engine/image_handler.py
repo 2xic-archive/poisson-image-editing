@@ -21,6 +21,11 @@ class ImageHandler:
 		"""
         if not path is None:
             self.path = path
+            self.color = color
+            image = Image.open(path)
+            image.load()
+            self.process(image)
+            '''
             image = Image.open(path)
             image.load()
             self.data = np.asarray(image, dtype="float64").copy()
@@ -31,6 +36,23 @@ class ImageHandler:
                 self.data = self.convert_color()
             self.data_copy = self.data.copy()
             self.color = color
+            '''
+
+    def resize(self, scale=8):
+        im = Image.open(self.path)
+        width, height = im.size
+        im = im.resize((width//scale, height//scale))
+        self.process(im)
+
+    def process(self, image):
+        #self.path = path
+        self.data = np.asarray(image, dtype="float64").copy()
+        if not self.color and not len(self.data.shape) == 2:
+            self.data = self.covert_single_shape()
+            self.data = self.convert_black_and_white()
+        else:
+            self.data = self.convert_color()
+        self.data_copy = self.data.copy()
 
     def set_data(self, data: Array):
         """
