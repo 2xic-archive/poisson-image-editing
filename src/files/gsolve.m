@@ -6,9 +6,12 @@ n = 256;
 A = zeros(size(Z,1)*size(Z,2)+n+1,n+size(Z,1)); 
 b = zeros(size(A,1),1);
 
+
+
 k = 1;
 for i=1:size(Z,1)
 	for j=1:size(Z,2)
+        
 		wij = w(Z(i,j)+1);
 		A(k,Z(i,j)+1) = wij; 
 		A(k,n+i) = -wij; 
@@ -19,6 +22,9 @@ end
 
 A(k,129) = 1;
 k=k+1;
+save(['matlab_a_before_second_loop ',num2str(index),'.mat'],'A');
+%secsave(['matlab_a_before_loop ',num2str(index),'.mat'],'A');
+
 
 for i=1:n-2
 	A(k,i)=l*w(i+1);

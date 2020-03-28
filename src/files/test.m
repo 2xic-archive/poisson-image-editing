@@ -28,16 +28,16 @@ xy = size(images{1}, 1)*size(images{1}, 2);;
 sample_size = 100;
 sample_space = ceil(rand(1, sample_size)*xy);
 
-Z = zeros(sample_size, length(image_path), 3);
+%Z = zeros(sample_size, length(image_path), 3);
 %gets the sample space
-for index = 1:length(image_path)
-    for channel = 0:2
-    	disp(images{index}(sample_space + (channel) * xy))
-        Z(:, index, channel+1) = images{index}(sample_space + (channel) * xy);
-    end
-end
-%load('Z.mat')
-save('/Users/2xic/Desktop/NTNU/Andre semester/Fag/vitenskapelig programmering/imt3881-2020-prosjekt/src/files/Z.mat','Z');
+%for index = 1:length(image_path)
+%    for channel = 0:2
+%    	disp(images{index}(sample_space + (channel) * xy))
+%        Z(:, index, channel+1) = images{index}(sample_space + (channel) * xy);
+%    end
+%end
+load('Z.mat')
+%save('/Users/2xic/Desktop/NTNU/Andre semester/Fag/vitenskapelig programmering/imt3881-2020-prosjekt/src/files/Z.mat','Z');
 
 
 % gets the radiance form the gsolver

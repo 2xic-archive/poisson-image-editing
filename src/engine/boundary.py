@@ -26,4 +26,4 @@ class Boundary:
         data[:, -1] = data[:, -2]
         data[0, :] = data[1, :]
         data[-1, :] = data[-2, :]
-        return data
+        return data.clip(0, 1)

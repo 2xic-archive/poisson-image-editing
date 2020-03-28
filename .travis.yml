@@ -30,7 +30,7 @@ install:
 
 script:
 #  - python -m pytest --cov=./
-  - python -m pytest --cov-config=../.coveragerc --cov=./
+  - python -m pytest --cov-config=../.coveragerc --cov=./ --cov-report=html 
   - coveralls
   - mypy main.py ./gui/
 

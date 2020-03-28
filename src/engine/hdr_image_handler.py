@@ -46,14 +46,19 @@ def weigth_function(intensity: float):
 
 class hdr_handler:
     def __init__(self):
+
+        assert(weigth_function(128) == 128)
+        assert(weigth_function(129) == 126)
+        
+
         self.images = [
             image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00064.png'),
             image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00128.png'),
             image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00256.png'),
             image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00512.png')
         ]
-        for i in self.images:
-            i.resize(scale=4)
+     #   for i in self.images:
+      #      i.resize(scale=4)
 
         for i in range(len(self.images)):
             self.images[i].data *= 255
@@ -141,53 +146,148 @@ class hdr_handler:
         A = np.zeros((Z.shape[0] * Z.shape[1] + n + 1, n + Z.shape[0]))
         b = np.zeros((A.shape[0], 1))
 
-        k = 1
+        k = 0
+
+        exitcode = 0
+        a_matlab_before = scipy.io.loadmat("./files/matlab_a_before_second_loop {}.mat".format(index + 1))["A"]
+        b_matlab = scipy.io.loadmat("./files/matlab_b {}.mat".format(index + 1))["b"]
+    
         for i in range(Z.shape[0]):
             for j in range(Z.shape[1]):
-                Z_ij = int(Z[i, j])
-                w_ij = weigth_function(Z_ij + 1)
-                A[k, Z_ij + 1] = w_ij
-                A[k, n + 1] = -w_ij
+                Z_ij = round(Z[i, j])
+                w_ij = weigth_function(Z_ij + 1)# -1)
 
+
+                A[k, Z_ij] = w_ij
+                A[k, n + i ] = -w_ij
+
+                if(a_matlab_before[k, Z_ij] != A[k, Z_ij]):
+                    print("error {} {} ({}, {})".format(i, j, a_matlab_before[k, Z_ij], A[k, Z_ij]))
+                    exitcode += 1
+                if(a_matlab_before[k,n + i] != A[k,n + i]):
+                    print("error {} {} ({}, {})".format(i, j, a_matlab_before[k,n], A[k,n]))
+                    exitcode += 1
+                if(exitcode > 10):
+                    exit(0)
+#                assert a_matlab_before[k, n + 1] == A[k, n + 1], "error {} {} ({}, {})".format(i, j, a_matlab_before[k,n + 1], A[k,n + 1])
+
+                #w_ij = weigth_function(int(Z[i, j]) + 1)# + 1)# -1)
+                w_ij = weigth_function(int(Z[i, j]) + 1)
                 b[k, 0] = w_ij * self.B[j]
+                if not (b_matlab[k , 0] == b[k , 0]):
+                    print(k + 1)
+                    print(b_matlab[:10])
+                    print(b[:10])
+                    print("error {} {}".format(b_matlab[k , 0], b[k , 0]))
+                    exit(0)
+
                 k += 1
 
-        A[k, 129] = 1
+        A[k, 128] = 1
         k += 1
-        for i in range(0, n - 2):
-            A[k, i] = self.l * weigth_function(i + 1)
-            A[k, i + 1] = -2 * self.l * weigth_function(i + 1)
-            A[k, i + 2] = self.l * weigth_function(i + 1)
-            k += 1
+        '''
+        for i in range(A.shape[0]):
+            for j in range(A.shape[1]):
+                if(A[i, j] != 0):
+                    print(A[i, j])
+                    print(a_matlab_before[i, j])
+                    exit(0)
+        exit(0)
+        '''
+#        print(a_matlab_before)
+#        print(np.allclose(A, a_matlab_before))
+#        comp1= np.setdiff1d(np.argwhere(a_matlab_before > 0),(np.argwhere(A > 0)))
+#        print(comp1)
+#        comp1= np.setdiff1d((np.argwhere(A > 0)), np.argwhere(a_matlab_before > 0))
+#        print(comp1)
+#        exit(0)
 
-        A[k, 129] = 0
+   #     print(k)
+        a_matlab = scipy.io.loadmat("./files/matlab_a {}.mat".format(index + 1))["A"]
+        
+        print("="  *12)
+        for i in range(0, n - 3):
+ #           print((k, i))
+#            exit(0)
+            A[k, i] = self.l * weigth_function(i + 2 )
+            A[k, i + 1] = -2 * self.l * weigth_function(i+2)# + 1)
+            A[k, i + 2] = self.l * weigth_function(i+2)# + 1)
+
+            if( A[k, i] != a_matlab[k, i]):
+                print("Error", (A[k, i], a_matlab[k, i]))
+                exitcode += 1
+            if( A[k, i + 1] != a_matlab[k, i + 1]):
+                print("Error", (A[k, i], a_matlab[k, i]))
+                exitcode += 1
+            if( A[k, i + 2] != a_matlab[k, i + 2]):
+                print("Error", (A[k, i], a_matlab[k, i]))
+                exitcode += 1
+            if(exitcode > 10):
+                exit(0)
+            
+            k += 1
+      #  exit(0)
+       # A[k, 129] = 0
         from scipy.optimize import nnls
         from scipy.optimize import leastsq
 
+        
 
         LOAD_COMMAND = "load('./files/Ab.mat');"
         #LOAD_B_COMMAND = "load('b.mat');"
+
+      #  b = b_matlab
+    #    A = a_matlab
+      #  comp1= np.argwhere(a_matlab > 0).setdiff2d(np.argwhere(A > 0))
+      #  print(comp1)
+  #      print(b[:10])
+ #       print(b_matlab[:10])
+#        print(np.allclose(b, b_matlab))
+     #   print(A[:10])
+        print(np.argwhere(a_matlab > 0).shape)
+        print(np.argwhere(A > 0).shape)
+
+#        numpy_diff1=np.setdiff1d(np.argwhere(A > 0),np.argwhere(a_matlab > 0))
+ #       print(numpy_diff1)
+  #      numpy_diff1=np.setdiff1d(np.argwhere(a_matlab > 0), np.argwhere(A > 0))
+   #     print(numpy_diff1)
+
+
+     #   print(a_matlab[:10, :10])
+    #    print(A[:10, :10])
+   #     print(np.allclose(A, a_matlab))
+    #    exit(0)
+        print((b - b_matlab).sum())
+        assert np.allclose(b, b_matlab), "error b"
+        assert np.allclose(A, a_matlab), "error a"
+    #    exit(0)
+
         scipy.io.savemat('./files/Ab.mat', dict(A=A, b=b))
         STORE_COMMAND = "save(['./files/matlab_x.mat'],'x');"
 
         COMMAND = LOAD_COMMAND + "x=A\\b; " + STORE_COMMAND + "exit;"
         import os
+
+        x_matlab = scipy.io.loadmat("./files/matlab_x {}.mat".format(index + 1))["x"]
+
+
+
         os.system("/Applications/MATLAB_R2019a.app/bin/matlab -nodisplay -r \"{}\"".format(COMMAND))
         print(COMMAND)
         x = scipy.io.loadmat("./files/matlab_x.mat")["x"]
+        assert np.allclose(x, x_matlab), "error x"
+
+    #    print(b.sum())
+   #     print(b_matlab.sum())
+  #      print((b - b_matlab).sum())
+ #       print((b - b_matlab).sum())
+#        print((A - a_matlab).sum())
 #        print(x)
  #       exit(0)
-
-        '''
-        print(A.shape)
-        print(b.shape)
-
-        a_matlab = scipy.io.loadmat("./files/matlab_a {}.mat".format(index + 1))["A"]
-        b_matlab = scipy.io.loadmat("./files/matlab_b {}.mat".format(index + 1))["b"]
-        x_matlab = scipy.io.loadmat("./files/matlab_x {}.mat".format(index + 1))["x"]
-        print((b - b_matlab).sum())
-        print((A - a_matlab).sum())
-        '''
+#        print("lstsq", (x_matlab - x).sum())
+        if(500 < abs(x_matlab - x).sum()):
+            print("error", abs(x_matlab - x).sum())
+            exit(0)
  #       print(A.shape)
 #        print(b.shape)
  #       x = (nnls(A, b[:, 0]))[0]
