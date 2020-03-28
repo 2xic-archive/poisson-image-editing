@@ -12,10 +12,27 @@ epoch_count = {
 	0.75:[1, 3, 5]
 }
 
+def process(img):
+	if len(img.shape) == 2:
+		img = img.reshape(img.shape + (1,))
+	if np.max(img) <= 1:
+		img *= 255
+		img = img.astype(np.uint8)
+	else:
+		img = img.astype(np.uint8)
+	return img 
+
 def intensity():
 	import matplotlib.pyplot as plt
-	plt.plot(local_adaptive_histogram.intensity(img))
-	plt.show()
+	plt.plot(local_adaptive_histogram.intensity(process(contrast_obj.data.copy())))
+	plt.savefig("rapport_snippets/output/contrast/intensity.png")
+#	plt.show(block=False)
+	contrast_obj.alpha = 0.05
+	contrast_obj.fit(1)
+	plt.cla()
+	plt.plot(local_adaptive_histogram.intensity(process(contrast_obj.data.copy())))
+	plt.savefig("rapport_snippets/output/contrast/intensity_13.png")
+	exit(0)
 
 
 intensity()

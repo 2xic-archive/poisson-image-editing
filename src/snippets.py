@@ -3,8 +3,8 @@ snippts.py
 ====================================
 Makes all the figures and tables(?) for the report
 """
-import rapport_snippets
-#from rapport_snippets import contrasting
+#import rapport_snippets
+from rapport_snippets import contrasting
 #from rapport_snippets import inpaiting
 #from rapport_snippets import matting
 #from rapport_snippets import anonymizing
