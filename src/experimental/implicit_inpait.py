@@ -106,8 +106,13 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		diags = np.array([upperdiag, upperdiag1, centerdiag, lowerdiag, lowerdiag1])
 		A = spdiags(diags, [2, 1, 0, -1, -2], j, j).tocsc()
 
+		print(A.shape)
+
 		self.data[:, :] = spsolve(A, self.data[:, :])
 		self.data = (self.data * (1 - self.mask)) + (self.original_data * (self.mask))
+		self.data = self.neumann(self.data)
+		self.data = self.data.clip(0, 1)
+
 		return self.data
 		
 	def fit(self, epochs):

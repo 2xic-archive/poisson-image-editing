@@ -18,7 +18,7 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		poisson.poisson.__init__(self)
 		boundary.Boundary.__init__(self)
 		self.alpha: float = 0.25
-		self.lambda_size: float = 0
+		self.lambda_size: float = 0.1
 		#self.data_copy = self.data.copy()
 
 	def set_lambda_size(self, lambda_size) -> None:
@@ -37,15 +37,18 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		Does one iteration of the method.
 
 		"""
+		assert(0 <= self.lambda_size <= 1)
 		laplace = self.get_laplace()
 	#	print(self.lambda_size)
 		old = self.data.copy()
 
 		# TODO : Seems like data attachment works, but it still "flickers" after some iterations, figure out why 
-		self.data[1:-1, 1:-1] += (self.alpha * laplace) - (self.lambda_size * (self.data[1:-1, 1:-1] - self.data_copy[1:-1, 1:-1]))
-		self.data = self.data.clip(0, 1)
+		h = lambda x: (self.lambda_size * (self.data - self.data_copy))
+		self.data = self.solve(self.data, h) 
+#		self.data[1:-1, 1:-1] += (self.alpha * laplace) - (self.lambda_size * (self.data[1:-1, 1:-1] - self.data_copy[1:-1, 1:-1]))
+#		self.data = self.data.clip(0, 1)
 		self.data = self.neumann(self.data)
-		self.data = self.data.clip(0, 1)
+#		self.data = self.data.clip(0, 1)
 	#	print((old - self.data).sum())
 		return self.data
 
