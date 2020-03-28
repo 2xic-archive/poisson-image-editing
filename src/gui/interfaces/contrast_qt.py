@@ -21,7 +21,7 @@ class contrast_window(general_window):
 		_, self.heigth = self.position()
 		self.extra_button = self.add_button("Extra", lambda x: QTimer.singleShot(100, lambda: self.show_extra()))
 		self.update_geometry(self.pixmap.width(), 30)
-		self.reset_heigth()
+#		self.reset_heigth()
 
 		self.PADDING = self.pixmap.width() + 30
 

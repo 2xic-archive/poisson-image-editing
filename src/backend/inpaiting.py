@@ -1,9 +1,9 @@
-from engine import image_handler
+from engine import image_handler, boundary
 import numpy as np
 from engine import poisson
 from nptyping import Array
 
-class inpaint(image_handler.ImageHandler, poisson.poisson):
+class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
     """
 	This class describes a inpaited image.
 
@@ -23,6 +23,7 @@ class inpaint(image_handler.ImageHandler, poisson.poisson):
         if not path is None:
             image_handler.ImageHandler.__init__(self, path, color)
         poisson.poisson.__init__(self)
+        boundary.Boundary.__init__(self)
 
         self.alpha = 0.25
         self.mask = None
@@ -90,8 +91,13 @@ class inpaint(image_handler.ImageHandler, poisson.poisson):
 		Does one iteration of the method.
 
 		"""
-        laplace = self.get_laplace(self.data)
-        self.data[1:-1, 1:-1] += self.alpha * laplace
+       # laplace = self.get_laplace(self.data)
+        #self.data[1:-1, 1:-1] += self.alpha * laplace
+
+#        self.data = self.solve(self.data)
+        operator = lambda : self.get_laplace(self.data)
+        self.data = self.solve(self.data, operator) 
+
         """
 		mask content
 			original value = 1 
@@ -104,6 +110,7 @@ class inpaint(image_handler.ImageHandler, poisson.poisson):
             self.data = (self.data * (1 - self.mask)) + (self.original_data * (self.mask))
         else:
             self.data = (self.data * (self.mask)) + abs(self.original_data * (1 - self.mask))
+        self.data = self.neumann(self.data)
 
     def fit(self, original=None, data=None, mask=None, epochs:int=1) -> Array:
         """

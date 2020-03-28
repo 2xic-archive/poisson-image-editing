@@ -38,18 +38,20 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 
 		"""
 		assert(0 <= self.lambda_size <= 1)
-		laplace = self.get_laplace()
+	#	laplace = self.get_laplace()
 	#	print(self.lambda_size)
-		old = self.data.copy()
+	#	old = self.data.copy()
 
 		# TODO : Seems like data attachment works, but it still "flickers" after some iterations, figure out why 
-		h = lambda x: (self.lambda_size * (self.data - self.data_copy))
-		self.data = self.solve(self.data, h) 
+		h = lambda x: self.common_shape(self.lambda_size * (self.data - self.data_copy))
+		operator = lambda : self.get_laplace(self.data)
+		self.data = self.solve(self.data,operator, h) 
+		self.data = self.neumann(self.data)
+
 #		self.data[1:-1, 1:-1] += (self.alpha * laplace) - (self.lambda_size * (self.data[1:-1, 1:-1] - self.data_copy[1:-1, 1:-1]))
 #		self.data = self.data.clip(0, 1)
-		self.data = self.neumann(self.data)
 #		self.data = self.data.clip(0, 1)
-	#	print((old - self.data).sum())
+#		print((old - self.data).sum())
 		return self.data
 
 	def fit(self, epochs):

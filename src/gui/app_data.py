@@ -160,6 +160,8 @@ class App(QMainWindow):
         Resets the image
         """
         self.total_epochs = 0
+        self.epoch_label.setText("Epochs")
+
         self.reset_button.setEnabled(False)
         self.method.reset()
         self.label.setPixmap(pil2pixmap(self.pixmap_converter(self.method.data)))
@@ -174,6 +176,7 @@ class App(QMainWindow):
         self.timer.start(100)
 
     def reset_image(self):
+        self.epoch_label.setText("Epochs")
         self.total_epochs = 0
         self.reset_button.setEnabled(False)
         self.method.reset()

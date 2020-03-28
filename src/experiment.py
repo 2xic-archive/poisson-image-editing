@@ -1,9 +1,9 @@
-
 from experimental import implicit
 from backend import blurring
-
 from experimental import implicit_inpait
 from backend import inpaiting
+from backend import blurring
+
 '''
 #x = implicit.blur("./files/test_images/lena.png")
 y = implicit_inpait.inpaint("./files/test_images/lena.png")
