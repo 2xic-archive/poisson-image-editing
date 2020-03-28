@@ -32,6 +32,11 @@ def intensity():
 	plt.cla()
 	plt.plot(local_adaptive_histogram.intensity(process(contrast_obj.data.copy())))
 	plt.savefig("rapport_snippets/output/contrast/intensity_13.png")
+
+	plt.cla()
+	lah = local_adaptive_histogram.contrast_enhancement(process(contrast_obj.data.copy()))
+	plt.plot(local_adaptive_histogram.intensity(process(lah)))
+	plt.savefig("rapport_snippets/output/contrast/intensity_adaptive.png")
 	exit(0)
 
 

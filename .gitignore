@@ -6,4 +6,4 @@
 # just for now
 src/rapport_snippets/output/**/*.png
 src/rapport_snippets/output/**/*.jpg
-
+htmlcov

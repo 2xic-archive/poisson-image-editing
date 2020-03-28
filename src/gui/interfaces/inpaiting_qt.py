@@ -27,7 +27,7 @@ class inpait_window(general_window):
 		"""
 		Generate the extra row
 		"""
-		_, self.heigth = self.position()
+		_, self.height = self.position()
 		self.PADDING = self.pixmap.width() + 30
 
 		self.extra_button = self.add_button("Extra", lambda x: QTimer.singleShot(100, lambda: self.show_extra()))
@@ -39,11 +39,18 @@ class inpait_window(general_window):
 		self.extra_action_button = self.add_button("Median filter", lambda x: QTimer.singleShot(100, lambda: self.update_median()))
 		self.update_geometry(self.pixmap.width(), 30, x=self.PADDING, y=self.action_button.pos().y())			
 
+	def pixmap_handler(self, data):
+		return  (self.pixmap_converter(x)) if not self.pixmap_converter is None else (lambda x: Image.fromarray(255 * x))(data)
+
 	def update_median(self):
-		self.extra_label.setPixmap(pil2pixmap(self.pixmap_converter(median_filter(self.input_image))))
+		print(pil2pixmap, self.pixmap_converter, median_filter, self.input_image)
+		self.extra_label.setPixmap(pil2pixmap(self.pixmap_handler(median_filter(self.input_image))))
 		
 	@pyqtSlot()
 	def reset_image(self):
+		self.epoch_label.setText("Epochs")
+		self.total_epochs = 0
+		self.method.reset()
 		self.action_button.setEnabled(False)
 		self.noise_button.setEnabled(True)
 

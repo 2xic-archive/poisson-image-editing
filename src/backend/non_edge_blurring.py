@@ -37,7 +37,7 @@ class non_edge_blur(image_handler.ImageHandler, poisson.poisson, boundary.Bounda
 		Does one iteration of the method.
 
 		"""
-        laplace = self.get_laplace()
+        laplace = self.get_laplace(self.data)
 
     #    print("D {}", self.D().max())
 

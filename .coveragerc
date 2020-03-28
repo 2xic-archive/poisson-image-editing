@@ -1,0 +1,2 @@
+[run]
+omit = rapport_snippets/*, *__init__.py, test/*, experiment.py, main.py,snippets.py

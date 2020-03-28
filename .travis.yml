@@ -29,7 +29,8 @@ install:
   - if [ $(($rc)) -ne 1 ]; then echo "syntax error" && exit -1; else echo "syntax okay"; fi
 
 script:
-  - python -m pytest --cov=./
+#  - python -m pytest --cov=./
+  - python -m pytest --cov-config=../.coveragerc --cov=./
   - coveralls
   - mypy main.py ./gui/
 
