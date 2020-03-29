@@ -19,9 +19,8 @@ def pil2pixmap(input_image):
     elif input_image.mode == "L":
         input_image = input_image.convert("RGBA")
 
-    #print(input_image.size)
     width, height = input_image.size
-    if(512 < width):
+    if 512 < width:
         scale = 2
         input_image = input_image.resize((width//scale, height//scale))
     

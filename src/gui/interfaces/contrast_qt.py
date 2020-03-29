@@ -21,7 +21,6 @@ class contrast_window(general_window):
 		_, self.heigth = self.position()
 		self.extra_button = self.add_button("Extra", lambda x: QTimer.singleShot(100, lambda: self.show_extra_la()))
 		self.update_geometry(self.pixmap.width(), 30)
-#		self.reset_heigth()
 
 		self.PADDING = self.pixmap.width() + 30
 
@@ -34,8 +33,14 @@ class contrast_window(general_window):
 		self.update_geometry(self.pixmap.width(), 30, x=self.PADDING, y=self.action_button.pos().y())
 
 	def update_image_histogram(self):
+		"""
+		Update the histogram label
+		"""
 		self.extra_label.setPixmap(pil2pixmap(Image.fromarray(255 * contrast_enhancement(self.input_image))))
 
 	def show_extra_la(self):
+		"""
+		Resize the window
+		"""
 		self.setGeometry(0, 0, self.pixmap.width() + self.PADDING, self.heigth)
 		self.center()

@@ -1,11 +1,10 @@
-#from test import *
-import numpy as np
-import unittest
-from backend import blurring
-import platform
 import os
+import platform
+import unittest
+from PyQt5 import QtCore
+import numpy as np
+from backend import blurring
 from gui.interfaces import blurring_qt
-
 
 # Because travis does not have a screen ~
 if not (platform.system() == "Darwin"):
@@ -28,11 +27,8 @@ class test_blur(unittest.TestCase):
 		blur_object.fit(1)
 		self.assertFalse(np.all(old_image == blur_object))
 
-from pytestqt import qt_compat
-from pytestqt.qt_compat import qt_api
-from PyQt5 import QtCore
-def test_basics(qtbot):
 
+def test_basics(qtbot):
 	ex = blurring_qt.blur_window()
 	ex.init_UI()
 	ex.show()
@@ -40,12 +36,6 @@ def test_basics(qtbot):
 	assert ex.windowTitle() == "lena.png"
 
 	qtbot.add_widget(ex)
-	# travis is slow
-
-	#	--cov-report=
-#	
-#	with qtbot.waitActive(ex, timeout=10000):
-#		assert ex.action_button.isVisible()
 
 	# press the button and wait for action
 	qtbot.mousePress(ex.action_button, QtCore.Qt.LeftButton, delay=10)

@@ -144,13 +144,7 @@ class hdr_handler:
 
         [TODO:description]
         """
-#        n = 256
-        A, b, n  = self.get_Ab(Z)
-
-#        exitcode = 0
- #       a_matlab_before = scipy.io.loadmat("./files/matlab_a_before_second_loop {}.mat".format(index + 1))["A"]
-  #      b_matlab = scipy.io.loadmat("./files/matlab_b {}.mat".format(index + 1))["b"]
-    
+        A, b, n = self.get_Ab(Z)
 
         """
         Big matlab hack

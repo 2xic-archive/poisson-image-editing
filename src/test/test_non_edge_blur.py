@@ -1,8 +1,7 @@
-import numpy as np
 import unittest
+import numpy as np
 from backend import non_edge_blurring
-import platform
-import os
+
 
 class test_blur(unittest.TestCase):
 	def test_fit(self):

@@ -1,8 +1,8 @@
-#from test import *
-import numpy as np
 import unittest
+import numpy as np
 from backend import demosaicing
-import os
+from gui.interfaces import demosaic_qt
+from PyQt5 import QtCore
 
 class test_demosaic(unittest.TestCase):
     def test_fit(self):
@@ -11,12 +11,7 @@ class test_demosaic(unittest.TestCase):
         demosaic_object.fit(1)
         self.assertFalse(np.all(old_image == demosaic_object))
      
-from gui.interfaces import demosaic_qt
-from pytestqt import qt_compat
-from pytestqt.qt_compat import qt_api
-from PyQt5 import QtCore
 def test_basics(qtbot):
-
 	ex = demosaic_qt.demonsaic_window()
 	ex.init_UI()
 	ex.show()
@@ -27,8 +22,7 @@ def test_basics(qtbot):
 
 	current_image = ex.method.data.copy()
 
-
-#	mosaic_button
+	#	mosaic_button
 	# we first need to delete some information from the image
 	qtbot.mousePress(ex.mosaic_button, QtCore.Qt.LeftButton, delay=10)
 	qtbot.mouseRelease(ex.mosaic_button, QtCore.Qt.LeftButton, delay=10)
@@ -42,4 +36,3 @@ def test_basics(qtbot):
 	qtbot.mouseRelease(ex.action_button, QtCore.Qt.LeftButton, delay=10)
 
 	qtbot.waitUntil(lambda: not np.allclose(ex.method.data, current_image), timeout=10000)
-	

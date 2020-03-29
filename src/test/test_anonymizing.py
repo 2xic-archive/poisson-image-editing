@@ -1,4 +1,3 @@
-#from test import *
 import numpy as np
 import unittest
 from backend import anonymizing

@@ -1,4 +1,3 @@
-#import .blurring
 from gui.general_window import *
 from backend import blurring
 

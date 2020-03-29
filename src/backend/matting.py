@@ -59,28 +59,15 @@ class matting(image_handler.ImageHandler, poisson.poisson):
 		"""
 		crop_area = lambda x: x[self.area[0][0]:self.area[1][0],
 							  self.area[0][1]:self.area[1][1], :]
-
-#		target_laplace = self.get_laplace(crop_area(self.target))
-#		source_laplace = self.get_laplace(crop_area(self.source.data))
 		working_area = crop_area(self.data)
-#		working_area[1:-1, 1:-1] += (target_laplace - source_laplace) * self.alpha
-	
 
 		"""
 		TODO : Problem, since the image has extra dimension the implicit method is not happy
 				I think the way to solve it is to iterate over each channel
 		"""
-		h = lambda x: 0#(self.lambda_size * (self.data - self.data_copy))
-#		print(self.get_laplace(crop_area(self.target)))
-#		print(crop_area(self.source.data).shape)
-		
-#		exit(0)
+		h = lambda x: 0
 		operator = lambda : self.get_laplace(crop_area(self.target)) - self.get_laplace(crop_area(self.source.data))  #self.get_laplace(self.data)
-	
-#		operator()	
-#		exit(0)
-		working_area = self.solve(working_area,operator, h) 
-#		self.data = self.neumann(self.data)
+		working_area = self.solve(working_area,operator, h)
 
 
 		# TODO : make this "nice"

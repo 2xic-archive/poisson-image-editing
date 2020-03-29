@@ -1,9 +1,8 @@
-#from test import *
-import numpy as np
 import unittest
+import numpy as np
 from backend import contrasting
-import os
 from extra import local_adaptive_histogram
+
 
 class test_contrast(unittest.TestCase):
 	def test_fit(self):

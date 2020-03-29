@@ -43,11 +43,17 @@ class inpait_window(general_window):
 		return  (self.pixmap_converter(x)) if not self.pixmap_converter is None else (lambda x: Image.fromarray(255 * x))(data)
 
 	def update_median(self):
+		"""
+		Update the median image
+		"""
 		print(pil2pixmap, self.pixmap_converter, median_filter, self.input_image)
 		self.extra_label.setPixmap(pil2pixmap(self.pixmap_handler(median_filter(self.input_image))))
 		
 	@pyqtSlot()
 	def reset_image(self):
+		"""
+		Resets the image
+		"""
 		self.epoch_label.setText("Epochs")
 		self.total_epochs = 0
 		self.method.reset()
@@ -55,6 +61,9 @@ class inpait_window(general_window):
 		self.noise_button.setEnabled(True)
 
 	def update_image_noise(self):
+		"""
+		Update the image after noise was added
+		"""
 		self.method.destroy_information(self.noise_slider.value())		
 		self.extra_label.setPixmap(pil2pixmap(Image.fromarray(255 * self.method.data)))
 		self.label.setPixmap(pil2pixmap(Image.fromarray(255 * self.method.data)))

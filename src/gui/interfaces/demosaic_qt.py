@@ -13,8 +13,14 @@ class demonsaic_window(general_window):
 		self.input_image = self.method.get_data().copy()
 
 	def load_extra_now(self):
+		"""
+		add the mosaic button
+		"""
 		self.mosaic_button = self.add_button('Mosaic', lambda x: QTimer.singleShot(100, lambda: self.update_simulate()))
 		self.update_geometry(self.pixmap.width(), 30)
 
 	def update_simulate(self):
+		"""
+		Update the simulation
+		"""
 		self.label.setPixmap(pil2pixmap(Image.fromarray((self.method.simulate() * 255).astype(np.uint8))))

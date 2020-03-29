@@ -1,8 +1,8 @@
 #from test import *
-import numpy as np
 import unittest
+import numpy as np
 from backend import grayscale
-import os
+
 
 class test_grayscale(unittest.TestCase):
 	def test_fit(self):

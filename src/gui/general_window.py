@@ -1,15 +1,6 @@
-from gui.interface import interface_class
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtCore import QTimer
-import numpy as np
-import os
-
-from PIL import Image
-from PyQt5.QtWidgets import QApplication, QFileDialog
-
-
 from gui.app_data import *
+from gui.interface import interface_class
+
 
 class general_window(interface_class):
     """

@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import QComboBox, QLabel
 from PyQt5.QtWidgets import QPushButton, QSlider
 from PyQt5.QtCore import Qt
-#from general import *
 from gui.app_data import *
 from gui.general import pil2pixmap
 from typing import Callable
@@ -38,7 +37,7 @@ class interface_class(App):
         }
         self.padding = 30
 
-    def update_geometry(self, height, width, element_id=None, x=0, y=-1):
+    def update_geometry(self, height: int, width: int, element_id: str=None, x: int =0, y:int =-1):
         """
         Update the geometry
 

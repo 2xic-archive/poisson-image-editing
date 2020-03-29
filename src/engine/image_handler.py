@@ -45,7 +45,6 @@ class ImageHandler:
         self.process(im)
 
     def process(self, image):
-        #self.path = path
         self.data = np.asarray(image, dtype="float64").copy()
         if not self.color and not len(self.data.shape) == 2:
             self.data = self.covert_single_shape()

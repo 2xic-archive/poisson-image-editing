@@ -24,7 +24,7 @@ def intensity(img) -> Array:
     return intensity_scale / (img.shape[0] * img.shape[1] * img.shape[2])
 
 
-def contrast_enhancement(img: Array) -> Array:
+def contrast_enhancement(img: Array) -> np.ndarray:
     """
     Preform a local adaptive histogram on input
 

@@ -91,10 +91,6 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		Does one iteration of the method.
 
 		"""
-       # laplace = self.get_laplace(self.data)
-        #self.data[1:-1, 1:-1] += self.alpha * laplace
-
-#        self.data = self.solve(self.data)
         operator = lambda : self.get_laplace(self.data)
         self.data = self.solve(self.data, operator) 
 

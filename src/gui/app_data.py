@@ -1,17 +1,12 @@
-from typing import Union
-
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtCore import pyqtSlot, QTimer
-from PyQt5.QtCore import QTimer
-import numpy as np
-import os
-from PyQt5.QtWidgets import QApplication, QFileDialog
-
-from gui.general import *
-from PIL import Image
-from gui import interface
-
 import time
+import numpy as np
+from PIL import Image
+from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtWidgets import QApplication, QFileDialog
+from PyQt5.QtWidgets import QMainWindow
+from gui.general import *
+
 
 class App(QMainWindow):
     """
@@ -176,6 +171,9 @@ class App(QMainWindow):
         self.timer.start(100)
 
     def reset_image(self):
+        """
+        Resets the image
+        """
         self.epoch_label.setText("Epochs")
         self.total_epochs = 0
         self.reset_button.setEnabled(False)
