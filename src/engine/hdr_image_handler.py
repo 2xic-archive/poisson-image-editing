@@ -2,38 +2,17 @@ import numpy as np
 from engine import image_handler
 from itertools import combinations
 import scipy.io
+import os
+from scipy.optimize import nnls
+from scipy.optimize import leastsq
 
 """
 TODO : I now see that multiple solutions to the problem is mentioned in the project description	*awkward* will try them out
 """
 
 
-# NOTE : THIS DOES NOT SEEM TO WORK 
-# https://stackoverflow.com/questions/33559946/numpy-vs-mldivide-matlab-operator
-def matlab_mdivide(A, b):
-    num_vars = A.shape[1]
-    rank = np.linalg.matrix_rank(A)
-    sol = None
- #   return np.linalg.lstsq(A, b)[-1]
-    if rank == num_vars:
-#        print("just return")
-        sol = np.linalg.lstsq(A, b)[-1]  # not under-determined
-    else:
-        sol = np.zeros((num_vars, 1))
-        print("??")
-        print(len(combinations(range(num_vars), rank)))
-        for nz in combinations(range(num_vars), rank):  # the variables not set to zero
-            try:
-                sol[nz, :] = np.asarray(np.linalg.solve(A[:, nz], b))
-                print(sol)
-            except np.linalg.LinAlgError:
-                pass  # picked bad variables, can't solve
-    #	print(sol.shape, num_vars)
-    return sol
-
-
 # as defined in equation 3
-def weigth_function(intensity: float):
+def classic_weigth_function(intensity: float):
     """
 	[TODO:summary]
 
@@ -45,10 +24,10 @@ def weigth_function(intensity: float):
 
 
 class hdr_handler:
-    def __init__(self):
-
-        assert(weigth_function(128) == 128)
-        assert(weigth_function(129) == 126)
+    def __init__(self, user_defined_weigth_fuction=classic_weigth_function):
+        self.weigth_function = user_defined_weigth_fuction
+        assert(self.weigth_function(128) == 128)
+        assert(self.weigth_function(129) == 126)
         
 
         self.images = [
@@ -78,15 +57,11 @@ class hdr_handler:
 
         self.pixel_area = self.images[0].data.shape
         self.pixel_area = self.pixel_area[0] * self.pixel_area[1]
-        self.l = 100  # is lamdba, the constant that determines the amount of smoothness
+        
+        # is lamdba, the constant that determines the amount of smoothness
+        self.lambda_constant = 100  
 
-        self.Z = scipy.io.loadmat("./files/Z.mat")["Z"]
-        #self.Z = scipy.io.loadmat("./files/Z.mat")["Z"]
-#        print(self.sample().shape)
-#        scipy.io.savemat('./files/Z.mat', dict(Z=self.sample()))
-#        exit(0)
-
-    # self.sample()
+        self.Z = self.sample()
 
     def get_pixel(self, image, sample):
         """
@@ -95,7 +70,6 @@ class hdr_handler:
         [TODO:description]
         """
         results = np.zeros(sample.shape)
-        # print(sample.shape)
         image_flat = image.flatten()
         for index, i in enumerate(sample.flatten()):
             results[:, index] = image_flat[int(i)]
@@ -113,14 +87,7 @@ class hdr_handler:
         for index, image in enumerate(self.images):
             # rgb
             for channel in range(3):
-                #	print(sample_space.shape)
-                #	print(image.data.shape)
-                #	print(Z.shape)
-                #	print(self.get_pixel(image.data, sample_space).shape)
-                Z[:, index, channel] = self.get_pixel(image.data, sample_space)  # .reshape()
-#        import scipy.io
-#        scipy.io.savemat('./files/Z.mat', dict(Z=Z))
-#        exit(0)
+                Z[:, index, channel] = self.get_pixel(image.data, sample_space)
         return Z
 
     def get_radiance(self):
@@ -154,148 +121,44 @@ class hdr_handler:
     
         for i in range(Z.shape[0]):
             for j in range(Z.shape[1]):
-                Z_ij = round(Z[i, j])
-                w_ij = weigth_function(Z_ij + 1)# -1)
-
+                Z_ij = int(round(Z[i, j]))
+                w_ij = self.weigth_function(Z_ij + 1)
 
                 A[k, Z_ij] = w_ij
                 A[k, n + i ] = -w_ij
 
-                if(a_matlab_before[k, Z_ij] != A[k, Z_ij]):
-                    print("error {} {} ({}, {})".format(i, j, a_matlab_before[k, Z_ij], A[k, Z_ij]))
-                    exitcode += 1
-                if(a_matlab_before[k,n + i] != A[k,n + i]):
-                    print("error {} {} ({}, {})".format(i, j, a_matlab_before[k,n], A[k,n]))
-                    exitcode += 1
-                if(exitcode > 10):
-                    exit(0)
-#                assert a_matlab_before[k, n + 1] == A[k, n + 1], "error {} {} ({}, {})".format(i, j, a_matlab_before[k,n + 1], A[k,n + 1])
-
-                #w_ij = weigth_function(int(Z[i, j]) + 1)# + 1)# -1)
-                w_ij = weigth_function(int(Z[i, j]) + 1)
+                w_ij = self.weigth_function(int(Z[i, j]) + 1)
                 b[k, 0] = w_ij * self.B[j]
-                if not (b_matlab[k , 0] == b[k , 0]):
-                    print(k + 1)
-                    print(b_matlab[:10])
-                    print(b[:10])
-                    print("error {} {}".format(b_matlab[k , 0], b[k , 0]))
-                    exit(0)
-
                 k += 1
 
         A[k, 128] = 1
         k += 1
-        '''
-        for i in range(A.shape[0]):
-            for j in range(A.shape[1]):
-                if(A[i, j] != 0):
-                    print(A[i, j])
-                    print(a_matlab_before[i, j])
-                    exit(0)
-        exit(0)
-        '''
-#        print(a_matlab_before)
-#        print(np.allclose(A, a_matlab_before))
-#        comp1= np.setdiff1d(np.argwhere(a_matlab_before > 0),(np.argwhere(A > 0)))
-#        print(comp1)
-#        comp1= np.setdiff1d((np.argwhere(A > 0)), np.argwhere(a_matlab_before > 0))
-#        print(comp1)
-#        exit(0)
 
-   #     print(k)
-        a_matlab = scipy.io.loadmat("./files/matlab_a {}.mat".format(index + 1))["A"]
-        
-        print("="  *12)
         for i in range(0, n - 3):
- #           print((k, i))
-#            exit(0)
-            A[k, i] = self.l * weigth_function(i + 2 )
-            A[k, i + 1] = -2 * self.l * weigth_function(i+2)# + 1)
-            A[k, i + 2] = self.l * weigth_function(i+2)# + 1)
-
-            if( A[k, i] != a_matlab[k, i]):
-                print("Error", (A[k, i], a_matlab[k, i]))
-                exitcode += 1
-            if( A[k, i + 1] != a_matlab[k, i + 1]):
-                print("Error", (A[k, i], a_matlab[k, i]))
-                exitcode += 1
-            if( A[k, i + 2] != a_matlab[k, i + 2]):
-                print("Error", (A[k, i], a_matlab[k, i]))
-                exitcode += 1
-            if(exitcode > 10):
-                exit(0)
-            
+            A[k, i] = self.lambda_constant * self.weigth_function(i + 2 )
+            A[k, i + 1] = -2 * self.lambda_constant * self.weigth_function(i+2)# + 1)
+            A[k, i + 2] = self.lambda_constant * self.weigth_function(i+2)# + 1)
             k += 1
-      #  exit(0)
-       # A[k, 129] = 0
-        from scipy.optimize import nnls
-        from scipy.optimize import leastsq
 
-        
+        """
+        Big matlab hack
+        """
+        scipy.io.savemat('./files/Ab.mat', dict(A=A, b=b))
 
         LOAD_COMMAND = "load('./files/Ab.mat');"
-        #LOAD_B_COMMAND = "load('b.mat');"
-
-      #  b = b_matlab
-    #    A = a_matlab
-      #  comp1= np.argwhere(a_matlab > 0).setdiff2d(np.argwhere(A > 0))
-      #  print(comp1)
-  #      print(b[:10])
- #       print(b_matlab[:10])
-#        print(np.allclose(b, b_matlab))
-     #   print(A[:10])
-        print(np.argwhere(a_matlab > 0).shape)
-        print(np.argwhere(A > 0).shape)
-
-#        numpy_diff1=np.setdiff1d(np.argwhere(A > 0),np.argwhere(a_matlab > 0))
- #       print(numpy_diff1)
-  #      numpy_diff1=np.setdiff1d(np.argwhere(a_matlab > 0), np.argwhere(A > 0))
-   #     print(numpy_diff1)
-
-
-     #   print(a_matlab[:10, :10])
-    #    print(A[:10, :10])
-   #     print(np.allclose(A, a_matlab))
-    #    exit(0)
-        print((b - b_matlab).sum())
-        assert np.allclose(b, b_matlab), "error b"
-        assert np.allclose(A, a_matlab), "error a"
-    #    exit(0)
-
-        scipy.io.savemat('./files/Ab.mat', dict(A=A, b=b))
         STORE_COMMAND = "save(['./files/matlab_x.mat'],'x');"
-
         COMMAND = LOAD_COMMAND + "x=A\\b; " + STORE_COMMAND + "exit;"
-        import os
 
         x_matlab = scipy.io.loadmat("./files/matlab_x {}.mat".format(index + 1))["x"]
-
-
-
         os.system("/Applications/MATLAB_R2019a.app/bin/matlab -nodisplay -r \"{}\"".format(COMMAND))
-        print(COMMAND)
-        x = scipy.io.loadmat("./files/matlab_x.mat")["x"]
-        assert np.allclose(x, x_matlab), "error x"
 
-    #    print(b.sum())
-   #     print(b_matlab.sum())
-  #      print((b - b_matlab).sum())
- #       print((b - b_matlab).sum())
-#        print((A - a_matlab).sum())
-#        print(x)
- #       exit(0)
-#        print("lstsq", (x_matlab - x).sum())
-        if(500 < abs(x_matlab - x).sum()):
-            print("error", abs(x_matlab - x).sum())
-            exit(0)
- #       print(A.shape)
-#        print(b.shape)
- #       x = (nnls(A, b[:, 0]))[0]
-  #      print(leastsq(A, b))
-   #     x = leastsq(A, b[:, 0])#[0]
-     #   x = matlab_mdivide(A, b[:, 0])
-      #  print("lstsq", (x_matlab - x).sum())
-       # exit(0)
+        print(COMMAND)
+
+        x = scipy.io.loadmat("./files/matlab_x.mat")["x"]
+   
+        """
+        Big matlab hack is over
+        """
 
         g = x[1:n]
         lE = x[n + 1:x.shape[0]]
@@ -311,7 +174,6 @@ class hdr_handler:
     '''
 	Equation 6 from the paper
 	'''
-
     def get_radiance_log(self, radiance):
         x = np.ones(self.images[0].data.shape)
         y = np.zeros(self.images[0].data.shape)
@@ -325,6 +187,5 @@ class hdr_handler:
             wi = f(g.copy())
             x += wi * g
             y += wi
-        #		print(np.max(x/y))
         rad = (x / y)
         return rad  # (x/y).clip(0, 255)
