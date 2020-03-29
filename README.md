@@ -3,8 +3,8 @@
 	<img src="readme/hello.png" />
 </p>
 
-[![Build Status](https://travis-ci.com/2xic/vitprog-prosjekt.svg?token=vVVuYFCatTDiKBZ8eAMA&branch=Brage)](https://github.com/2xic/vitprog-prosjekt)
-[![Coverage Status](https://coveralls.io/repos/github/2xic/vitprog-prosjekt/badge.svg?branch=Brage&t=HoNjAi)](https://coveralls.io/github/2xic/vitprog-prosjekt?branch=Brage)
+[![Build Status](https://travis-ci.com/2xic/vitprog-prosjekt.svg?token=vVVuYFCatTDiKBZ8eAMA&branch=Brage)](https://travis-ci.com/2xic/vitprog-prosjekt/)
+[![Coverage Status](https://coveralls.io/repos/github/2xic/vitprog-prosjekt/badge.svg?branch=Brage)](https://coveralls.io/github/2xic/vitprog-prosjekt?branch=Brage)
 [![Python Version](https://img.shields.io/pypi/pyversions/3.svg)](https://img.shields.io/pypi/pyversions/3)
 
 ## Sjekkliste før innlevering

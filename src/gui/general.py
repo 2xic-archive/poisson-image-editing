@@ -18,7 +18,15 @@ def pil2pixmap(input_image):
         pass
     elif input_image.mode == "L":
         input_image = input_image.convert("RGBA")
-    data = input_image.convert("RGBA").tobytes()
+
+    #print(input_image.size)
+    width, height = input_image.size
+    if(512 < width):
+        scale = 2
+        input_image = input_image.resize((width//scale, height//scale))
+    
+
+    data = input_image.convert("RGBA").tobytes()    
     qim = QImage(data, input_image.size[0], input_image.size[1], QImage.Format_RGBA8888)
     pixmap = QPixmap.fromImage(qim)
     return pixmap

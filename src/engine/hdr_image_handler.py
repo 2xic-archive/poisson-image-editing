@@ -63,6 +63,14 @@ class hdr_handler:
 
         self.Z = self.sample()
 
+    def normalize(self, x):
+        # rgb
+        for i in range(x.shape[-1]):
+            max_val = np.max(x[:, :, i])
+            min_val = np.min(x[:, :, i])
+            x[:, :, i] = (x[:, :, i] + abs(min_val))/(max_val + abs(min_val))
+        return x
+
     def get_pixel(self, image, sample):
         """
         [TODO:summary]
@@ -103,22 +111,11 @@ class hdr_handler:
 
         return self.radiance
 
-    def gsolve(self, Z, index):
-        """
-        [TODO:summary]
 
-        [TODO:description]
-        """
-        n = 256
+    def get_Ab(self, Z, n=256):
+        k = 0
         A = np.zeros((Z.shape[0] * Z.shape[1] + n + 1, n + Z.shape[0]))
         b = np.zeros((A.shape[0], 1))
-
-        k = 0
-
-        exitcode = 0
-        a_matlab_before = scipy.io.loadmat("./files/matlab_a_before_second_loop {}.mat".format(index + 1))["A"]
-        b_matlab = scipy.io.loadmat("./files/matlab_b {}.mat".format(index + 1))["b"]
-    
         for i in range(Z.shape[0]):
             for j in range(Z.shape[1]):
                 Z_ij = int(round(Z[i, j]))
@@ -139,6 +136,21 @@ class hdr_handler:
             A[k, i + 1] = -2 * self.lambda_constant * self.weigth_function(i+2)# + 1)
             A[k, i + 2] = self.lambda_constant * self.weigth_function(i+2)# + 1)
             k += 1
+        return A, b, n
+
+    def gsolve(self, Z, index):
+        """
+        [TODO:summary]
+
+        [TODO:description]
+        """
+#        n = 256
+        A, b, n  = self.get_Ab(Z)
+
+#        exitcode = 0
+ #       a_matlab_before = scipy.io.loadmat("./files/matlab_a_before_second_loop {}.mat".format(index + 1))["A"]
+  #      b_matlab = scipy.io.loadmat("./files/matlab_b {}.mat".format(index + 1))["b"]
+    
 
         """
         Big matlab hack
