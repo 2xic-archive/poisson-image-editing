@@ -6,12 +6,33 @@ from backend import blurring
 from PIL import Image
 from engine import hdr_image_handler
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 x = hdr_image_handler.hdr_handler()
 
 radiance = x.get_radiance()
-plt.plot(radiance[:, 0])
+
+#plt.plot(radiance[:, 0])
+#plt.show()
+
+
+radiance_log = x.get_radiance_log(radiance)
+print(radiance_log.shape)
+
+def normalize(x):
+	# rgb
+	for i in range(x.shape[-1]):
+		max_val = np.max(x[:, :, i])
+		min_val = np.min(x[:, :, i])
+		x[:, :, i] = (x[:, :, i] + abs(min_val))/(max_val + abs(min_val))
+	return x
+
+plt.imshow(normalize(radiance_log))
 plt.show()
+
+exit(0)
+
 
 #print(x.images)
 

@@ -183,7 +183,7 @@ class hdr_handler:
             for rgb in range(3):
                 g[:, :, rgb] = self.look_up_pixel(radiance[:, rgb], g[:, :, rgb])
             g -= self.B[index]
-            f = np.vectorize(weigth_function)
+            f = np.vectorize(self.weigth_function)
             wi = f(g.copy())
             x += wi * g
             y += wi
