@@ -16,10 +16,16 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 	def __init__(self, path, color=False):
 		image_handler.ImageHandler.__init__(self, path, color)
 		poisson.poisson.__init__(self)
-		boundary.Boundary.__init__(self, self.data.copy())
+		boundary.Boundary.__init__(self)#, self.data.copy())
 		self.alpha: float = 0.25
 		self.lambda_size: float = 0.1
 		#self.data_copy = self.data.copy()
+
+
+#		print((self.get_laplace_explicit(self.data)- self.get_laplace_implicit(self.data)[1:-1, 1:-1]).sum())
+#		print((self.get_laplace_explicit(self.data)- self.get_laplace_implicit(self.data)[1:-1, 1:-1]).sum())
+#		exit(0)
+
 
 	def set_lambda_size(self, lambda_size) -> None:
 		"""
@@ -43,7 +49,7 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 	#	old = self.data.copy()
 
 		# TODO : Seems like data attachment works, but it still "flickers" after some iterations, figure out why 
-		h = lambda i=None: (self.common_shape(self.lambda_size * (self.data - self.data_copy))) if i is None else (self.common_shape(self.lambda_size * (self.data[:, :, i] - self.data_copy[:, :, i])))
+		h = lambda x=None, i=None: (self.common_shape(self.lambda_size * (self.data - self.data_copy))) if i is None else (self.common_shape(self.lambda_size * (self.data[:, :, i] - self.data_copy[:, :, i])))
 		operator = lambda i=None: self.get_laplace(self.data) if i is None else self.get_laplace(self.data[:, :, i])
 		self.data = self.solve(self.data,operator, h).clip(0, 1) 
 		self.data = self.neumann(self.data)

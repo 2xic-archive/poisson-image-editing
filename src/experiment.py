@@ -1,13 +1,14 @@
-from experimental import implicit
+#from experimental import implicit
 from backend import blurring
-from experimental import implicit_inpait
+#from experimental import implicit_inpait
 from backend import inpaiting
 from backend import blurring
-from PIL import Image
-from engine import hdr_image_handler
+from backend import matting
+#from PIL import Image
+#from engine import hdr_image_handler
 import matplotlib.pyplot as plt
 import numpy as np
-
+'''
 
 x = hdr_image_handler.hdr_handler()
 radiance = x.get_radiance()
@@ -31,6 +32,7 @@ plt.imshow(normalize(radiance_log))
 plt.show()
 
 exit(0)
+'''
 
 
 #print(x.images)
@@ -43,23 +45,26 @@ exit(0)
 #	im.show()  
 
 
-'''
 #x = implicit.blur("./files/test_images/lena.png")
-y = implicit_inpait.inpaint("./files/test_images/lena.png")
-x = inpaiting.inpaint("./files/test_images/lena.png")
+#y = implicit_inpait.inpaint("./files/test_images/lena.png")
+x = matting.matting()#"./files/test_images/lena.png", color=False)
+x.fit(epochs=1)
+x.show()
 
-x.data = y.data.copy()
-x.mask = y.mask.copy()
-x.original_data = y.original_data.copy()
+y = matting.matting()#"./files/test_images/lena.png", color=False)
+y.mode_poisson = y.EXPLICIT
+y.fit(epochs=1)
+y.show()
+print((x.data - y.data).sum())
 
-y.fit(epochs=10)
-y.save("./experimental/results/implicit.png")
 
 
-x.fit(epochs=10)
-x.save("./experimental/results/explicit.png")
 '''
 
+
+
+
+'''
 #x.show()
 
 '''

@@ -25,9 +25,12 @@ class non_edge_blur(image_handler.ImageHandler, poisson.poisson, boundary.Bounda
         image_handler.ImageHandler.__init__(self, path, color)
         poisson.poisson.__init__(self)
         boundary.Boundary.__init__(self)
-        self.alpha = 0.25
+        self.alpha = 0.15
 
-    def D(self, k=100) -> Array:
+
+        self.mode_poisson = self.EXPLICIT
+
+    def D(self, k=10) -> Array:
         fraction = 1 / \
                    (1 + k * (self.get_gradient_norm(self.data_copy)) ** 2)
         return fraction
@@ -37,19 +40,29 @@ class non_edge_blur(image_handler.ImageHandler, poisson.poisson, boundary.Bounda
 		Does one iteration of the method.
 
 		"""
-        laplace = self.get_laplace(self.data)
+        D = self.D()
+        assert np.all(D <= 1), "D function error" 
 
-    #    print("D {}", self.D().max())
-
-        d_x, d_y = self.get_gradient(self.D())
+        d_x, d_y = self.get_gradient(D)#self.D())
         data_x, data_y = self.get_gradient(self.data)
-        combined = (d_x  + d_y )[1:-1, 1:-1]
+        combined = (d_x  + d_y )#[1:-1, 1:-1]
 
-        combined *= (data_x + data_y)[1:-1, 1:-1]
+        combined *= (data_x + data_y)#[1:-1, 1:-1]
+
+        '''
+        laplace = self.get_laplace(self.data)
 
         self.data[1:-1, 1:-1] += (self.alpha * (laplace * self.D()[1:-1, 1:-1]) + combined).clip(0, 1)
         self.data = self.neumann(self.data).clip(0, 1)
+        '''
 
+    #    h = lambda x=None, i=None: #- self.common_shape(combined) * self.alpha #(self.common_shape(self.lambda_size * (self.data - self.data_copy))) if i is None else (self.common_shape(self.lambda_size * (self.data[:, :, i] - self.data_copy[:, :, i])))
+        operator = lambda i=None: (self.get_laplace(self.data) * self.common_shape(self.D())) + self.common_shape(combined) #* self.alpha
+
+        # self.get_laplace(self.data) if i is None else self.get_laplace(self.data[:, :, i])
+        self.data = self.solve(self.data,operator)#, h)#.clip(0, 1) 
+        self.data = self.neumann(self.data).clip(0, 1)
+        
         return self.data
 
     def fit(self, epochs) -> non_edge_blur:

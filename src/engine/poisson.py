@@ -12,8 +12,8 @@ class poisson:
         self.EXPLICIT = 0
         self.IMPLICIT = 1 
 
-        self.mode_poisson = self.EXPLICIT
-#        self.mode_poisson = self.IMPLICIT
+#        self.mode_poisson = self.EXPLICIT
+        self.mode_poisson = self.IMPLICIT
         self.alpha = 0.25
 
     def get_laplace_explicit(self, data: Array[float, float] = None) -> Array:
@@ -58,12 +58,6 @@ class poisson:
 
         diags = np.array([upperdiag, upperdiag1, centerdiag, lowerdiag, lowerdiag1])
 
-        print(upperdiag.shape)
-        print(upperdiag1.shape)
-        print(centerdiag.shape)
-        print(lowerdiag.shape)
-        print(lowerdiag1.shape)
-        print(diags.shape)
         A = spdiags(diags, [2, 1, 0, -1, -2], i, j).tocsc()
 
         return spsolve(A, data[:, :])
@@ -86,14 +80,17 @@ class poisson:
         else:
             raise Exception(" not supported")
 
-    def solve(self, data, operator, h=lambda x: 0):
+    def solve(self, data, operator, h=lambda x=None, i=None: 0):
         if self.mode_poisson == self.EXPLICIT:
-            # so a problem is how do you decalre if you have used the laplace or not ? 
-            data[1:-1, 1:-1] += operator() - h(data)
+            if(len(data.shape) == 3):
+                for i in range(3):#data.shape[-1]):
+                    data[1:-1, 1:-1, i] += operator(i) - h(i=i)
+            else:
+                data[1:-1, 1:-1] += operator() - h(data)
         elif self.mode_poisson == self.IMPLICIT:
             if(len(data.shape) == 3):
-                for i in range(data.shape[-1]):
-                    data[:, :, i] = operator(i) - h(i=i)
+                for i in range(3):#data.shape[-1]):
+                    data[:, :, i] = operator(i=i) - h(i=i)
             else:
                 data[:, :] = operator() - h(data)
         else:

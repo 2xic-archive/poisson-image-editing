@@ -112,8 +112,8 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
             self.data = (self.data * (1 - self.mask)) + (self.original_data * (self.mask))
         else:
             self.data = (self.data * (self.mask)) + abs(self.original_data * (1 - self.mask))
-#        self.data = self.neumann(self.data)
-        self.data = self.diriclet(self.data)
+        self.data = self.neumann(self.data)
+#        self.data = self.diriclet(self.data, self.mask)
 
     def fit(self, original=None, data=None, mask=None, epochs:int=1) -> Array:
         """

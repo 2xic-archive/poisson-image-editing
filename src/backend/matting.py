@@ -22,19 +22,25 @@ class matting(image_handler.ImageHandler, poisson.poisson):
 	"""
 	def __init__(self, target_path="./files/test_images/target.png", source_path="./files/test_images/source.png",
 				 color=True):
-		target_path = "./files/test_images/target.png"
-		source_path = "./files/test_images/source.png"
+	#	target_path = "./files/test_images/target.jpg"
+	#	source_path = "./files/test_images/ntnu.jpg"
 
 		image_handler.ImageHandler.__init__(self, target_path, color)
 		poisson.poisson.__init__(self)
 		self.alpha = 0.2
 
 		# currently no good support for non 2d array
-		self.mode_poisson = self.EXPLICIT
-
+		#self.mode_poisson = self.EXPLICIT
+		#
+		#
+		
 		# the bird
 		self.source = image_handler.ImageHandler(source_path, color)
 		self.target = self.data.copy()
+
+#		print((self.get_laplace_explicit(self.source.data[:, :, 0])- self.get_laplace_implicit(self.source.data[:, :, 0])[1:-1, 1:-1]).sum())
+#		print((self.get_laplace_explicit(self.source.data[:, :, 0])- self.get_laplace_implicit(self.source.data[:, :, 0])[1:-1, 1:-1]).sum())
+#		exit(0)
 
 		# NOTE : If this is wide the effect will go badly (I tried without having this set and you
 		# get a ugly border)
@@ -65,14 +71,13 @@ class matting(image_handler.ImageHandler, poisson.poisson):
 		TODO : Problem, since the image has extra dimension the implicit method is not happy
 				I think the way to solve it is to iterate over each channel
 		"""
-		h = lambda x: 0
-		operator = lambda : self.get_laplace(crop_area(self.target)) - self.get_laplace(crop_area(self.source.data))  #self.get_laplace(self.data)
+		h = lambda i: self.get_laplace(crop_area(self.source.data)[:, :, i])
+		operator = lambda i=None: self.get_laplace(crop_area(self.target)[:, :, i]) 
 		working_area = self.solve(working_area,operator, h)
 
 
 		# TODO : make this "nice"
-		self.data[self.area[0][0]:self.area[1][0],
-		self.area[0][1]:self.area[1][1]] = working_area.clip(0, 1)
+		self.data[self.area[0][0]:self.area[1][0], self.area[0][1]:self.area[1][1]] = working_area.clip(0, 1)
 
 	def fit(self, epochs=1) -> matting:
 		"""
