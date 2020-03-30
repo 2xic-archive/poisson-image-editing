@@ -16,7 +16,7 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 	def __init__(self, path, color=False):
 		image_handler.ImageHandler.__init__(self, path, color)
 		poisson.poisson.__init__(self)
-		boundary.Boundary.__init__(self)
+		boundary.Boundary.__init__(self, self.data.copy())
 		self.alpha: float = 0.25
 		self.lambda_size: float = 0.1
 		#self.data_copy = self.data.copy()
@@ -45,8 +45,9 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		# TODO : Seems like data attachment works, but it still "flickers" after some iterations, figure out why 
 		h = lambda x: self.common_shape(self.lambda_size * (self.data - self.data_copy))
 		operator = lambda : self.get_laplace(self.data)
-		self.data = self.solve(self.data,operator, h) 
+		self.data = self.solve(self.data,operator, h).clip(0, 1) 
 		self.data = self.neumann(self.data)
+#		self.data = self.diriclet(self.data)
 
 #		self.data[1:-1, 1:-1] += (self.alpha * laplace) - (self.lambda_size * (self.data[1:-1, 1:-1] - self.data_copy[1:-1, 1:-1]))
 #		self.data = self.data.clip(0, 1)

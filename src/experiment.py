@@ -10,7 +10,6 @@ import numpy as np
 
 
 x = hdr_image_handler.hdr_handler()
-
 radiance = x.get_radiance()
 
 #plt.plot(radiance[:, 0])

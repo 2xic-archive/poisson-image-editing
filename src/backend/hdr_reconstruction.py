@@ -4,7 +4,7 @@ from engine import image_handler
 
 # TODO : http://www.pauldebevec.com/Research/HDR/debevec-siggraph97.pdf
 
-class hdr_reconstruction(image_handler.ImageHandle):
+class hdr_reconstruction(image_handler.ImageHandler):
 	"""
 	This class describes a HDR image.
 

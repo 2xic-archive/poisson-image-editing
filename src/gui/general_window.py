@@ -13,10 +13,11 @@ class general_window(interface_class):
     load_extra : lambda
         a lambda function used to parse a load extra content
     """
-    def __init__(self, pixmap_converter=None, load_extra=None):
+    def __init__(self, pixmap_converter=None, load_extra=None, load_before=None):
         interface_class.__init__(self)
         self.pixmap_converter = pixmap_converter
         self.load_extra = load_extra
+        self.load_before = load_before
 
     def init_UI(self):
         """
@@ -39,6 +40,13 @@ class general_window(interface_class):
         self.update_geometry(self.pixmap.width(), 20, element_id="mode", y=5)
 
         """
+        Make sure elements that should be loaded before is laoded
+        """
+        if not self.load_before is None:
+            self.load_before(None)
+
+
+        """
 		Showing the epoch count label
 		"""
         self.epoch_label = self.add_label("epochs")
@@ -49,6 +57,7 @@ class general_window(interface_class):
 		"""
         self.epochSlider = self.add_slider('How many epochs to run for?', action=self.epochs_change)
         self.update_geometry(self.pixmap.width(), 30)
+
 
         """
 		Showing the run button

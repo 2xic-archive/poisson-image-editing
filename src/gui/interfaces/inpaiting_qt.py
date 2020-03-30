@@ -7,11 +7,11 @@ class inpait_window(general_window):
 	This class describes an inpait window.
 	"""
 	def __init__(self, parent=None):	
-		general_window.__init__(self, load_extra=lambda x: self.load_extra_now())
+		general_window.__init__(self, load_extra=lambda x: self.load_extra_now(), load_before=lambda x: self.load_before_now())
 		self.method = inpaiting.inpaint(self.image)
 		self.input_image = self.method.get_data().copy()
 
-	def load_extra_now(self):
+	def load_before_now(self):
 		"""
 		Adds the option to remove information
 		"""
@@ -24,6 +24,7 @@ class inpait_window(general_window):
 		self.noise_button = self.add_button("Remove", lambda x: QTimer.singleShot(100, lambda: self.update_image_noise()))
 		self.update_geometry(self.pixmap.height(), 30)		
 
+	def load_extra_now(self):
 		"""
 		Generate the extra row
 		"""

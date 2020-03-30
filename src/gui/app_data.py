@@ -103,13 +103,18 @@ class App(QMainWindow):
         view.show()
         self.hide()
 
+
+    @pyqtSlot()
+    def update_image_label(self):
+         self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))   
+
     def update_image(self):
         """
         Wrapper to nicely update the image when preform a iteration from the backend
         """
         if self.epoch < self.epochSlider.value():
             self.method.fit(epochs=1)
-            self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))
+            self.update_image_label()
             self.epoch += 1
             self.total_epochs += 1
             self.epochs_change()

@@ -1,9 +1,11 @@
 from PyQt5.QtWidgets import QComboBox, QLabel
 from PyQt5.QtWidgets import QPushButton, QSlider
+from PyQt5.QtWidgets import QCheckBox
 from PyQt5.QtCore import Qt
 from gui.app_data import *
 from gui.general import pil2pixmap
 from typing import Callable
+
 
 class screen_element:
     """
@@ -204,6 +206,13 @@ class interface_class(App):
         slider.valueChanged.connect(action)
         self.screen_elements.append(screen_element(slider))
         return slider
+
+    def add_checkbox(self, text, action: Callable):
+        box = QCheckBox(text, self)
+        box.stateChanged.connect(action)
+
+        self.screen_elements.append(screen_element(box))
+        return box
 
     def add_button(self, text, action, setEnabled=True):
         """

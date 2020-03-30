@@ -22,8 +22,11 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
     def __init__(self, path: str, color: bool = False):
         if not path is None:
             image_handler.ImageHandler.__init__(self, path, color)
+            boundary.Boundary.__init__(self, self.data.copy())
+        else:
+            boundary.Boundary.__init__(self)
+
         poisson.poisson.__init__(self)
-        boundary.Boundary.__init__(self)
 
         self.alpha = 0.25
         self.mask = None
@@ -43,6 +46,9 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 			sets the data
 		"""
         self.data = data
+        #self.u0 = 
+        #self.data.copy()
+     #   self.set_u0(self.data.copy())
 
     def set_mask(self, mask) -> None:
         """
@@ -106,7 +112,8 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
             self.data = (self.data * (1 - self.mask)) + (self.original_data * (self.mask))
         else:
             self.data = (self.data * (self.mask)) + abs(self.original_data * (1 - self.mask))
-        self.data = self.neumann(self.data)
+#        self.data = self.neumann(self.data)
+        self.data = self.diriclet(self.data)
 
     def fit(self, original=None, data=None, mask=None, epochs:int=1) -> Array:
         """

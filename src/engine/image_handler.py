@@ -38,20 +38,29 @@ class ImageHandler:
             self.color = color
             '''
 
+    def change_color_state(self):
+        self.color =  not self.color
+        self.data = self.original_data.copy()
+        self.process_color()
+
     def resize(self, scale=8):
         im = Image.open(self.path)
         width, height = im.size
         im = im.resize((width//scale, height//scale))
         self.process(im)
 
-    def process(self, image):
-        self.data = np.asarray(image, dtype="float64").copy()
+    def process_color(self):
+        self.original_data = self.data.copy()
         if not self.color and not len(self.data.shape) == 2:
             self.data = self.covert_single_shape()
             self.data = self.convert_black_and_white()
         else:
             self.data = self.convert_color()
         self.data_copy = self.data.copy()
+
+    def process(self, image):
+        self.data = np.asarray(image, dtype="float64").copy()
+        self.process_color()
 
     def set_data(self, data: Array):
         """
