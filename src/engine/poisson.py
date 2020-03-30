@@ -91,7 +91,11 @@ class poisson:
             # so a problem is how do you decalre if you have used the laplace or not ? 
             data[1:-1, 1:-1] += operator() - h(data)
         elif self.mode_poisson == self.IMPLICIT:
-            data[:, :] = operator() - h(data)
+            if(len(data.shape) == 3):
+                for i in range(data.shape[-1]):
+                    data[:, :, i] = operator(i) - h(i=i)
+            else:
+                data[:, :] = operator() - h(data)
         else:
             raise Exception("Not supported")
         return data

@@ -34,7 +34,13 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
     # self.data = self.data.mean(axis=2)
 
     def h(self) -> Array:
-        g = np.sum(self.data_copy[:, :, i] for i in range(self.data_copy.shape[-1])) / np.sqrt(3)
+#        g = np.sum(self.data_copy[:, :, i] for i in range(self.data_copy.shape[-1])) / np.sqrt(3)
+
+#        print(np.sum(self.get_gradient_norm(self.data_copy)[:, :, i] for i in range(self.data_copy.shape[-1])) / np.sqrt(3))        
+ #       print(np.sum(self.get_gradient_norm(self.data_copy)[:, :, i] for i in range(3)))#.shape)
+        g = np.sum(self.get_gradient_norm(self.data_copy)[:, :, i] for i in range(3))/ np.sqrt(3)
+
+
 
         rgb_gradient = np.sum(self.data_copy[:, :, i] for i in range(self.data_copy.shape[-1]))
         rgb_sx, rgb_sy = self.get_gradient(rgb_gradient)
