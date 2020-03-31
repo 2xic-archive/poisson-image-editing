@@ -4,6 +4,8 @@ from backend import blurring
 
 from gui.general import get_path
 from engine.image_handler import ImageHandler
+import numpy as np
+from engine import boundary
 
 
 def get_mask(path: str) -> list:
@@ -27,7 +29,7 @@ def get_mask(path: str) -> list:
     return results
 
 
-class anonymous(image_handler.ImageHandler, poisson.poisson):
+class anonymous(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
     """
     This class describes a anymous image.
 
@@ -45,6 +47,8 @@ class anonymous(image_handler.ImageHandler, poisson.poisson):
     def __init__(self, path: str, color: bool = False):
         image_handler.ImageHandler.__init__(self, path, color)
         poisson.poisson.__init__(self)
+        boundary.Boundary.__init__(self)
+
         self.alpha: float = 0.1
         self.mask = get_mask(path)
         self.u0 = self.data.copy()
@@ -58,6 +62,9 @@ class anonymous(image_handler.ImageHandler, poisson.poisson):
         for mask in self.mask:
             blur.set_data(self.data.copy()[mask[0]:mask[1], mask[2]:mask[3]])
             self.data[mask[0]:mask[1], mask[2]:mask[3]] = blur.iteration()
+            data_mask = np.zeros((self.data.shape))
+            data_mask[mask[0]:mask[1], mask[2]:mask[3]] = 1
+            self.data = self.diriclet(self.data, data_mask)
 
     def fit(self, epochs: int):
         """

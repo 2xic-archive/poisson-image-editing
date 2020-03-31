@@ -25,18 +25,7 @@ class ImageHandler:
             image = Image.open(path)
             image.load()
             self.process(image)
-            '''
-            image = Image.open(path)
-            image.load()
-            self.data = np.asarray(image, dtype="float64").copy()
-            if not color and not len(self.data.shape) == 2:
-                self.data = self.covert_single_shape()
-                self.data = self.convert_black_and_white()
-            else:
-                self.data = self.convert_color()
-            self.data_copy = self.data.copy()
-            self.color = color
-            '''
+
 
     def change_color_state(self):
         self.color =  not self.color

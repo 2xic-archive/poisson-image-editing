@@ -73,8 +73,8 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson):
         self.inpaint.alpha = 0.05
         self.inpaint.set_demosaicing()
 
-        operator = lambda i: self.inpaint.fit(self.rgb_mosaic[:, :, i], self.results[:, :, i],
-                                                     self.mask[:, :, i])#self.get_laplace(self.data)
+        operator = lambda i: self.inpaint.fit(self.rgb_mosaic[:, :, i], self.results[:, :, i], self.mask[:, :, i])
+        #self.get_laplace(self.data)
         self.data = self.solve(self.results, operator) 
 
         '''
