@@ -1,6 +1,8 @@
-from gui.app_data import *
+from gui.app_data import App, pil2pixmap
 from gui.interface import interface_class
-
+from PIL import Image
+import numpy as np
+from PyQt5.QtCore import QTimer
 
 class general_window(interface_class):
     """
@@ -32,7 +34,6 @@ class general_window(interface_class):
         """
 		Showing the image
 		"""
-        #		print(self.pixmap_converter)
         self.label, self.pixmap = self.add_image(self.method.data, (
             lambda x: self.pixmap_converter(x)) if not self.pixmap_converter is None else (
             lambda x: Image.fromarray(255 * x)))

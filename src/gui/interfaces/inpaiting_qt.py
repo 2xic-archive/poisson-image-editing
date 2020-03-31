@@ -2,6 +2,8 @@ from backend import inpaiting
 from gui.general_window import *
 from extra.median_filter import median_filter
 
+from PyQt5.QtCore import pyqtSlot
+
 class inpait_window(general_window):
 	"""
 	This class describes an inpait window.

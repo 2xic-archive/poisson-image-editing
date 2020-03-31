@@ -27,9 +27,11 @@ class App(QMainWindow):
         self.image = image
         self.title = os.path.basename(self.image)
 
+
         self.epoch = 0
         self.total_epochs = 0
         self.timer = QTimer(self)
+
 
     def get_available_windows(self, INFILE):
         """
@@ -40,40 +42,10 @@ class App(QMainWindow):
         INFILE : str
             Makes sure we don't reload the file recursively
         """
-
-        import gui.interfaces.blurring_qt as blur_window
-        import gui.interfaces.inpaiting_qt as inpait_window
-        import gui.interfaces.contrast_qt as contrast_window
-        import gui.interfaces.demosaic_qt as demonsaic_window
-        import gui.interfaces.matting_qt as matting_window
-        import gui.interfaces.grayscale_qt as grayscale_window
-        import gui.interfaces.anonymizing_qt as anonymizing_window
-        import gui.interfaces.hdr_qt as hdr_window
-        import gui.interfaces.non_edge_blurring_qt as non_edge_blurring
-        self.WINDOWS = {
-
-        }
-        if blur_window.__file__ not in INFILE:
-            self.WINDOWS["Blurring"] = blur_window.blur_window()
-        if inpait_window.__file__ not in INFILE:
-            self.WINDOWS["Inpainting"] = inpait_window.inpait_window()
-        if contrast_window.__file__ not in INFILE:
-            self.WINDOWS["Contrasting"] = contrast_window.contrast_window()
-        if demonsaic_window.__file__ not in INFILE:
-            self.WINDOWS["Demosaicing"] = demonsaic_window.demonsaic_window()
-        if matting_window.__file__ not in INFILE:
-            self.WINDOWS["Matting"] = matting_window.matting_window()
-        if grayscale_window.__file__ not in INFILE:
-            self.WINDOWS["Grayscale"] = grayscale_window.grayscale_window()
-        if anonymizing_window.__file__ not in INFILE:
-            self.WINDOWS["Anonymous"] = anonymizing_window.anonymizing_window()
-        if anonymizing_window.__file__ not in INFILE:
-            self.WINDOWS["Edge preserving blur"] = anonymizing_window.anonymizing_window()
-        if non_edge_blurring.__file__ not in INFILE:
-            self.WINDOWS["Edge preserving blur"] = non_edge_blurring.non_edge_blurring_window()
-        if non_edge_blurring.__file__ not in INFILE:
-            self.WINDOWS["HDR"] = hdr_window.hdr_window()
-        return self.WINDOWS
+ #       self.WINDOWS = {
+#        }
+        global WINDOW_MANAGER
+        return WINDOW_MANAGER.filter(INFILE) #self.WINDOWS
 
     #   https://stackoverflow.com/questions/20243637/pyqt4-center-window-on-active-screen
     def center(self):
@@ -184,3 +156,8 @@ class App(QMainWindow):
         self.reset_button.setEnabled(False)
         self.method.reset()
         self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))
+
+
+
+
+

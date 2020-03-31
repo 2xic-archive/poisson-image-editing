@@ -6,6 +6,9 @@ from gui.app_data import *
 from gui.general import pil2pixmap
 from typing import Callable
 
+from gui.window_manager import *
+
+WINDOW_MANAGER = window()
 
 class screen_element:
     """
@@ -111,8 +114,13 @@ class interface_class(App):
         """
         mode = QComboBox(self)
         mode.addItem("Change mode")
-        for keys in self.get_available_windows(__file__):
+
+        global WINDOW_MANAGER
+        WINDOW_MANAGER.build()
+        self.WINDOWS = WINDOW_MANAGER.filter(__file__)
+        for keys in self.WINDOWS:
             mode.addItem(keys)
+
         mode.currentIndexChanged.connect(action)
 
         element = screen_element(mode)
@@ -236,3 +244,6 @@ class interface_class(App):
         action_button.setEnabled(setEnabled)
         self.screen_elements.append(screen_element(action_button))
         return action_button
+
+
+
