@@ -25,6 +25,15 @@ class inpait_window(general_window):
 
 		self.noise_button = self.add_button("Remove", lambda x: QTimer.singleShot(100, lambda: self.update_image_noise()))
 		self.update_geometry(self.pixmap.height(), 30)		
+		"""
+		Turn off or on the colors
+		"""
+		self.color_checkbox = self.add_checkbox('Use color?', action=self.update_image_color) 
+		self.update_geometry(self.pixmap.width(), 30)
+
+	def update_image_color(self, state):
+		self.method.change_color_state()
+		self.update_image_label()
 
 	def load_extra_now(self):
 		"""
@@ -43,7 +52,8 @@ class inpait_window(general_window):
 		self.update_geometry(self.pixmap.width(), 30, x=self.PADDING, y=self.action_button.pos().y())			
 
 	def pixmap_handler(self, data):
-		return  (self.pixmap_converter(x)) if not self.pixmap_converter is None else (lambda x: Image.fromarray(255 * x))(data)
+#		print(self.pixmap_converter)
+		return  (self.pixmap_converter(x)) if not self.pixmap_converter is None else (lambda x: Image.fromarray((255 * x).astype(np.uint8)))(data)
 
 	def update_median(self):
 		"""
@@ -68,8 +78,14 @@ class inpait_window(general_window):
 		Update the image after noise was added
 		"""
 		self.method.destroy_information(self.noise_slider.value())		
-		self.extra_label.setPixmap(pil2pixmap(Image.fromarray(255 * self.method.data)))
-		self.label.setPixmap(pil2pixmap(Image.fromarray(255 * self.method.data)))
+
+#		self.method.show()
+#		print(Image.fromarray((255 * self.method.data).astype(np.uint8)).show())
+#		exit(0)
+#		print(self.method.data.max())
+#		print(self.method.data.min())
+		self.extra_label.setPixmap(pil2pixmap(self.pixmap_handler(self.method.data)))
+		self.label.setPixmap(pil2pixmap(self.pixmap_handler(self.method.data)))
 
 		self.extra_action_button.setEnabled(True)
 		self.action_button.setEnabled(True)

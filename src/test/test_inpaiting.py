@@ -43,7 +43,7 @@ def test_basics(qtbot):
     # old_image = inpaiting_object.get_data().copy()
 
     inpaiting_object.mask = ex.method.mask.copy()
-    inpaiting_object.original_data = ex.method.original_data.copy()
+    inpaiting_object.original_data_copy = ex.method.original_data_copy.copy()
     inpaiting_object.data = ex.method.data.copy()
 
     # press the button and wait for action

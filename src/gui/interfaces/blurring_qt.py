@@ -20,7 +20,7 @@ class blur_window(general_window):
 		self.lambda_size = self.add_slider("How strong should the blur be?", self.epochs_change)
 		self.update_geometry(self.pixmap.height(), 30)
 
-		self.data_attachemnt = self.add_button("Data attachment", lambda x: QTimer.singleShot(100, lambda: self.update_image_noise()))
+		self.data_attachemnt = self.add_button("Data attachment", lambda x: QTimer.singleShot(100, lambda: self.update_lambda()))
 		self.update_geometry(self.pixmap.height(), 30)	
 
 		"""
@@ -30,16 +30,9 @@ class blur_window(general_window):
 		self.update_geometry(self.pixmap.width(), 30)
 
 	def update_image_color(self, state):
-		#if state == QtCore.Qt.Checked:
-		#	print("uf")
-#			print(self.method.data)
 		self.method.change_color_state()
 		self.update_image_label()
-#			print(self.method.data)
-	#		self.update_image_noise()
-#		else:
-#			print("ye")	
 
-	def update_image_noise(self):
-		self.method.set_lambda_size(self.lambda_size.value()/10 )
+	def update_lambda(self):
+		self.method.set_lambda_size(self.lambda_size.value()/self.lambda_size.maximum() ) 
 		self.run_method()

@@ -4,7 +4,7 @@ from engine import poisson
 from nptyping import Array
 
 class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
-    """
+	"""
 	This class describes a inpaited image.
 
 	This contains all the functions needed to inpait a image over multiple iterations
@@ -16,28 +16,28 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 	color : bool
 		if the image should be shown with colors
 	"""
-    mode: str
-    alpha: float
+	mode: str
+	alpha: float
 
-    def __init__(self, path: str, color: bool = False):
-        if not path is None:
-            image_handler.ImageHandler.__init__(self, path, color)
-            boundary.Boundary.__init__(self, self.data.copy())
-        else:
-            boundary.Boundary.__init__(self)
+	def __init__(self, path: str, color: bool = False):
+		if not path is None:
+			image_handler.ImageHandler.__init__(self, path, color)
+			boundary.Boundary.__init__(self, self.data.copy())
+		else:
+			boundary.Boundary.__init__(self)
 
-        poisson.poisson.__init__(self)
+		poisson.poisson.__init__(self)
 
-        self.alpha = 0.25
-        self.mask = None
-        self.copy = None
-        self.mode = "inpait"
+		self.alpha = 0.25
+		self.mask = None
+		self.copy = None
+		self.mode = "inpait"
 
-    def set_demosaicing(self) -> None:
-        self.mode = "demosaicing"
-        
-    def set_data(self, data) -> None:
-        """
+	def set_demosaicing(self) -> None:
+		self.mode = "demosaicing"
+		
+	def set_data(self, data) -> None:
+		"""
 		Sets the data used by the class
 
 		Parameters
@@ -45,13 +45,13 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		data : ndarray
 			sets the data
 		"""
-        self.data = data
-        #self.u0 = 
-        #self.data.copy()
-     #   self.set_u0(self.data.copy())
+		self.data = data
+		#self.u0 = 
+		#self.data.copy()
+	 #   self.set_u0(self.data.copy())
 
-    def set_mask(self, mask) -> None:
-        """
+	def set_mask(self, mask) -> None:
+		"""
 		Sets the mask used by the class
 
 		Parameters
@@ -59,10 +59,10 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		mask : ndarray
 			sets the mask
 		"""
-        self.mask = mask
+		self.mask = mask
 
-    def set_orignal(self, original) -> None:
-        """
+	def set_orignal(self, original) -> None:
+		"""
 		Sets the original verison of the data used by the class
 
 		Parameters
@@ -70,10 +70,10 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		original : ndarray
 			sets the original
 		"""
-        self.original_data = original
+		self.original_data_copy = original
 
-    def destroy_information(self, strength=2) -> Array:
-        """
+	def destroy_information(self, strength=2) -> Array:
+		"""
 		Destroys parts of the image
 
 		Parameters
@@ -81,42 +81,46 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		strength : int
 			a number from 1 to 10, this is used to set the level of noise added
 		"""
-        noise = np.random.randint(0, 10, size=self.data.shape)
-        mask = np.zeros(self.data.shape)
+		noise = np.random.randint(0, 10, size=self.data.shape[:2])
+		mask = np.zeros(self.data.shape[:2])
 
-        mask[strength < noise] = 1
-        mask[noise < strength] = 0
-        #		print(mask)
-        self.data *= mask
-        self.mask = mask
-        self.original_data = np.copy(self.data)
-        return mask
+		mask[strength < noise] = 1
+		mask[noise < strength] = 0
+		#		print(mask)
+		if(len(self.data.shape) == 3 ):
+			for i in range(self.data.shape[-1]):
+				 self.data[:, :, i] *= mask
+		else:
+			self.data *= mask
 
-    def iteration(self) -> None:
-        """
+		self.mask = mask
+		self.original_data_copy = np.copy(self.data)
+		return mask
+
+	def iteration(self) -> None:
+		"""
 		Does one iteration of the method.
 
 		"""
-        operator = lambda : self.get_laplace(self.data)
-        self.data = self.solve(self.data, operator) 
+		operator = lambda i=None: self.get_laplace(self.data) if i is None else (self.get_laplace(self.data[:, :, i]))
 
-        """
+		"""
 		mask content
 			original value = 1 
 			infomation lost = 0 
 		"""
-        """
-			TODO: Figure out what is wrong here
-		"""
-        if (self.mode == "inpait"):
-            self.data = (self.data * (1 - self.mask)) + (self.original_data * (self.mask))
-        else:
-            self.data = (self.data * (self.mask)) + abs(self.original_data * (1 - self.mask))
-        self.data = self.neumann(self.data)
-#        self.data = self.diriclet(self.data, self.mask)
+		response = self.solve(self.data, operator)
+		if(len(self.data.shape) == 3):
+			for i in range(self.data.shape[-1]):
+				self.data[:, :, i] = (response[:, :, i] * (1 - self.mask)) + (self.original_data_copy[:, :, i] * (self.mask))
+		else:
+			self.data = (self.data * (1 - self.mask)) + (self.original_data_copy * (self.mask))
+			
+		self.data = self.neumann(self.data)
 
-    def fit(self, original=None, data=None, mask=None, epochs:int=1) -> Array:
-        """
+
+	def fit(self, original=None, data=None, mask=None, epochs:int=1) -> Array:
+		"""
 		Makes multiple iterations of the method
 
 		Calls iteration as many times as spesifed in by the parameter epochs
@@ -132,15 +136,15 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		epochs : int
 			The iteration count
 		"""
-        if not mask is None:
-            self.set_mask(mask)
-        if not original is None:
-            self.set_orignal(original)
-        if not data is None:
-            self.set_data(data)
-        if (self.mask is None):
-            raise Exception("You need to set a mask")
+		if not mask is None:
+			self.set_mask(mask)
+		if not original is None:
+			self.set_orignal(original)
+		if not data is None:
+			self.set_data(data)
+		if (self.mask is None):
+			raise Exception("You need to set a mask")
 
-        for i in range(epochs):
-            self.iteration()
-        return self.data
+		for i in range(epochs):
+			self.iteration()
+		return self.data

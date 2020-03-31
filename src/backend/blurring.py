@@ -16,16 +16,9 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 	def __init__(self, path, color=False):
 		image_handler.ImageHandler.__init__(self, path, color)
 		poisson.poisson.__init__(self)
-		boundary.Boundary.__init__(self)#, self.data.copy())
+		boundary.Boundary.__init__(self)
 		self.alpha: float = 0.25
 		self.lambda_size: float = 0.1
-		#self.data_copy = self.data.copy()
-
-
-#		print((self.get_laplace_explicit(self.data)- self.get_laplace_implicit(self.data)[1:-1, 1:-1]).sum())
-#		print((self.get_laplace_explicit(self.data)- self.get_laplace_implicit(self.data)[1:-1, 1:-1]).sum())
-#		exit(0)
-
 
 	def set_lambda_size(self, lambda_size) -> None:
 		"""

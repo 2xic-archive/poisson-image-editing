@@ -4,6 +4,8 @@ import unittest
 from PyQt5 import QtCore
 import numpy as np
 from backend import blurring
+#from test.general import *
+import test.general 
 from gui.interfaces import blurring_qt
 
 # Because travis does not have a screen ~
@@ -26,6 +28,39 @@ class test_blur(unittest.TestCase):
 		old_image = blur_object.get_data().copy()
 		blur_object.fit(1)
 		self.assertFalse(np.all(old_image == blur_object))
+
+def test_color_switch(qtbot):
+	ex = blurring_qt.blur_window()
+	ex.init_UI()
+	ex.show()
+
+	old_image = ex.method.data.copy()
+	
+	qtbot.waitUntil(lambda: ex.color_checkbox.checkState() == QtCore.Qt.Unchecked, timeout=10000)
+
+	with qtbot.waitExposed(ex.color_checkbox, timeout=500):
+		qtbot.mousePress(ex.color_checkbox, QtCore.Qt.LeftButton, delay=10)
+		qtbot.mouseRelease(ex.color_checkbox, QtCore.Qt.LeftButton, delay=10)
+
+	ex.color_checkbox.setChecked(True)
+
+	qtbot.waitUntil(lambda: ex.color_checkbox.checkState() == QtCore.Qt.Checked, timeout=10000)
+#	qtbot.waitUntil(lambda: not "total" in ex.epoch_label.text().lower(), timeout=10000)
+
+	qtbot.waitUntil(lambda: not ex.method.data.shape == old_image.shape, timeout=10000)
+
+#	assert(not ex.method.data.shape == old_image.shape)	
+
+	#	Reset back!
+
+	ex.color_checkbox.setChecked(False)
+	qtbot.waitUntil(lambda: ex.color_checkbox.checkState() == QtCore.Qt.Unchecked, timeout=10000)
+	qtbot.waitUntil(lambda: not "total" in ex.epoch_label.text().lower(), timeout=10000)
+
+	qtbot.waitUntil(lambda: ex.method.data.shape == old_image.shape, timeout=10000)
+
+#	assert(np.allclose(ex.method.data, old_image))	
+
 
 
 def test_basics(qtbot):
@@ -54,6 +89,12 @@ def test_basics(qtbot):
 	qtbot.waitUntil(lambda: not "total" in ex.epoch_label.text().lower(), timeout=10000)
 	assert(not np.allclose(ex.method.data, blur_object.data))
 
+def test_noisy_clicker(qtbot):
+	ex = blurring_qt.blur_window()
+	ex.init_UI()
+	ex.show()
+
+	test.general.test_rest(qtbot, ex)
 
 
 

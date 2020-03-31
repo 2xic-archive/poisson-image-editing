@@ -20,6 +20,7 @@ class screen_element:
         self.width = None
         self.x = 0
         self.y = -1
+        self.index_id = 0
 
     def get_size_position(self):
         """

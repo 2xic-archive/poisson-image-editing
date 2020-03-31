@@ -22,7 +22,7 @@ class App(QMainWindow):
     total_epochs: int
     epoch: int
 
-    def __init__(self, image=get_path(__file__) + '../files/test_images/lena.png'):
+    def __init__(self, image='./files/test_images/lena.png'):
         super().__init__()
         self.image = image
         self.title = os.path.basename(self.image)

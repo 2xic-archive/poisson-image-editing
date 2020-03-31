@@ -33,6 +33,9 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 
 	# self.data = self.data.mean(axis=2)
 
+	def reset(self):
+		self.data = self.data_copy.copy()
+
 	def h(self) -> Array:
 #        g = np.sum(self.data_copy[:, :, i] for i in range(self.data_copy.shape[-1])) / np.sqrt(3)
 

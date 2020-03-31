@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from engine import image_handler
 from engine import poisson
-from gui.general import get_path
 
 
 class matting(image_handler.ImageHandler, poisson.poisson):
