@@ -66,19 +66,22 @@ class matting(image_handler.ImageHandler, poisson.poisson):
 	#	self.preview_box()
 
 	def preview_box(self):
+		"""
+		Preview the crop box
+		"""
 		self.target[self.area[0][0]:self.area[1][0],
 							  self.area[0][1]:self.area[1][1], :] = self.source.data[:, :, :]
 		self.data = self.target
 		self.show()
 		exit(0)
 
-#		print(self.area)
 
 	def reset_full(self) -> None:
-		self.source.reset()# = image_handler.ImageHandler(self.source_path, color)
+		"""
+		Reset the image source and target
+		"""
+		self.source.reset()
 		self.reset()
-#		self.target = self.data.copy()
-
 
 	def iteration(self) -> None:
 		"""

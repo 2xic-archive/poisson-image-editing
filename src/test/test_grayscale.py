@@ -32,4 +32,3 @@ def test_noisy_clicker(qtbot):
 #		qtbot.waitUntil(lambda: ex.action_button.isEnabled(), timeout=3000) 
 
 	test.general.test_rest(qtbot, ex)#, change_dimension=test_extra)
-

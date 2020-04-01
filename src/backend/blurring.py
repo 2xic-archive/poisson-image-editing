@@ -36,22 +36,20 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		Does one iteration of the method.
 
 		"""
-		assert(0 <= self.lambda_size <= 1)
-	#	laplace = self.get_laplace()
-	#	print(self.lambda_size)
-	#	old = self.data.copy()
+		assert 0 <= self.lambda_size <= 1, "lamda is out of scope [0, 1]"
+		self.verify_integrity()
+
 
 		# TODO : Seems like data attachment works, but it still "flickers" after some iterations, figure out why 
+
 		h = lambda x=None, i=None: (self.common_shape(self.lambda_size * (self.data - self.data_copy))) if i is None else (self.common_shape(self.lambda_size * (self.data[:, :, i] - self.data_copy[:, :, i])))
 		operator = lambda i=None: self.get_laplace(self.data) if i is None else self.get_laplace(self.data[:, :, i])
-		self.data = self.solve(self.data,operator, h).clip(0, 1) 
-		self.data = self.neumann(self.data)
-#		self.data = self.diriclet(self.data)
 
-#		self.data[1:-1, 1:-1] += (self.alpha * laplace) - (self.lambda_size * (self.data[1:-1, 1:-1] - self.data_copy[1:-1, 1:-1]))
-#		self.data = self.data.clip(0, 1)
-#		self.data = self.data.clip(0, 1)
-#		print((old - self.data).sum())
+		self.data = self.solve(self.data,operator, h).clip(0, 1) 
+
+		# TODO : Make user have the option to choose
+		self.data = self.neumann(self.data)
+
 		return self.data
 
 	def fit(self, epochs):

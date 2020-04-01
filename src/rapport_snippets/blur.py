@@ -82,18 +82,52 @@ def test_blur_poision():
 	blurring_obj.fit(50)
 	#blurring_obj.show()
 
-test_blur_poision()
-test_blur_filter()
+#test_blur_poision()
+#test_blur_filter()
 
 #imshow(very_blurred)
 #plt.show()
 
-'''
-epoch_count = {
-	0.5:[3, 5, 10],
-	0.75:[3, 5, 10]
-}
 
-results_doc = compile_doc(blurring_obj, epoch_count, "./rapport_snippets/output/blur/", "glatting/blur")
-results_doc.save("rapport_snippets/output/blur/results.tex")
-'''
+def compile():
+	color = True
+	epoch_count = {
+		0.5:[3, 5, 10],
+		0.75:[3, 5, 10]
+	}
+	for color in [True, False]:
+	#        self.mode_poisson = self.EXPLICIT 0
+	#        self.mode_poisson = self.IMPLICIT 1
+		for numeric in [0, 1]:
+			blurring_obj = blurring.blur("./files/test_images/lena.png", color)
+			blurring_obj.mode_poisson = numeric
+
+			naming = "_color" if color else "_gray"
+			naming += "_explicit" if blurring_obj.mode_poisson == 0 else "_implicit"
+
+			if not os.path.isdir("./rapport_snippets/output/blur{}/".format(naming)):
+				os.mkdir("./rapport_snippets/output/blur{}/".format(naming))
+
+			results_doc = compile_doc(blurring_obj, epoch_count, "./rapport_snippets/output/blur{}/".format(naming), "glatting/blur{}".format(naming))
+			results_doc.save("rapport_snippets/output/blur{}/results.tex".format(naming))
+
+
+#if(color):
+#	results_doc = compile_doc(blurring_obj, epoch_count, "./rapport_snippets/output/blur_color/", "glatting/blur_color")
+#	results_doc.save("rapport_snippets/output/blur_color/results.tex")
+#else:
+#	results_doc = compile_doc(blurring_obj, epoch_count, "./rapport_snippets/output/blur/", "glatting/blur")
+#	results_doc.save("rapport_snippets/output/blur/results.tex")
+
+
+
+
+
+
+
+
+
+
+
+
+

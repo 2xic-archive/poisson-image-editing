@@ -31,10 +31,6 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		self.alpha = 0.25
 		self.mask = None
 		self.copy = None
-		self.mode = "inpait"
-
-	def set_demosaicing(self) -> None:
-		self.mode = "demosaicing"
 		
 	def set_data(self, data) -> None:
 		"""
@@ -72,7 +68,7 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		self.original_data_copy = original
 
-	def destroy_information(self, strength=2) -> Array:
+	def destroy_information(self, strength=2, create_new_mask=False) -> Array:
 		"""
 		Destroys parts of the image
 
@@ -81,21 +77,21 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		strength : int
 			a number from 1 to 10, this is used to set the level of noise added
 		"""
-		noise = np.random.randint(0, 10, size=self.data.shape[:2])
-		mask = np.zeros(self.data.shape[:2])
+		if self.mask is None or create_new_mask:
+			noise = np.random.randint(0, 10, size=self.data.shape[:2])
+			mask = np.zeros(self.data.shape[:2])
 
-		mask[strength < noise] = 1
-		mask[noise < strength] = 0
-		#		print(mask)
+			mask[strength < noise] = 1
+			mask[noise < strength] = 0
+			self.mask = mask
+		
 		if(len(self.data.shape) == 3 ):
 			for i in range(self.data.shape[-1]):
-				 self.data[:, :, i] *= mask
+				 self.data[:, :, i] *= self.mask
 		else:
-			self.data *= mask
-
-		self.mask = mask
+			self.data *= self.mask
 		self.original_data_copy = np.copy(self.data)
-		return mask
+		return self.mask
 
 	def iteration(self) -> None:
 		"""

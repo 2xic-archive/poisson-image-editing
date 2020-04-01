@@ -39,11 +39,11 @@ def intensity():
 	plt.savefig("rapport_snippets/output/contrast/intensity_adaptive.png")
 	exit(0)
 
+#intensity()
 
-intensity()
+def compile():
+	results_doc = compile_doc(contrast_obj, epoch_count, "./rapport_snippets/output/contrast/", "kontrastforsterkning", setup=lambda x: x.destroy_information(2))
 
-results_doc = compile_doc(contrast_obj, epoch_count, "./rapport_snippets/output/contrast/", "kontrastforsterkning", setup=lambda x: x.destroy_information(2))
-
-results_doc.save("rapport_snippets/output/contrast/results.tex")
+	results_doc.save("rapport_snippets/output/contrast/results.tex")
 
 
