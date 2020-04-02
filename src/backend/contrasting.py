@@ -33,44 +33,14 @@ class Contrast(image_handler.ImageHandler, poisson.poisson,boundary.Boundary):
 		"""
 		Does one iteration of the method.
 
-		"""
-	#	laplace = self.get_laplace()
-		#    TODO: check if this is correct. 
-#		self.data = self.solve(self.u0, 
-#			h=(lambda x:(self.k * self.get_laplace() * self.alpha)),
-#			results=self.data)
-#		h = lambda x: (self.lambda_size * (self.data - self.data_copy))
-		
-		operator = lambda : self.get_laplace(self.data) #self.common_shape(self.u0) * self.alpha
+		"""		
+		self.verify_integrity()
+
+		operator = lambda : self.get_laplace(self.data)
 		h = lambda x: self.h
-
-		"""
-		laplace = self.get_laplace()
-		#    TODO: check if this is correct. 
-		self.data[1:-1, 1:-1] += (self.u0[1:-1, 1:-1] - (self.k * laplace)) * self.alpha
-		self.data = self.data.clip(0, 1)
-		"""
 		
-		print(np.max(self.data))
-		print(np.min(self.data))
 		self.data = abs(self.solve(self.data, operator, h) ).clip(0,1)
-#		self.data = self.data.clip(0,1)
-
-#		print(np.max(self.data))
-#		print(np.min(self.data))
-
 		self.data = self.neumann(self.data)
-#		self.data = self.data.clip(0, 1)
-	
-
-#		self.data[1:-1, 1:-1] += (self.u0[1:-1, 1:-1] - (self.k * laplace)) * self.alpha
-		# ((laplace) - (self.k * self.u0[1:-1, 1:-1])) * self.alpha <- guess i had it backwards?
-#		self.data = self.data.clip(0, 1)
-
-
-		"""
-		TODO : Implement Neumann
-		"""
 
 	def fit(self, epochs=1):
 		"""
