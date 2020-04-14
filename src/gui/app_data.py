@@ -99,15 +99,14 @@ class App(QMainWindow):
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
 		file_name, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "",
-												  "All Files (*);;JPEG (*.jpeg);;jpg (*.jpg);;png (*.png)",
+												  "JPEG (*.jpeg);;jpg (*.jpg);;png (*.png)",
 												  options=options)
 		if file_name:
-			"""
-			TODO : Add custom files
-			Should not be 2 hard, however we have to figure how the image should be displayed as QT else will crash
-			"""
-			# self.label.setPixmap(pil2pixmap(self.pixmap_converter(self.method.data)))
-			raise Exception("Feature is not fully implemented (yet)")
+			movment_x, movment_y = self.method.change_photo(file_name)
+			self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))
+			self.label.move(movment_x, self.label.pos().y())
+		else:
+			print("No file selected")
 
 	def show_extra(self):
 		"""

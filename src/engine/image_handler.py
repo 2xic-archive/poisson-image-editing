@@ -20,11 +20,24 @@ class ImageHandler:
 			[TODO:description]
 		"""
 		if not path is None:
-			self.path = path
 			self.color = color
-			image = Image.open(path)
-			image.load()
-			self.process(image)
+			self.change_photo(path)
+
+	def change_photo(self, path):
+
+		self.path = path
+		image = Image.open(path)
+		image.load()
+
+		movment = [0, 0]
+		if hasattr(self, 'data'):
+			old_size = self.data.shape[:2]
+			image.thumbnail(old_size, Image.ANTIALIAS)
+			new_size = image.size
+			movment[0] = abs(old_size[0] - new_size[0]) / 2
+
+		self.process(image)
+		return movment
 
 	def verify_integrity(self):
 		"""
