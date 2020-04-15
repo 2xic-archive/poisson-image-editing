@@ -35,5 +35,5 @@ script:
   - coveralls
   - mypy main.py ./gui/
 
-
-
+git:
+  submodules: false

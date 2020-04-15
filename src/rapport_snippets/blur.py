@@ -89,7 +89,7 @@ def test_blur_poision():
 #plt.show()
 
 
-def compile():
+def compile(output_path="./rapport_snippets/output/glatting/"):
 	color = True
 	epoch_count = {
 		0.5:[3, 5, 10],
@@ -105,19 +105,13 @@ def compile():
 			naming = "_color" if color else "_gray"
 			naming += "_explicit" if blurring_obj.mode_poisson == 0 else "_implicit"
 
-			if not os.path.isdir("./rapport_snippets/output/blur{}/".format(naming)):
-				os.mkdir("./rapport_snippets/output/blur{}/".format(naming))
+			if not os.path.isdir("{}/blur{}/".format(output_path, naming)):
+				os.mkdir("{}/blur{}/".format(output_path, naming))
 
-			results_doc = compile_doc(blurring_obj, epoch_count, "./rapport_snippets/output/blur{}/".format(naming), "glatting/blur{}".format(naming))
-			results_doc.save("rapport_snippets/output/blur{}/results.tex".format(naming))
+			results_doc = compile_doc(blurring_obj, epoch_count, "{}/blur{}/".format(output_path, naming), 
+				"glatting/blur{}".format(naming))
+			results_doc.save("{}/blur{}/results.tex".format(output_path,naming))
 
-
-#if(color):
-#	results_doc = compile_doc(blurring_obj, epoch_count, "./rapport_snippets/output/blur_color/", "glatting/blur_color")
-#	results_doc.save("rapport_snippets/output/blur_color/results.tex")
-#else:
-#	results_doc = compile_doc(blurring_obj, epoch_count, "./rapport_snippets/output/blur/", "glatting/blur")
-#	results_doc.save("rapport_snippets/output/blur/results.tex")
 
 
 

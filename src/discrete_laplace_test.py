@@ -89,7 +89,7 @@ if __name__ == "__main__":
 	data_image = process(image.data)
 	new_size = image.data[1:-1,1:-1].shape
 
-	image_data = Image.fromarray(np.uint8(255 * ( data_image.reshape(new_size))))
+	image_data = Image.fromarray(np.uint8(255 * (np.fliplr(np.rot90(data_image.reshape(new_size), 3)))))
 	image_data.show()
 #	print(image.data.shape)
 

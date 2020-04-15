@@ -68,6 +68,10 @@ def compile_doc(method, alpha_epochs, path, path_latex="", extra=lambda x: x, re
 	if(results_doc is None):
 		results_doc = doc()
 
+	if not os.path.isdir(path):
+		os.mkdir(path)
+
+
 	for alpha,epochs in alpha_epochs.items():
 		for index, epoch in enumerate(epochs):
 			method.reset()

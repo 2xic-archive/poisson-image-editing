@@ -41,9 +41,10 @@ def intensity():
 
 #intensity()
 
-def compile():
-	results_doc = compile_doc(contrast_obj, epoch_count, "./rapport_snippets/output/contrast/", "kontrastforsterkning", setup=lambda x: x.destroy_information(2))
-
-	results_doc.save("rapport_snippets/output/contrast/results.tex")
-
+def compile(output_path="./rapport_snippets/output/"):
+	if not os.path.isdir(output_path):
+		os.mkdir(output_path)
+		
+	results_doc = compile_doc(contrast_obj, epoch_count, output_path, "kontrastforsterkning")#, setup=lambda x: x.destroy_information(2))
+	results_doc.save("{}/results.tex".format(output_path))
 

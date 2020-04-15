@@ -6,7 +6,7 @@ import numpy as np
 
 
 
-def compile():
+def compile(output_dir="demosaic"):
 	contrast_obj = demosaicing.Demosaic("./files/test_images/lena.png", True)
 
 	epoch_count = {
@@ -17,8 +17,8 @@ def compile():
 
 
 
-	results_doc = compile_doc(contrast_obj, epoch_count, "./rapport_snippets/output/demosaic/", "demosaic/demosaic")#,
+	results_doc = compile_doc(contrast_obj, epoch_count, "{}/demosaic/".format(output_dir), "demosaic/demosaic", extra=lambda x: x.simulate())#,
 
-	results_doc.save("rapport_snippets/output/demosaic/results.tex")
+	results_doc.save("{}/demosaic/results.tex".format(output_dir))
 
 

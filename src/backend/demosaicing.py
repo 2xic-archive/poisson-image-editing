@@ -32,7 +32,16 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson):
 	def reset(self):
 		self.data = self.data_copy.copy()
 		self.simulated = False
+		self.get_mosaic()
 		self.inpaint.data = self.mosaic        
+
+	def get_mosaic(self):
+		u = self.data
+		self.mosaic = np.zeros(u.shape[:2])  # Alloker plass
+		self.mosaic[::2, ::2] = u[::2, ::2, 0]  # R-kanal
+		self.mosaic[1::2, ::2] = u[1::2, ::2, 1]  # G-kanal
+		self.mosaic[::2, 1::2] = u[::2, 1::2, 1]  # G-kanal
+		self.mosaic[1::2, 1::2] = u[1::2, 1::2, 2]  # B-kanal
 
 	def simulate(self):
 		"""
@@ -41,12 +50,7 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson):
 		"""
 
 		u = self.data
-		self.mosaic = np.zeros(u.shape[:2])  # Alloker plass
-		self.mosaic[::2, ::2] = u[::2, ::2, 0]  # R-kanal
-		self.mosaic[1::2, ::2] = u[1::2, ::2, 1]  # G-kanal
-		self.mosaic[::2, 1::2] = u[::2, 1::2, 1]  # G-kanal
-		self.mosaic[1::2, 1::2] = u[1::2, 1::2, 2]  # B-kanal
-
+		self.get_mosaic()
 		self.rgb_mosaic = np.zeros(self.mosaic.shape + (3,))
 		self.rgb_mosaic[:, :, 0] = self.mosaic[:, :]
 		self.rgb_mosaic[:, :, 1] = self.mosaic[:, :]

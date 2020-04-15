@@ -5,7 +5,7 @@ import numpy as np
 
 
 
-def compile():
+def compile(output_dir="./rapport_snippets/output"):
 	contrast_obj = grayscale.grayscale("./files/test_images/lena.png", True)
 
 	epoch_count = {
@@ -15,8 +15,8 @@ def compile():
 	}
 
 
-	results_doc = compile_doc(contrast_obj, epoch_count, "./rapport_snippets/output/grayscale/", "grayscale/grayscale")
+	results_doc = compile_doc(contrast_obj, epoch_count, "{}/grayscale/".format(output_dir), "grayscale/grayscale")
 
-	results_doc.save("rapport_snippets/output/grayscale/results.tex")
+	results_doc.save("{}/grayscale/results.tex".format(output_dir))
 
 

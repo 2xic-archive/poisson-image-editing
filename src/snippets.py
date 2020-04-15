@@ -12,7 +12,20 @@ from rapport_snippets import demosaic
 from rapport_snippets import non_edge_blurring
 from rapport_snippets import grayscale
 from rapport_snippets import blur
+import os
 
 if __name__ == "__main__":
-#	contrasting.compile()	
-	blur.compile()
+	location = os.path.dirname(os.path.abspath(__file__))
+	location += "/" if not location.endswith("/") else ""
+	location += "../rapport/paper/"
+
+	blur.compile(location + "/glatting/")
+	contrasting.compile(location + "/kontrastforsterkning/contrast/")
+	matting.compile(location + "/sømløs kloning/")
+	inpaiting.compile(location + "/inpainting/")
+	anonymizing.compile(location + "/anonymisering/")
+	
+	demosaic.compile(location + "/demosaicing/")
+
+	non_edge_blurring.compile(location + "/glatting/")
+	grayscale.compile(location + "/farge_gråtone/")
