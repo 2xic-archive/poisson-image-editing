@@ -80,7 +80,7 @@ class App(QMainWindow):
 	def update_image(self):
 		"""
 		Wrapper to nicely update the image when preform a iteration from the backend
-		"""
+		"""		
 		if self.epoch < self.epochSlider.value():
 			self.method.fit(epochs=1)
 			self.update_image_label()
@@ -88,7 +88,10 @@ class App(QMainWindow):
 			self.total_epochs += 1
 			self.epochs_change()
 			self.reset_button.setEnabled(True)
+			QApplication.processEvents()
+			self.setWindowTitle("Calculating...")
 		else:
+			self.setWindowTitle(self.title)
 			self.reset_button.setEnabled(True)
 			self.timer.stop()
 

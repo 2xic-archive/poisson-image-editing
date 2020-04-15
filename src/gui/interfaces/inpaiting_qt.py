@@ -3,6 +3,7 @@ from gui.general_window import *
 from extra.median_filter import median_filter
 
 from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtWidgets import QApplication
 
 class inpait_window(general_window):
 	"""
@@ -60,7 +61,10 @@ class inpait_window(general_window):
 		Update the median image
 		"""
 		print(pil2pixmap, self.pixmap_converter, median_filter, self.input_image)
+		self.setWindowTitle("Calculating...")
+		QApplication.processEvents()
 		self.extra_label.setPixmap(pil2pixmap(self.pixmap_handler(median_filter(self.input_image))))
+		self.setWindowTitle(self.title)
 		
 	@pyqtSlot()
 	def reset_image(self):
