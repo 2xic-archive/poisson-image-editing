@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QComboBox, QLabel
-from PyQt5.QtWidgets import QPushButton, QSlider
-from PyQt5.QtWidgets import QCheckBox
+from PyQt5.QtWidgets import QPushButton, QSlider, QGridLayout
+from PyQt5.QtWidgets import QCheckBox, QGroupBox, QButtonGroup, QVBoxLayout, QRadioButton
 from PyQt5.QtCore import Qt
 from gui.app_data import *
 from gui.general import pil2pixmap
@@ -245,6 +245,47 @@ class interface_class(App):
 		action_button.setEnabled(setEnabled)
 		self.screen_elements.append(screen_element(action_button))
 		return action_button
+
+	def add_radio_buttons(self, text, button_text, action, enabled):
+		"""
+		Creates a QPushButton 
+
+		Parameters
+		----------
+		text : str
+			a string describing the box
+		button_text : list
+			a list of button text
+		action : lambda
+			the action to run when a new button is toggeled
+		enabled: int
+			the button index to have enabled from the start
+		Returns
+		-------
+		QGroupBox
+			a QGroupBox with the given buttons
+		"""
+		box = QGroupBox(text, self)
+		mood_button_group = QButtonGroup()
+		button_layout = QVBoxLayout()
+		for index, i in enumerate(button_text):
+			i = QRadioButton(i)
+			button_layout.addWidget(i)
+			i.toggled.connect(action)
+			mood_button_group.addButton(i, index)
+			if index == enabled:
+				i.setChecked(True)
+			print(i)
+		box.setLayout(button_layout)
+
+		self.screen_elements.append(screen_element(box))
+		return box, mood_button_group
+
+
+
+
+
+
 
 
 

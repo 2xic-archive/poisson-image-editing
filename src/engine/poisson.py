@@ -12,9 +12,36 @@ class poisson:
 		self.EXPLICIT = 0
 		self.IMPLICIT = 1 
 
+		self.NEUMANN = 0
+		self.DIRICHLET = 1
+
 		self.mode_poisson = self.EXPLICIT
-#		self.mode_poisson = self.IMPLICIT
+		self.mode_boundary = self.NEUMANN
+
 		self.alpha = 0.25
+
+	def set_boundary(self, mode):
+		if mode == "Dirichlet":
+			self.mode_boundary = self.DIRICHLET
+		elif mode == "Neumann":
+			self.mode_boundary = self.NEUMANN
+
+	def set_mode(self, mode):
+		if mode == "Dirichlet":
+			self.mode_poisson = self.EXPLICIT
+		elif mode == "Neumann":
+			self.mode_poisson = self.IMPLICIT
+
+	def set_alpha(self, value:float):
+		"""
+		Set the alpha value
+
+		Parameters
+		----------
+		value : float
+			The alhpa value
+		"""		
+		self.alpha = value
 
 	def get_laplace_explicit(self, data: Array[float, float] = None) -> Array:
 		"""
@@ -94,7 +121,23 @@ class poisson:
 		elif self.mode_poisson == self.IMPLICIT:
 			return self.get_laplace_implicit(data)
 		else:
-			raise Exception(" not supported")
+			raise Exception("not supported")
+
+	def apply_boundary(self, data):
+		"""
+		Apply the boundary
+
+		Parameters
+		----------
+		data : ndarray
+			The data 
+		"""		
+		if self.mode_boundary == self.NEUMANN:
+			return self.neumann(data)
+		elif self.mode_boundary == self.DIRICHLET:
+			return self.diriclet(data)
+		else:
+			raise Exception("not supported")
 
 	def solve(self, data, operator, h=lambda x=None, i=None: 0):
 		"""
@@ -124,4 +167,5 @@ class poisson:
 				data[:, :] = operator() - h(data)
 		else:
 			raise Exception("Not supported")
-		return data
+		return self.apply_boundary(data)
+

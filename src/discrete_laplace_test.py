@@ -11,7 +11,7 @@ import numpy as np
 from engine import image_handler
 from copy import deepcopy
 
-
+from engine import poisson
 import numpy as np
 
 
@@ -64,7 +64,7 @@ def process(U):
 	A = make_A(D, I)
 
 	h = 0
-	alpha = -(0.25 ** 2)
+	alpha = -(0.5 ** 2)
 	alpha *= h
 
 	b = np.zeros((u.shape))
@@ -82,14 +82,18 @@ if __name__ == "__main__":
 	U = np.arange(25).reshape((5,5))
 	process(U)
 
+
 	# test on image
 	image = image_handler.ImageHandler("./files/test_images/lena.png", False)
 	image.resize(3)
 
+#	X = poisson.poisson().get_laplace_explicit(image.data)
+#	print(X)
+
 	data_image = process(image.data)
 	new_size = image.data[1:-1,1:-1].shape
 
-	image_data = Image.fromarray(np.uint8(255 * (np.fliplr(np.rot90(data_image.reshape(new_size), 3)))))
+	image_data = Image.fromarray(np.uint8( 255 * (np.fliplr(np.rot90(data_image.reshape(new_size), 3)))))
 	image_data.show()
 #	print(image.data.shape)
 

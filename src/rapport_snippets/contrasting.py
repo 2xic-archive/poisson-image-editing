@@ -22,29 +22,45 @@ def process(img):
 		img = img.astype(np.uint8)
 	return img 
 
-def intensity():
+def intensity(path):
 	import matplotlib.pyplot as plt
-	plt.plot(local_adaptive_histogram.intensity(process(contrast_obj.data.copy())))
-	plt.savefig("rapport_snippets/output/contrast/intensity.png")
+#	plt.savefig(path + "intensity.png")
 #	plt.show(block=False)
-	contrast_obj.alpha = 0.05
-	contrast_obj.fit(1)
-	plt.cla()
-	plt.plot(local_adaptive_histogram.intensity(process(contrast_obj.data.copy())))
-	plt.savefig("rapport_snippets/output/contrast/intensity_13.png")
+	contrast_obj.alpha = 0.2
+
+	contrast_obj.save(path + "orginal.png")
+
+
+	plt.plot(local_adaptive_histogram.intensity(process(contrast_obj.data.copy())), color="r")
+#	plt.savefig(path + "test_poission_before.png")
+	contrast_obj.fit(2)
+#	plt.cla()
+	plt.plot(local_adaptive_histogram.intensity(process(contrast_obj.data.copy())), color="g")
+	plt.savefig(path + "poisson.png")
+
+	contrast_obj.save(path + "poisson_output.png")
+
+	contrast_obj.reset()
 
 	plt.cla()
-	lah = local_adaptive_histogram.contrast_enhancement(process(contrast_obj.data.copy()))
-	plt.plot(local_adaptive_histogram.intensity(process(lah)))
-	plt.savefig("rapport_snippets/output/contrast/intensity_adaptive.png")
+	plt.plot(local_adaptive_histogram.intensity(process(contrast_obj.data.copy())), color="r")
+	lah = np.cumsum(local_adaptive_histogram.intensity(process(contrast_obj.data.copy())))
+	plt.plot(lah, color="g")
+	plt.savefig(path + "intensity_adaptive.png")
+
+	output_file = (local_adaptive_histogram.contrast_enhancement(process(contrast_obj.data.copy())))
+	im = Image.fromarray(np.uint8(output_file*255))
+	im.save(path + "lah_output.png")
+
 	exit(0)
+#	exit(0)
 
 #intensity()
 
 def compile(output_path="./rapport_snippets/output/"):
 	if not os.path.isdir(output_path):
 		os.mkdir(output_path)
-		
+	intensity(output_path)
 	results_doc = compile_doc(contrast_obj, epoch_count, output_path, "kontrastforsterkning")#, setup=lambda x: x.destroy_information(2))
 	results_doc.save("{}/results.tex".format(output_path))
 

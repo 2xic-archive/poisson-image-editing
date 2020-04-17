@@ -17,6 +17,8 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		image_handler.ImageHandler.__init__(self, path, color)
 		poisson.poisson.__init__(self)
 		boundary.Boundary.__init__(self)
+
+		self.set_u0(self.data_copy)
 		self.alpha: float = 0.25
 		self.lambda_size: float = 0.1
 
@@ -48,7 +50,7 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		self.data = self.solve(self.data,operator, h).clip(0, 1) 
 
 		# TODO : Make user have the option to choose
-		self.data = self.neumann(self.data)
+		#self.data = self.neumann(self.data)
 
 		return self.data
 

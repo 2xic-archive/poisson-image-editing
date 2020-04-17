@@ -46,6 +46,37 @@ class general_window(interface_class):
 		if not self.load_before is None:
 			self.load_before(None)
 
+		"""
+		Showing the boundary box options
+		"""
+		self.boundary_group = None
+		self.method_group = None
+		
+		self.boundary_box, self.boundary_group = self.add_radio_buttons("Boundary", [
+				"Neumann", "Dirichlet"
+			], self.boundary_change, 0)
+		print(self.boundary_box)
+		self.update_geometry(self.boundary_box.width(), 90, x=10)
+
+		"""
+		Showing the method box options
+		"""
+		self.boundary_box, self.method_group = self.add_radio_buttons("Method", [
+				"Explicit", "Implicit"
+			], self.method_change, 0)
+		self.update_geometry(self.boundary_box.width(), 90, x=10)
+
+		"""
+		Showing the Alpha label
+		"""
+		self.alpha_label = self.add_label("Alpha")
+		self.update_geometry(self.pixmap.width(), 30, x=10)
+
+		"""
+		Showing the epoch slider
+		"""
+		self.alpha_slider = self.add_slider('Alpha', action=self.alpha_chnage)
+		self.update_geometry(self.pixmap.width(), 30)
 
 		"""
 		Showing the epoch count label
@@ -56,7 +87,7 @@ class general_window(interface_class):
 		"""
 		Showing the epoch slider
 		"""
-		self.epochSlider = self.add_slider('How many epochs to run for?', action=self.epochs_change)
+		self.epoch_slider = self.add_slider('How many epochs to run for?', action=self.epochs_change)
 		self.update_geometry(self.pixmap.width(), 30)
 
 

@@ -61,8 +61,22 @@ class App(QMainWindow):
 		"""
 		Updates the epoch label
 		"""
-		epochs: int = self.epochSlider.value()
+		epochs: int = self.epoch_slider.value()
 		self.epoch_label.setText("Epochs ({}) (Total {})".format(epochs, self.total_epochs))
+
+	def alpha_chnage(self):
+		value: int = self.alpha_slider.value()
+		self.method.set_alpha(value/10)
+
+	def boundary_change(self):
+		if not self.boundary_group is None:
+			#print(self.boundary_group.checkedButton().text())
+			self.method.set_boundary(self.boundary_group.checkedButton().text())
+
+	def method_change(self):
+		if not self.method_group is None:
+			#print(self.boundary_group.checkedButton().text())
+			self.method.set_mode(self.method_group.checkedButton().text())
 
 	def mode_change(self, _):
 		"""
@@ -81,7 +95,7 @@ class App(QMainWindow):
 		"""
 		Wrapper to nicely update the image when preform a iteration from the backend
 		"""		
-		if self.epoch < self.epochSlider.value():
+		if self.epoch < self.epoch_slider.value():
 			self.method.fit(epochs=1)
 			self.update_image_label()
 			self.epoch += 1
