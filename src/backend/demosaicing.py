@@ -3,9 +3,9 @@ from engine import image_handler
 from engine import poisson
 import numpy as np
 from backend import inpaiting
+from engine import poisson, boundary
 
-
-class Demosaic(image_handler.ImageHandler, poisson.poisson):
+class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 	"""
 	This class describes a demosaic image.
 
@@ -22,7 +22,8 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson):
 	def __init__(self, path: str, color: bool = True):
 		image_handler.ImageHandler.__init__(self, path, color)
 		poisson.poisson.__init__(self)
-		self.alpha = 0.25
+		boundary.Boundary.__init__(self)
+#		self.alpha = 0.25
 		
 		self.inpaint = inpaiting.inpaint(None)
 		self.inpaint.alpha = 0.05

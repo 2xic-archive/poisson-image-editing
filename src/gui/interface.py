@@ -87,7 +87,7 @@ class interface_class(App):
 		height_size = 0
 		for index, obj_element in enumerate(self.screen_elements):
 			element, size, pos_x, pos_y = obj_element.get_size_position()
-			if not pos_y == -1:
+			if not pos_y == -1 and not pos_y == -42:
 				current_height = pos_y
 			element.setGeometry(pos_x, current_height, element.width() if (size[0] == None) else size[0],
 								element.height() if (size[1] == None) else size[1])
@@ -95,7 +95,12 @@ class interface_class(App):
 			width_size = max(element.width(), width_size)
 			height_size = max(current_height, height_size)
 			#	increasing the size so the next element comes after the current
-			current_height += element.height() if (0 < index) else 0
+			if (index + 1) < len(self.screen_elements) and self.screen_elements[index + 1].y == -42:
+				#current_height += element.height() if (0 < index) else 0
+				pass
+			else:
+				current_height += element.height() if (0 < index) else 0
+
 		return width_size, height_size + self.padding
 
 	def add_mode_switch(self, action, element_id):
@@ -191,7 +196,7 @@ class interface_class(App):
 		self.screen_elements.append(screen_element(label))
 		return label
 
-	def add_slider(self, text, action: Callable):
+	def add_slider(self, text, action: Callable, value: int = -1):
 		"""
 		Creates a QSlider 
 
@@ -212,6 +217,8 @@ class interface_class(App):
 		slider.setSingleStep(1)
 		if 0 < len(text):
 			slider.setToolTip(text)
+		if 0 < value:
+			slider.setValue(value)
 		slider.valueChanged.connect(action)
 		self.screen_elements.append(screen_element(slider))
 		return slider

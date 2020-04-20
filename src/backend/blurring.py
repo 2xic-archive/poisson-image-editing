@@ -17,8 +17,8 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		image_handler.ImageHandler.__init__(self, path, color)
 		poisson.poisson.__init__(self)
 		boundary.Boundary.__init__(self)
-
-		self.set_u0(self.data_copy)
+		if not path is None:
+			self.set_boundary(self.NEUMANN)
 		self.alpha: float = 0.25
 		self.lambda_size: float = 0.1
 
@@ -68,3 +68,5 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		for i in range(epochs):
 			self.iteration()
 		return self
+
+

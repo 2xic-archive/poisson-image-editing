@@ -145,26 +145,14 @@ class hdr_handler:
 		[TODO:description]
 		"""
 		A, b, n = self.get_Ab(Z)
-
-		"""
-		Big matlab hack
-		"""
-		scipy.io.savemat('./files/Ab.mat', dict(A=A, b=b))
-
-		LOAD_COMMAND = "load('./files/Ab.mat');"
-		STORE_COMMAND = "save(['./files/matlab_x.mat'],'x');"
-		COMMAND = LOAD_COMMAND + "x=A\\b; " + STORE_COMMAND + "exit;"
-
-		x_matlab = scipy.io.loadmat("./files/matlab_x {}.mat".format(index + 1))["x"]
-		os.system("/Applications/MATLAB_R2019a.app/bin/matlab -nodisplay -r \"{}\"".format(COMMAND))
-
-		print(COMMAND)
-
-		x = scipy.io.loadmat("./files/matlab_x.mat")["x"]
-   
-		"""
-		Big matlab hack is over
-		"""
+		#	https://github.com/numpy/numpy/issues/9563
+		def leastsq(X, Y):
+			""" Solves the problem Y = XB """
+			inv = np.linalg.pinv(np.dot(X.T, X))
+			cross = np.dot(inv, X.T)
+			beta = np.dot(cross, Y)
+			return beta
+		x = leastsq(A, b)
 
 		g = x[1:n]
 		lE = x[n + 1:x.shape[0]]

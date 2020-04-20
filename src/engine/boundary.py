@@ -63,10 +63,12 @@ class Boundary:
 			The data with a applied boundary
 		"""
 		if(mask is None):
-			data[:, 0] = self.u0[:, 1]
-			data[:, -1] = self.u0[:, -2]
-			data[0, :] =  self.u0[1, :]
-			data[-1, :] =  self.u0[-2, :]
+			data[:, 0] = self.data_copy[:, 1]
+			data[:, -1] = self.data_copy[:, -2]
+			data[0, :] =  self.data_copy[1, :]
+			data[-1, :] =  self.data_copy[-2, :]
 		else:
-			data[~mask.astype(bool)] = self.u0[~mask.astype(bool)] 
+			#data[~mask.astype(bool)] = self.data_copy[~mask.astype(bool)] 
+			data[~mask.astype(bool)] = self.data_copy[~mask.astype(bool)] 
+			
 		return data.clip(0, 1)

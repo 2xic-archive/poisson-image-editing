@@ -8,29 +8,62 @@ class poisson:
 	This class describes the abstracts part of the poisson equation
 	"""
 
-	def __init__(self):
+	def __init__(self, mode_boundary=1, mode_poisson=0):
 		self.EXPLICIT = 0
 		self.IMPLICIT = 1 
 
 		self.NEUMANN = 0
 		self.DIRICHLET = 1
 
-		self.mode_poisson = self.EXPLICIT
-		self.mode_boundary = self.NEUMANN
-
+		self._mode_poisson = mode_poisson 
+		self._mode_boundary = mode_boundary
 		self.alpha = 0.25
 
+	@property
+	def boundary(self):
+		return self._mode_boundary
+
+	@property
+	def mode_boundary(self):
+		return self._mode_boundary
+
+	@mode_boundary.setter
+	def mode_boundary(self, mode):
+		'setting'
+		self.set_boundary(mode)
+
+	@property
+	def mode_poisson(self):
+		return self._mode_poisson
+
+	@mode_boundary.setter
+	def mode_poisson(self, mode):
+		'setting'
+		self.set_mode(mode)
+
 	def set_boundary(self, mode):
-		if mode == "Dirichlet":
-			self.mode_boundary = self.DIRICHLET
-		elif mode == "Neumann":
-			self.mode_boundary = self.NEUMANN
+		if mode == "Dirichlet" or mode == self.DIRICHLET:
+			self._mode_boundary = self.DIRICHLET
+		elif mode == "Neumann" or mode == self.NEUMANN:
+			self._mode_boundary = self.NEUMANN
+		else:
+			raise Exception("Illegal boundary ({})".format(mode))
 
 	def set_mode(self, mode):
-		if mode == "Dirichlet":
-			self.mode_poisson = self.EXPLICIT
-		elif mode == "Neumann":
-			self.mode_poisson = self.IMPLICIT
+		if mode == "Explicit" or mode == self.EXPLICIT:
+			self._mode_poisson = self.EXPLICIT
+		elif mode == "Implicit" or mode == self.IMPLICIT:
+			self._mode_poisson = self.IMPLICIT
+		else:
+			raise Exception("Illegal mode ({})".format(mode))
+
+	def __str__(self):
+		return ("Neumann" if self.mode_boundary == self.NEUMANN else "Diriclet") + \
+		" with " + \
+		("Explicit" if self.mode_poisson == self.EXPLICIT else "Implicit")
+
+	def __repr__(self):
+		return self.__str__()
 
 	def set_alpha(self, value:float):
 		"""
@@ -139,7 +172,7 @@ class poisson:
 		else:
 			raise Exception("not supported")
 
-	def solve(self, data, operator, h=lambda x=None, i=None: 0):
+	def solve(self, data, operator, h=lambda x=None, i=None: 0, apply_boundary=True):
 		"""
 		Solve the poisson equation
 
@@ -167,5 +200,9 @@ class poisson:
 				data[:, :] = operator() - h(data)
 		else:
 			raise Exception("Not supported")
-		return self.apply_boundary(data)
+		if apply_boundary:
+			return self.apply_boundary(data)
+		else:
+			return data
+
 

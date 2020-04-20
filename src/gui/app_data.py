@@ -6,7 +6,7 @@ from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QApplication, QFileDialog
 from PyQt5.QtWidgets import QMainWindow
 from gui.general import *
-
+from PyQt5.QtCore import Qt
 
 class App(QMainWindow):
 	"""
@@ -67,6 +67,7 @@ class App(QMainWindow):
 	def alpha_chnage(self):
 		value: int = self.alpha_slider.value()
 		self.method.set_alpha(value/10)
+		self.alpha_label.setText("Alpha ({})".format(value/10))
 
 	def boundary_change(self):
 		if not self.boundary_group is None:
@@ -91,23 +92,34 @@ class App(QMainWindow):
 	def update_image_label(self):
 		 self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))   
 
+	@pyqtSlot()
 	def update_image(self):
 		"""
 		Wrapper to nicely update the image when preform a iteration from the backend
 		"""		
-		if self.epoch < self.epoch_slider.value():
+		if not hasattr(self, 'epoch_slider'):
+			QApplication.processEvents()
 			self.method.fit(epochs=1)
 			self.update_image_label()
-			self.epoch += 1
-			self.total_epochs += 1
-			self.epochs_change()
-			self.reset_button.setEnabled(True)
-			QApplication.processEvents()
-			self.setWindowTitle("Calculating...")
-		else:
-			self.setWindowTitle(self.title)
 			self.reset_button.setEnabled(True)
 			self.timer.stop()
+			QApplication.restoreOverrideCursor()
+		else:
+			if self.epoch < self.epoch_slider.value():
+				self.method.fit(epochs=1)
+				self.update_image_label()
+				self.epoch += 1
+				self.total_epochs += 1
+				self.epochs_change()
+				self.reset_button.setEnabled(True)
+				QApplication.processEvents()
+				self.setWindowTitle("Calculating...")
+			else:
+				QApplication.restoreOverrideCursor()
+				self.setWindowTitle(self.title)
+				self.reset_button.setEnabled(True)
+				self.action_button.setEnabled(True)
+				self.timer.stop()
 
 	def show_file_dialog(self):
 		"""
@@ -145,17 +157,22 @@ class App(QMainWindow):
 		Resets the image
 		"""
 		self.total_epochs = 0
-		self.epoch_label.setText("Epochs")
-
+		if hasattr(self, 'epoch_label'):
+			self.epoch_label.setText("Epochs")
 		self.reset_button.setEnabled(False)
 		self.method.reset()
 		self.label.setPixmap(pil2pixmap(self.pixmap_converter(self.method.data)))
 
 	@pyqtSlot()
-	def run_method(self):
+	def run_method(self, lock_run=False):
 		"""
 		Runs one of the backends methods
 		"""
+		if lock_run:
+			print(lock_run)
+			QTimer.singleShot(100, lambda:self.action_button.setEnabled(False))
+		QApplication.setOverrideCursor(Qt.WaitCursor)
+		QApplication.processEvents()
 		self.epoch = 0
 		self.timer.timeout.connect(self.update_image)
 		self.timer.start(100)
@@ -164,9 +181,11 @@ class App(QMainWindow):
 		"""
 		Resets the image
 		"""
-		self.epoch_label.setText("Epochs")
+		if hasattr(self, 'epoch_label'):
+			self.epoch_label.setText("Epochs")
 		self.total_epochs = 0
 		self.reset_button.setEnabled(False)
+		QTimer.singleShot(100, lambda:self.action_button.setEnabled(True))
 		self.method.reset()
 		self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))
 

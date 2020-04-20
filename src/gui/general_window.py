@@ -55,7 +55,6 @@ class general_window(interface_class):
 		self.boundary_box, self.boundary_group = self.add_radio_buttons("Boundary", [
 				"Neumann", "Dirichlet"
 			], self.boundary_change, 0)
-		print(self.boundary_box)
 		self.update_geometry(self.boundary_box.width(), 90, x=10)
 
 		"""
@@ -64,7 +63,7 @@ class general_window(interface_class):
 		self.boundary_box, self.method_group = self.add_radio_buttons("Method", [
 				"Explicit", "Implicit"
 			], self.method_change, 0)
-		self.update_geometry(self.boundary_box.width(), 90, x=10)
+		self.update_geometry(self.boundary_box.width(), 90, x=10 + self.boundary_box.width(), y=-42)
 
 		"""
 		Showing the Alpha label
@@ -75,8 +74,9 @@ class general_window(interface_class):
 		"""
 		Showing the epoch slider
 		"""
-		self.alpha_slider = self.add_slider('Alpha', action=self.alpha_chnage)
+		self.alpha_slider = self.add_slider('Alpha', action=self.alpha_chnage, value=2)
 		self.update_geometry(self.pixmap.width(), 30)
+		self.alpha_chnage()
 
 		"""
 		Showing the epoch count label
@@ -96,6 +96,7 @@ class general_window(interface_class):
 		"""
 		self.action_button = self.add_button("Run", self.run_method)
 		self.update_geometry(self.pixmap.width(), 30)
+
 		"""
 		Showing the reset button
 		"""
