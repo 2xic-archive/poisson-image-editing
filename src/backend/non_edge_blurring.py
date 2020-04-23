@@ -30,7 +30,7 @@ class non_edge_blur(image_handler.ImageHandler, poisson.poisson, boundary.Bounda
 
 		self.set_u0(self.data.copy())
 
-	def D(self, k=300) -> Array:
+	def D(self, k=1000) -> Array:
 		"""
 		The D function 
 		"""
@@ -46,18 +46,15 @@ class non_edge_blur(image_handler.ImageHandler, poisson.poisson, boundary.Bounda
 		D = self.D()
 		assert np.all(D <= 1), "D function error" 
 
-		d_x, d_y = self.get_gradient(D)
-		data_x, data_y = self.get_gradient(self.data)
-		combined = (d_x  + d_y)
+		d_xy = np.asarray(self.get_gradient(D))
+		data_xy = np.asarray(self.get_gradient(self.data))
+		combined = np.sum(d_xy * data_xy, axis=0)
+        
+		operator = lambda i=None: (self.alpha * \
+					(self.common_shape(D) * self.get_laplace_explicit(self.data, alpha=False) +  self.common_shape(combined))
+		)
+		self.data = self.solve(self.data, operator).clip(0, 1)
 
-		#  Maybe I need to create a new numerical scheme for implicit ? 
-		#   however since g*(D*g(u)),d=1 -> is the same as g^2u-h, with h=0, should be able to exploit the OG equation ? 
-		D[:, :] = 1
-
-		operator = lambda i=None: (self.get_laplace(self.data) * self.common_shape(D) ) + (self.common_shape(combined) * self.alpha) 
-		self.data = self.solve(self.data,operator)#, h)#.clip(0, 1) 
-		#     self.data = self.neumann(self.data).clip(0, 1)
-		
 		return self.data
 
 	def fit(self, epochs) -> non_edge_blur:

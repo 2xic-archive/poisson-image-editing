@@ -22,7 +22,7 @@ class Contrast(image_handler.ImageHandler, poisson.poisson,boundary.Boundary):
 		boundary.Boundary.__init__(self, self.data.copy())
 
 		self.alpha = 0.2
-		self.k = 3
+		self.k = 5
 		self.u0 = np.copy(self.data)
 #		self.mode_poisson = self.EXPLICIT
 #		self.mode_poisson = self.EXPLICIT
@@ -39,8 +39,8 @@ class Contrast(image_handler.ImageHandler, poisson.poisson,boundary.Boundary):
 		operator = lambda : self.get_laplace(self.data)
 		h = lambda x: self.h
 		
-		self.data = abs(self.solve(self.data, operator, h) ).clip(0,1)
-		self.data = self.neumann(self.data)
+		self.data = self.solve(self.data, operator, h)
+		
 
 	def fit(self, epochs=1):
 		"""

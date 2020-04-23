@@ -3,20 +3,20 @@ import numpy as np
 from scipy.sparse import spdiags
 from scipy.sparse.linalg import spsolve
 
-class poisson:
+class poisson(object):
 	"""
 	This class describes the abstracts part of the poisson equation
 	"""
 
-	def __init__(self, mode_boundary=1, mode_poisson=0):
+	def __init__(self):#, mode_boundary=1, mode_poisson=0):
 		self.EXPLICIT = 0
 		self.IMPLICIT = 1 
 
 		self.NEUMANN = 0
 		self.DIRICHLET = 1
 
-		self._mode_poisson = mode_poisson 
-		self._mode_boundary = mode_boundary
+		self._mode_poisson = 0 
+		self._mode_boundary =  1
 		self.alpha = 0.25
 
 	@property
@@ -34,12 +34,23 @@ class poisson:
 
 	@property
 	def mode_poisson(self):
+		'getting'
+		#print('Getting value {}'.format(self._mode_poisson)) 
 		return self._mode_poisson
 
-	@mode_boundary.setter
+	@mode_poisson.setter
 	def mode_poisson(self, mode):
 		'setting'
-		self.set_mode(mode)
+		#print('Setting value to ' +str(mode) ) 
+		#print("in", mode)
+#		self.set_mode(mode)
+		if mode == "Explicit" or mode == self.EXPLICIT:
+			self._mode_poisson = self.EXPLICIT
+		elif mode == "Implicit" or mode == self.IMPLICIT:
+			self._mode_poisson = self.IMPLICIT
+		else:
+			raise Exception("Illegal mode ({})".format(mode))
+		print('set value to ' +str(self._mode_poisson) ) 
 
 	def set_boundary(self, mode):
 		if mode == "Dirichlet" or mode == self.DIRICHLET:
@@ -50,12 +61,15 @@ class poisson:
 			raise Exception("Illegal boundary ({})".format(mode))
 
 	def set_mode(self, mode):
+		print("In 2 ", mode)
 		if mode == "Explicit" or mode == self.EXPLICIT:
 			self._mode_poisson = self.EXPLICIT
+			print("me")
 		elif mode == "Implicit" or mode == self.IMPLICIT:
 			self._mode_poisson = self.IMPLICIT
 		else:
 			raise Exception("Illegal mode ({})".format(mode))
+		print("out", self._mode_poisson, self.mode_poisson)
 
 	def __str__(self):
 		return ("Neumann" if self.mode_boundary == self.NEUMANN else "Diriclet") + \
@@ -76,7 +90,7 @@ class poisson:
 		"""		
 		self.alpha = value
 
-	def get_laplace_explicit(self, data: Array[float, float] = None) -> Array:
+	def get_laplace_explicit(self, data: Array[float, float] = None, alpha:bool = True) -> Array:
 		"""
 		Gets the laplace
 
@@ -92,6 +106,8 @@ class poisson:
 				  + data[1:-1, 0:-2] \
 				  + data[1:-1, 2:] \
 				  - 4 * data[1:-1, 1:-1]
+		if not alpha:
+			return laplace
 		return laplace * self.alpha
 
 
@@ -140,7 +156,7 @@ class poisson:
 		else:
 			raise Exception(" not supported")
 
-	def get_laplace(self, data):
+	def get_laplace(self, data, alpha=True):
 		"""
 		Gets the correct laplace based on mode
 
@@ -150,9 +166,13 @@ class poisson:
 			The data to get the laplace from
 		"""		
 		if self.mode_poisson == self.EXPLICIT:
-			return self.get_laplace_explicit(data)
+			return self.get_laplace_explicit(data, alpha)
 		elif self.mode_poisson == self.IMPLICIT:
-			return self.get_laplace_implicit(data)
+			#return self.get_laplace_implicit(data)
+			j = self.get_laplace_implicit(data)
+			T = data.copy()
+			for j in range(j.shape[0]):
+				j[n + 1, :] = T
 		else:
 			raise Exception("not supported")
 

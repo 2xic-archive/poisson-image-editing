@@ -65,6 +65,7 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		self.mask[1::2, 1::2, 2] = 1
 
 		self.inpaint.data = self.mosaic.copy()
+		self.inpaint.data_copy = self.mosaic.copy()
 
 		self.results = np.zeros(self.mosaic.shape + (3,))
 		self.results[:, :, 0] = self.mosaic
@@ -83,10 +84,16 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		self.verify_integrity()
 
-		operator = lambda i: self.common_shape(self.inpaint.fit(self.rgb_mosaic[:, :, i], self.results[:, :, i], self.mask[:, :, i]))
-		self.data = self.solve(self.results, operator) 
-		
-		self.data = self.results.copy()
+		self.inpaint.mode_poisson = self.mode_poisson
+		self.inpaint.mode_boundary = self.mode_boundary
+		self.inpaint.alpha = 0.005
+
+#		operator = lambda i: self.common_shape(self.inpaint.fit(self.rgb_mosaic[:, :, i], self.results[:, :, i], self.mask[:, :, i]))
+#		self.data = self.solve(self.results, operator) 
+		for i in range(3):
+			self.results[:, :, i] = self.inpaint.fit(self.rgb_mosaic[:, :, i], self.results[:, :, i], self.mask[:, :, i])
+#		self.data = self.results.copy()
+		self.data = self.results
 		self.data = self.data.clip(0, 1)
 
 	def fit(self, epochs: int = 1) -> Demosaic:

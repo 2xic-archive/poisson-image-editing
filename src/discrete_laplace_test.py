@@ -54,22 +54,31 @@ def make_A(D, I):
 	return A
 
 def process(U):
-	u = U[1:-1,1:-1].T
+	#u = U[1:-1,1:-1].T
+	u = U.T
+	ul = u.copy()
 
 	u_size = int(deepcopy(u.shape[0] - 1))
 	u = u.flatten()
+#	for j in range(ul.shape[0]):
+#		u.append(ul[j, :].tolist())
+#	print(u)
+#	print(np.asarray(u).flatten())
+#	print(ul.flatten())
+#	print(np.all(np.asarray(u) == ul.flatten()))
+#	exit(0)
 
 	D = (create_d_base_matrix(u_size))
 	I = np.identity(u_size + 1)
 	A = make_A(D, I)
 
 	h = 0
-	alpha = -(0.5 ** 2)
-	alpha *= h
+#	alpha = -(0.5 ** 2)
+#	alpha *= h
 
 	b = np.zeros((u.shape))
-	b += alpha
-	b += u
+	#b += alpha
+	b += u  #alpha
 	print(b.shape)
 	return (np.linalg.solve(A, b))
 
@@ -87,12 +96,12 @@ if __name__ == "__main__":
 	image = image_handler.ImageHandler("./files/test_images/lena.png", False)
 	image.resize(3)
 
-#	X = poisson.poisson().get_laplace_explicit(image.data)
+	X = poisson.poisson().get_laplace_explicit(image.data)
 #	print(X)
 
-	data_image = process(image.data)
+	data_image = process(X)#image.data)
 	new_size = image.data[1:-1,1:-1].shape
-
+	
 	image_data = Image.fromarray(np.uint8( 255 * (np.fliplr(np.rot90(data_image.reshape(new_size), 3)))))
 	image_data.show()
 #	print(image.data.shape)

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from engine import image_handler
 from engine import poisson
+from engine import boundary
 
-
-class matting(image_handler.ImageHandler, poisson.poisson):
+class matting(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 	"""
 	This class describes a matting image.
 
@@ -21,7 +21,7 @@ class matting(image_handler.ImageHandler, poisson.poisson):
 	"""
 	def __init__(self, target_path="./files/test_images/target.png", source_path="./files/test_images/source.png",
 				 color=True):
-		self.bird = False
+		self.bird = True
 
 		if not self.bird:
 			target_path = "./files/test_images/sky.jpg"
@@ -31,6 +31,7 @@ class matting(image_handler.ImageHandler, poisson.poisson):
 			source_path = "./files/test_images/source.png"
 
 		image_handler.ImageHandler.__init__(self, target_path, color)
+		boundary.Boundary.__init__(self)
 		poisson.poisson.__init__(self)
 		self.alpha = 0.1
 
@@ -96,13 +97,14 @@ class matting(image_handler.ImageHandler, poisson.poisson):
 			h = lambda i: self.get_laplace(crop_area(self.source.data)[:, :, i]) #0.25 * crop_area(self.target)[:, :, i]) #self.target)#source.data[:, :, i]) #crop_area(self.source.data)[:, :, i])
 		else:
 			h = lambda i: self.get_laplace(self.source.data[:, :, i]) #0.25 * crop_area(self.target)[:, :, i]) #self.target)#source.data[:, :, i]) #crop_area(self.source.data)[:, :, i])
-#		operator = lambda i=None: self.get_laplace(crop_area(self.target)[:, :, i]) 
-#		working_area = abs(self.solve(working_area,operator, h)) #* self.alpha
+		operator = lambda i=None: self.get_laplace(crop_area(self.target)[:, :, i]) 
+		working_area = self.solve(working_area,operator, h, apply_boundary=False) #* self.alpha
 			
 		"""
 		Huh, so setting it as abs seems to solve the problem when working with implicit....
 		I will ask Ivar if this is supposed to happen
 		it could also mean that there is a sign problem
+		"""
 		"""
 		if(self.bird):
 			working_area[:, :, 0] = abs(self.get_laplace_implicit(working_area[:, :, 0]) - self.get_laplace_implicit(crop_area(self.source.data)[:, :, 0]))
@@ -112,10 +114,10 @@ class matting(image_handler.ImageHandler, poisson.poisson):
 			working_area[:, :, 0] = abs(self.get_laplace_implicit(working_area[:, :, 0]) - self.get_laplace_implicit((self.source.data)[:, :, 0]))
 			working_area[:, :, 1] = abs(self.get_laplace_implicit(working_area[:, :, 1]) - self.get_laplace_implicit((self.source.data)[:, :, 1]))
 			working_area[:, :, 2] = abs(self.get_laplace_implicit(working_area[:, :, 2]) - self.get_laplace_implicit((self.source.data)[:, :, 2]))
-
+		"""
 		# TODO : make this "nice"
-		print(working_area.max())
-		print(working_area.min())
+		#print(working_area.max())
+		#print(working_area.min())
 		self.data[self.area[0][0]:self.area[1][0], self.area[0][1]:self.area[1][1]] = working_area.clip(0, 1)
 
 

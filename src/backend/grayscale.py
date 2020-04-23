@@ -41,13 +41,32 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 			The h variable of the poisson eq
 		"""
-		g = np.sum(self.get_gradient_norm(self.data_copy)[:, :, i] for i in range(3))/ np.sqrt(3)
+		# why does this not work ? Find out !
+		#g_length = np.sum(self.get_gradient_norm(self.data_copy[:, :, i]) for i in range(3))#/ np.sqrt(3)
+		image_r_x, image_r_y = self.get_gradient(self.data_copy[:, :, 0])
+		image_g_x, image_g_y = self.get_gradient(self.data_copy[:, :, 1])
+		image_b_x, image_b_y = self.get_gradient(self.data_copy[:, :, 2])
+		g_length = np.sqrt(
+			(image_r_x**2 + image_r_y**2 +
+			 image_g_x**2 + image_g_y**2 +
+			 image_b_x**2 + image_b_y**2) / 3
+		)
 
-		rgb_gradient = np.sum(self.data_copy[:, :, i] for i in range(self.data_copy.shape[-1]))
-		rgb_sx, rgb_sy = self.get_gradient(rgb_gradient)
+		rgb_sum = np.sum(self.data_copy[:, :, i] for i in range(self.data_copy.shape[-1]))
+		rgb_sx, rgb_sy = self.get_gradient(rgb_sum)
 
-		h = rgb_sx + rgb_sy
-		return h * g
+		length = np.sqrt(rgb_sx ** 2 + rgb_sy ** 2)
+		length[length == 0] = np.finfo(float).eps
+
+		rgb_sx /= length
+		rgb_sy /= length
+
+		h_prime_x, h_prime_y = rgb_sx * g_length , rgb_sy * g_length
+		
+		h_sx, _ = self.get_gradient(h_prime_x)
+		_, h_sy = self.get_gradient(h_prime_y)
+
+		return (h_sx + h_sy)
 
 	def iteration(self) -> None: 
 		"""
@@ -60,12 +79,14 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		if len(np.shape(self.data)) == 3:
 			self.data = self.data.mean(axis=2)
-
-		self.verify_integrity()
-		operator = lambda : self.get_laplace(self.data) 
-		h = lambda x: self.common_shape(self.h())
+			self.h = self.h()
 		
-		self.data = self.solve(self.data, operator, h) 
+		self.verify_integrity()
+		operator = lambda : self.get_laplace(self.data, alpha=False)
+		h = lambda x: self.h[1:-1, 1:-1]
+	
+		self.data[1:-1, 1:-1] = self.data[1:-1, 1:-1] + 0.2* (operator()- h(None))
+
 		self.data = self.neumann(self.data)
 		self.data = self.data.clip(0, 1)
 

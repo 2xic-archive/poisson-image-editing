@@ -1,9 +1,10 @@
 import sys
 sys.path.append('./')
 
-from backend import blurring
-x = blurring.blur("./files/test_images/lena.png")
+from backend import contrasting
+x = contrasting.Contrast('./files/test_images/contrast.jpg')
 x.set_mode("Explicit")
+x.show()
 x.fit(3)
 x.show()
 

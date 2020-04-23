@@ -15,8 +15,8 @@ def compile(output_dir="./rapport_snippets/output/"):
 
 	results_doc = doc()
 	path_latex = "sømløs kloning/matting"
-	results_doc.add_row_element(subfigure(path=path_latex + "source.png", text="Source image"))
-	results_doc.add_row_element(subfigure(path=path_latex + "target.png", text="target image"))
+	results_doc.add_row_element(subfigure(path=path_latex + "/source.png", text="Source image"))
+	results_doc.add_row_element(subfigure(path=path_latex + "/target.png", text="target image"))
 	results_doc.add_row()
 
 	results_doc = compile_doc(contrast_obj, epoch_count, "{}/matting/".format(output_dir), path_latex,
@@ -24,5 +24,9 @@ def compile(output_dir="./rapport_snippets/output/"):
 	results_doc.padding_heigth=0.3
 
 	results_doc.save("{}/matting/results.tex".format(output_dir))
+	naming = "matting"
 
+	Image.fromarray(np.uint8(255 * contrast_obj.source.data_copy)).save("{}{}/source.png".format(output_dir,naming))
+	contrast_obj.reset()
+	Image.fromarray(np.uint8(255 * contrast_obj.data_copy)).save("{}{}/target.png".format(output_dir,naming))
 

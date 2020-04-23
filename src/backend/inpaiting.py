@@ -66,6 +66,7 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		original : ndarray
 			sets the original
 		"""
+		assert type(original) != int, "wrong argument"
 		self.original_data_copy = original
 
 	def destroy_information(self, strength=2, create_new_mask=False) -> Array:
@@ -86,6 +87,7 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 			self.mask = mask
 		
 		if(len(self.data.shape) == 3 ):
+			print("im runned")
 			for i in range(self.data.shape[-1]):
 				 self.data[:, :, i] *= self.mask
 		else:
@@ -107,10 +109,12 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		response = self.solve(self.data, operator)
 		if(len(self.data.shape) == 3):
+			print(response.shape)
 			for i in range(self.data.shape[-1]):
+				print(self.original_data_copy.shape)
 				self.data[:, :, i] = (response[:, :, i] * (1 - self.mask)) + (self.original_data_copy[:, :, i] * (self.mask))
 		else:
-			self.data = (self.data * (1 - self.mask)) + (self.original_data_copy * (self.mask))
+			self.data = (response * (1 - self.mask)) + (self.original_data_copy * (self.mask))
 			
 		self.data = self.neumann(self.data)
 
