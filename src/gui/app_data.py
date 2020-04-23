@@ -137,6 +137,24 @@ class App(QMainWindow):
 		else:
 			print("No file selected")
 
+	def show_file_dialog_hdr(self):
+		"""
+		Shows a file dialog
+		"""
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		file_name, _ = QFileDialog.getOpenFileNames(self, "QFileDialog.getOpenFileNames()", "",
+												  "JPEG (*.jpeg);;jpg (*.jpg);;png (*.png)",
+												  options=options)
+		if file_name:
+			movment_x, movment_y = self.method.change_photo(file_name[0])
+			self.method.update_images(file_name)
+			self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))
+			self.label.move(movment_x, self.label.pos().y())
+		else:
+			print("No file selected")		
+
+
 	def show_extra(self):
 		"""
 		Shows the extra features

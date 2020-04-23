@@ -5,10 +5,7 @@ import scipy.io
 import os
 from scipy.optimize import nnls
 from scipy.optimize import leastsq
-
-"""
-TODO : I now see that multiple solutions to the problem is mentioned in the project description	*awkward* will try them out
-"""
+import re
 
 
 # as defined in equation 3
@@ -23,19 +20,18 @@ def classic_weigth_function(intensity: float):
 	return 255 - intensity
 
 
+def get_numbers(path): 
+	array = re.findall(r'[0-9]+', os.path.basename(path))
+	return array 
+
 class hdr_handler:
-	def __init__(self, user_defined_weigth_fuction=classic_weigth_function):
+	def __init__(self, images, user_defined_weigth_fuction=classic_weigth_function):
 		self.weigth_function = user_defined_weigth_fuction
 		assert(self.weigth_function(128) == 128)
 		assert(self.weigth_function(129) == 126)
 		
 
-		self.images = [
-			image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00064.png'),
-			image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00128.png'),
-			image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00256.png'),
-			image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00512.png')
-		]
+		self.images = images
 		#   for i in self.images:
 		#      i.resize(scale=4)
 
@@ -49,11 +45,9 @@ class hdr_handler:
 			assert (1 < self.images[i].data.max() <= 255)
 
 		self.B = np.array([
-			np.log(64),
-			np.log(128),
-			np.log(256),
-			np.log(512)
-		])
+				np.log(int(get_numbers(i.path)[0])) for i in self.images 
+			]
+		)
 
 		self.pixel_area = self.images[0].data.shape
 		self.pixel_area = self.pixel_area[0] * self.pixel_area[1]

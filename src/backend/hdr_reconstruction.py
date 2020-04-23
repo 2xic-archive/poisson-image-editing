@@ -17,13 +17,24 @@ class hdr_reconstruction(image_handler.ImageHandler):
 	color : bool
 		if the image should be shown with colors
 	"""
-	def __init__(self, color=True):
-		self.handler = hdr_image_handler.hdr_handler()
+	def __init__(self, images=None, color=True):
+		if images is None:
+			images = [
+				image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00064.png'),
+				image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00128.png'),
+				image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00256.png'),
+				image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00512.png')
+			]
+		self.handler = hdr_image_handler.hdr_handler(images=images)
 		path = self.handler.images[0].path
 		image_handler.ImageHandler.__init__(self, path, color)
 
+	def update_images(self, images):
+		self.handler = hdr_image_handler.hdr_handler(images=
+		[image_handler.ImageHandler(i) for i in images]
+		)
 
-	def fit(self,epochs) -> hdr_reconstruction:
+	def fit(self,epochs=1) -> hdr_reconstruction:
 		"""
 		Makes multiple iterations of the method
 

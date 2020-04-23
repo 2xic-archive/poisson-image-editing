@@ -41,6 +41,13 @@ class hdr_window(interface_class):
 		self.update_geometry(self.pixmap.width(), 30)
 
 		"""
+		Showing the custom file button
+		"""
+		self.open_button = self.add_button("Open", lambda x: QTimer.singleShot(100, lambda: self.show_file_dialog_hdr()),
+											setEnabled=True)
+		self.update_geometry(self.pixmap.width(), 30)
+
+		"""
 		Showing the reset button
 		"""
 		self.reset_button = self.add_button("Reset", lambda x: QTimer.singleShot(100, lambda: self.reset_image()),
