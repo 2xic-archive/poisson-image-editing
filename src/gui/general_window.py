@@ -3,6 +3,8 @@ from gui.interface import interface_class
 from PIL import Image
 import numpy as np
 from PyQt5.QtCore import QTimer
+#from PyQt5 import QtGui
+from PyQt5.QtWidgets import QMessageBox
 
 class general_window(interface_class):
 	"""
@@ -36,7 +38,7 @@ class general_window(interface_class):
 		"""
 		self.label, self.pixmap = self.add_image(self.method.data, (
 			lambda x: self.pixmap_converter(x)) if not self.pixmap_converter is None else (
-			lambda x: Image.fromarray(255 * x)))
+			lambda x: Image.fromarray(255 * x)), action=lambda x: self.save() )
 		self.update_geometry(self.pixmap.width(), self.pixmap.height(), y=30)
 		self.update_geometry(self.pixmap.width(), 20, element_id="mode", y=5)
 
@@ -121,3 +123,18 @@ class general_window(interface_class):
 		self.setGeometry(0, 0, width, height)
 		self.center()
 #	self.setFixedSize(self.size())
+
+	def save(self):
+		qm = QMessageBox
+		ret = qm.question(self,'', "Are you sure to reset all the values?", qm.Yes | qm.No)
+		if ret == qm.Yes:
+			#print("lagrer")
+			self.method.save(str(self.total_epochs) + "_" + self.title)
+			#print(self.total_epochs + "_" + self.title)
+			#print(self.method.)
+
+
+
+
+
+

@@ -49,9 +49,6 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 
 		self.data = self.solve(self.data,operator, h).clip(0, 1) 
 
-		# TODO : Make user have the option to choose
-		#self.data = self.neumann(self.data)
-
 		return self.data
 
 	def fit(self, epochs):

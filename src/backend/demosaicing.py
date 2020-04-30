@@ -23,7 +23,6 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		image_handler.ImageHandler.__init__(self, path, color)
 		poisson.poisson.__init__(self)
 		boundary.Boundary.__init__(self)
-#		self.alpha = 0.25
 		
 		self.inpaint = inpaiting.inpaint(None)
 		self.inpaint.alpha = 0.05
@@ -49,7 +48,6 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		Simualtes a image into a state where we can preform demosaic
 
 		"""
-
 		u = self.data
 		self.get_mosaic()
 		self.rgb_mosaic = np.zeros(self.mosaic.shape + (3,))
@@ -92,7 +90,6 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 #		self.data = self.solve(self.results, operator) 
 		for i in range(3):
 			self.results[:, :, i] = self.inpaint.fit(self.rgb_mosaic[:, :, i], self.results[:, :, i], self.mask[:, :, i])
-#		self.data = self.results.copy()
 		self.data = self.results
 		self.data = self.data.clip(0, 1)
 

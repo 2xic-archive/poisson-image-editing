@@ -69,6 +69,7 @@ class Boundary:
 			data[-1, :] =  self.data_copy[-2, :]
 		else:
 			#data[~mask.astype(bool)] = self.data_copy[~mask.astype(bool)] 
-			data[~mask.astype(bool)] = self.data_copy[~mask.astype(bool)] 
+			# TODO : decide default
+			data[mask.astype(bool)] = self.data_copy[mask.astype(bool)] 
 			
 		return data.clip(0, 1)

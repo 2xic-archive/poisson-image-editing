@@ -31,7 +31,7 @@ class hdr_reconstruction(image_handler.ImageHandler):
 
 	def update_images(self, images):
 		self.handler = hdr_image_handler.hdr_handler(images=
-		[image_handler.ImageHandler(i) for i in images]
+			[image_handler.ImageHandler(i) for i in images]
 		)
 
 	def fit(self,epochs=1) -> hdr_reconstruction:

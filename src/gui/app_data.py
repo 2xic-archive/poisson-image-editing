@@ -89,9 +89,12 @@ class App(QMainWindow):
 		self.hide()
 
 	@pyqtSlot()
-	def update_image_label(self):
-		 self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))   
-
+	def update_image_label(self, data=None):
+		if data is None:
+			self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))   
+		else:
+			self.label.setPixmap(pil2pixmap(Image.fromarray((255 * data).astype(np.uint8))))   
+			
 	@pyqtSlot()
 	def update_image(self):
 		"""
@@ -181,11 +184,15 @@ class App(QMainWindow):
 		self.method.reset()
 		self.label.setPixmap(pil2pixmap(self.pixmap_converter(self.method.data)))
 
+	def prepare(self):
+		pass
+
 	@pyqtSlot()
 	def run_method(self, lock_run=False):
 		"""
 		Runs one of the backends methods
 		"""
+		self.prepare()
 		if lock_run:
 			print(lock_run)
 			QTimer.singleShot(100, lambda:self.action_button.setEnabled(False))
@@ -195,6 +202,9 @@ class App(QMainWindow):
 		self.timer.timeout.connect(self.update_image)
 		self.timer.start(100)
 
+	def undo(self):
+		pass
+
 	def reset_image(self):
 		"""
 		Resets the image
@@ -202,12 +212,21 @@ class App(QMainWindow):
 		if hasattr(self, 'epoch_label'):
 			self.epoch_label.setText("Epochs")
 		self.total_epochs = 0
+		self.undo()
 		self.reset_button.setEnabled(False)
 		QTimer.singleShot(100, lambda:self.action_button.setEnabled(True))
 		self.method.reset()
 		self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))
 
+	def dragEnterEvent(self, e):
+		e.accept()
+		
+	def dropEvent(self, e):
+		print(e)
+		position = e.pos()
+		self.button.move(position)
 
-
+		e.setDropAction(Qt.MoveAction)
+		e.accept()
 
 

@@ -23,11 +23,7 @@ class Contrast(image_handler.ImageHandler, poisson.poisson,boundary.Boundary):
 
 		self.alpha = 0.2
 		self.k = 5
-		self.u0 = np.copy(self.data)
-#		self.mode_poisson = self.EXPLICIT
-#		self.mode_poisson = self.EXPLICIT
-
-		self.h = self.k * self.get_laplace(self.u0)
+		self.h = self.k * self.get_laplace(np.copy(self.data))
 
 	def iteration(self) -> None:
 		"""
@@ -41,7 +37,6 @@ class Contrast(image_handler.ImageHandler, poisson.poisson,boundary.Boundary):
 		
 		self.data = self.solve(self.data, operator, h)
 		
-
 	def fit(self, epochs=1):
 		"""
 		Makes multiple iterations of the method

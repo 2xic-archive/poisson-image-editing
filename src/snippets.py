@@ -13,6 +13,7 @@ from rapport_snippets import non_edge_blurring
 from rapport_snippets import grayscale
 from rapport_snippets import blur
 from rapport_snippets import hdr
+from rapport_snippets import laplacian
 import os
 
 if __name__ == "__main__":
@@ -23,11 +24,16 @@ if __name__ == "__main__":
 	#blur.compile(location + "/glatting/")
 	#contrasting.compile(location + "/kontrastforsterkning/contrast/")
 	#matting.compile(location + "/sømløs kloning/")
+	#matting.compile_noisy(location + "/sømløs kloning/")
+	#matting.compile_parameters(location + "/sømløs kloning/")
+	matting.compile_moapple(location + "/sømløs kloning/")
+	#laplacian.compile_parameters(location)
+
 	#inpaiting.compile(location + "/inpainting/")
 	#anonymizing.compile(location + "/anonymisering/")
 	
 	#demosaic.compile(location + "/demosaicing/")
-	hdr.compile(location + "/hdr/res/")
+	#hdr.compile(location + "/hdr/res/")
 
 	#non_edge_blurring.compile(location + "/glatting/")
 	#grayscale.compile(location + "/farge_gråtone/")

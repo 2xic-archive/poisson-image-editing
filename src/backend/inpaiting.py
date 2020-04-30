@@ -42,9 +42,6 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 			sets the data
 		"""
 		self.data = data
-		#self.u0 = 
-		#self.data.copy()
-	 #   self.set_u0(self.data.copy())
 
 	def set_mask(self, mask) -> None:
 		"""
@@ -107,7 +104,7 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 			original value = 1 
 			infomation lost = 0 
 		"""
-		response = self.solve(self.data, operator)
+		response = self.solve(self.data, operator, apply_boundary=False)
 		if(len(self.data.shape) == 3):
 			print(response.shape)
 			for i in range(self.data.shape[-1]):
@@ -116,7 +113,7 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		else:
 			self.data = (response * (1 - self.mask)) + (self.original_data_copy * (self.mask))
 			
-		self.data = self.neumann(self.data)
+		self.data = self.diriclet(self.data, self.mask)
 
 
 	def fit(self, original=None, data=None, mask=None, epochs:int=1) -> Array:

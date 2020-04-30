@@ -36,7 +36,7 @@ def compile(output_path):
 			results_doc = compile_doc(contrast_obj, epoch_count, "{}inpainting{}/".format(output_path,naming), "inpainting/inpainting{}".format(naming),
 										extra=lambda x: x.destroy_information(), results_doc=results_doc)
 			results_doc.save("{}inpainting{}/results.tex".format(output_path,naming))
-
+			
 			Image.fromarray(np.uint8(255 * contrast_obj.original_data_copy)).save("{}inpainting{}/input.png".format(output_path,naming))
 
 		#		"{}inpainting/input.png")

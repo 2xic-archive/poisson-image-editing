@@ -5,22 +5,59 @@ from PyQt5.QtCore import Qt
 from gui.app_data import *
 from gui.general import pil2pixmap
 from typing import Callable
-
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QPushButton, QAction, QLineEdit, QMessageBox
+from PyQt5.QtWidgets import QPushButton, QWidget, QApplication, QLabel
+from PyQt5.QtCore import Qt, QMimeData
+from PyQt5.QtGui import QDrag
+import sys
+from PyQt5.QtGui import QImage, QPixmap
 from gui.window_manager import *
 
 WINDOW_MANAGER = window()
+
+class draggable_style(QLabel):  
+    def __init__(self, title, parent, loc):
+        super().__init__(title, parent)
+        #label = QLabel(self)
+        self.pixmap = QPixmap(loc)
+        self.setPixmap(self.pixmap)
+        #self.size = loc.shape
+        #print(pixmap)
+        
+
+    def mouseMoveEvent(self, e):
+        print("???")
+
+        if e.buttons() != Qt.RightButton:
+            return
+
+        mimeData = QMimeData()
+        print("???")
+
+        drag = QDrag(self)
+        drag.setMimeData(mimeData)
+        drag.setHotSpot(e.pos() - self.rect().topLeft())
+
+        dropAction = drag.exec_(Qt.MoveAction)
+
+    def mousePressEvent(self, e):
+        super().mousePressEvent(e)
+        if e.button() == Qt.LeftButton:
+            print('press')
 
 class screen_element:
 	"""
 	This class describes a screen element.
 	"""
-	def __init__(self, element):
+	def __init__(self, element, free_floating=False):
 		self.element = element
 		self.height = None
 		self.width = None
 		self.x = 0
 		self.y = -1
 		self.index_id = 0
+		self.free_floating = free_floating
+		self.size_element = element
 
 	def get_size_position(self):
 		"""
@@ -86,6 +123,9 @@ class interface_class(App):
 		width_size = 0
 		height_size = 0
 		for index, obj_element in enumerate(self.screen_elements):
+			if obj_element.free_floating:
+				obj_element.element.setGeometry(0, 30, obj_element.size_element.width(), obj_element.size_element.height())
+				continue
 			element, size, pos_x, pos_y = obj_element.get_size_position()
 			if not pos_y == -1 and not pos_y == -42:
 				current_height = pos_y
@@ -134,7 +174,7 @@ class interface_class(App):
 		self.screen_elements.append(element)
 		return mode
 
-	def add_image(self, data, parse):
+	def add_image(self, data, parse, action=None):
 		"""
 		Creates a QLabel with a image
 
@@ -154,8 +194,35 @@ class interface_class(App):
 		label = QLabel(self)
 		pixmap = pil2pixmap(parse(data))
 		label.setPixmap(pixmap)
+		if not action is None:
+			label.mousePressEvent = action
 		self.screen_elements.append(screen_element(label))
 		return label, pixmap
+
+	def add_image_draggable(self, data, parse, parrent):
+		"""
+		Creates a QLabel with a image
+
+		Parameters
+		----------
+		data : ndarray
+			the image
+		parse : lambda
+			a function used to parse the image to a QT compatible format
+		Returns
+		-------
+		QLabel
+			the QLabel with a image
+		QPixmap
+			the pixmap of the image
+		"""
+		label = draggable_style("", parrent, pil2pixmap(parse(data)))
+		#pixmap = pil2pixmap(parse(data))
+		#label.setPixmap(pixmap)
+		screen_el = screen_element(label, free_floating=True)
+		screen_el.size_element = label.pixmap
+		self.screen_elements.append(screen_el)
+		return label, None
 
 	def first_upper(self, text):
 		"""
@@ -278,7 +345,8 @@ class interface_class(App):
 		for index, i in enumerate(button_text):
 			i = QRadioButton(i)
 			button_layout.addWidget(i)
-			i.toggled.connect(action)
+			if not action is None:
+				i.toggled.connect(action)
 			mood_button_group.addButton(i, index)
 			if index == enabled:
 				i.setChecked(True)
@@ -288,9 +356,47 @@ class interface_class(App):
 		self.screen_elements.append(screen_element(box))
 		return box, mood_button_group
 
+	def add_input_group(self, text, button_text, action, enabled):
+		box = QGroupBox(text, self)
+		mood_button_group = []
+		button_layout = QVBoxLayout()
+		for index, text in enumerate(button_text):
+			i = QLineEdit()
+			i.setPlaceholderText(text) 
+			i.textChanged.connect(action[index])
+			button_layout.addWidget(i)
+			mood_button_group.append(i)
+		#	if not action is None:
+		#		i.toggled.connect(action)
+			#mood_button_group.addWidget(i)#, index)
+			#if index == enabled:
+			#	i.setChecked(True)
+			print(i)
+		box.setLayout(button_layout)
 
+		self.screen_elements.append(screen_element(box))
+		return box, mood_button_group		
 
+	def add_input_button(self, text, button_text, action, enabled):
+		box = QGroupBox(text, self)
+		mood_button_group = []
+		button_layout = QVBoxLayout()
+		for index, text in enumerate(button_text):
+			i = QPushButton(text)
+#			i.setPlaceholderText(text) 
+			i.clicked.connect(action[index])
+			button_layout.addWidget(i)
+			mood_button_group.append(i)
+		#	if not action is None:
+		#		i.toggled.connect(action)
+			#mood_button_group.addWidget(i)#, index)
+			#if index == enabled:
+			#	i.setChecked(True)
+			print(i)
+		box.setLayout(button_layout)
 
+		self.screen_elements.append(screen_element(box))
+		return box, mood_button_group		
 
 
 

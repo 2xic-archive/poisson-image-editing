@@ -57,6 +57,12 @@ class doc:
 		print(path)
 		open(path, "w").write("\n".join(map(str, self.rows)))
 
+	def add_caption(self, text):
+		self.rows.append("\\caption{" + text + " }")
+
+	def add_ref(self, name):
+		self.rows.append("\\label{fig:" + name + "}")
+
 	def __str__(self):
 		for i in self.rows:
 			print(i)

@@ -74,8 +74,8 @@ class poisson(object):
 	def __str__(self):
 		return ("Neumann" if self.mode_boundary == self.NEUMANN else "Diriclet") + \
 		" with " + \
-		("Explicit" if self.mode_poisson == self.EXPLICIT else "Implicit")
-
+		("Explicit" if self.mode_poisson == self.EXPLICIT else "Implicit") 
+		
 	def __repr__(self):
 		return self.__str__()
 
@@ -121,6 +121,7 @@ class poisson(object):
 			The data to get the laplace from
 		"""
 		shape = data.shape[0]
+		self.alpha = 1
 
 		upperdiag = np.concatenate(([0, 0], -self.alpha * np.ones(shape - 2)))
 		upperdiag1 = np.concatenate(([0, 0], -self.alpha * np.ones(shape - 2)))
@@ -134,6 +135,7 @@ class poisson(object):
 		diags = np.array([upperdiag, upperdiag1, centerdiag, lowerdiag, lowerdiag1])
 
 		A = spdiags(diags, [2, 1, 0, -1, -2], shape, shape).tocsc()
+		print(A.shape)
 
 		return spsolve(A, data[:, :])
 
@@ -188,6 +190,7 @@ class poisson(object):
 		if self.mode_boundary == self.NEUMANN:
 			return self.neumann(data)
 		elif self.mode_boundary == self.DIRICHLET:
+			print("Diriclet")
 			return self.diriclet(data)
 		else:
 			raise Exception("not supported")

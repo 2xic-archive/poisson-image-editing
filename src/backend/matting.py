@@ -19,8 +19,12 @@ class matting(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 	color : bool
 		if the image should be shown with colors
 	"""
-	def __init__(self, target_path="./files/test_images/target.png", source_path="./files/test_images/source.png",
+	def __init__(self, target_path="./files/test_images/target.png", source_path="./files/test_images/source_v2.png",
+				 area=[[10, 65],
+					[10, 65]],
+				 padding=[50, 250],
 				 color=True):
+		"""
 		self.bird = True
 
 		if not self.bird:
@@ -28,25 +32,15 @@ class matting(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 			source_path = "./files/test_images/moon.png"
 		else:
 			target_path = "./files/test_images/target.png"
-			source_path = "./files/test_images/source.png"
-
+			source_path = "./files/test_images/source_v2.png"
+		"""
 		image_handler.ImageHandler.__init__(self, target_path, color)
 		boundary.Boundary.__init__(self)
 		poisson.poisson.__init__(self)
 		self.alpha = 0.1
-
-		# currently no good support for non 2d array
-		#self.mode_poisson = self.EXPLICIT
-		#
-		#
 		
-		# the self.bird
 		self.source = image_handler.ImageHandler(source_path, color)
 		self.target = self.data.copy()
-
-#		print((self.get_laplace_explicit(self.source.data[:, :, 0])- self.get_laplace_implicit(self.source.data[:, :, 0])[1:-1, 1:-1]).sum())
-#		print((self.get_laplace_explicit(self.source.data[:, :, 0])- self.get_laplace_implicit(self.source.data[:, :, 0])[1:-1, 1:-1]).sum())
-#		exit(0)
 
 		# NOTE : If this is wide the effect will go badly (I tried without having this set and you
 		# get a ugly border)
@@ -54,6 +48,7 @@ class matting(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		# TODO : Make it possible to set/define these values in GUI
 
 		# OG SKY AND self.BIRD
+		"""
 		if self.bird:
 			self.area = (
 				(200, 80),
@@ -64,18 +59,65 @@ class matting(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 				(200, 150),
 				(200 + self.source.data.shape[0], 150 + self.source.data.shape[1]),
 			)		
-	#	self.preview_box()
+		self.area = (
+			(0, 0), 
+			(0, 0)
+		)
+		"""
+		self.area_full = area
+		self.padding = padding# [0, 0]
 
-	def preview_box(self):
+	@property
+	def area_full(self):
+		return self._area
+
+	@area_full.setter
+	def area_full(self, mode):
+		'setting'
+		if len(mode) != 2:
+			raise ValueError("You speify the area as a 2d tuple ((x0, x1), (y0, y1))")
+
+		x0, x1 = mode[0]
+		"""
+		if x0 is None or x1 is None:
+			raise ValueError("input should be a number")
+		if not x0 < x1:
+			raise ValueError("x0 should be less than x1")
+		"""
+		if x0 is None:
+			x0 = 0
+		if x1 is None:
+			x1 = self.source.data.shape[1]
+
+		if x0 < 0 or self.source.data.shape[1] < x1:
+			raise ValueError("x range is ({}, {})".format(0, self.source.data.shape[1]))
+
+		y0, y1 = mode[1]
+#		if y0 is None or y1 is None:
+#			raise ValueError("input should be a number")
+		if y0 is None:
+			y0 = 0
+		if y1 is None:
+			y1 = self.source.data.shape[0]
+
+		if not y0 < y1:
+			raise ValueError("y0 should be less than y1")
+		if y0 < 0 or self.source.data.shape[0] < y1:
+			raise ValueError("x range is ({}, {})".format(0, self.source.data.shape[0]))
+		self._area = [(x0, x1), (y0, y1)]
+
+	def preview_box(self, x, y, x1, y1):
 		"""
 		Preview the crop box
 		"""
-		self.target[self.area[0][0]:self.area[1][0],
-							  self.area[0][1]:self.area[1][1], :] = self.source.data[:, :, :]
-		self.data = self.target
-		self.show()
-		exit(0)
+		self.area_full = ((x, x + self.source.data.shape[1]), (y, y + self.source.data.shape[0]))
 
+		box = self.target.copy()
+		x0, x1 = self.area_full[0][0], self.area_full[0][1]
+		y0, y1 = self.area_full[1][0], self.area_full[1][1]
+		box[y0:y1,
+			x0:x1 :] = 255 
+		return box
 
 	def reset_full(self) -> None:
 		"""
@@ -84,22 +126,57 @@ class matting(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		self.source.reset()
 		self.reset()
 
+	def crop(self, x, with_padding=True):
+		if with_padding:
+			return x[self.area_full[1][0] + self.padding[1]:self.area_full[1][1]  + self.padding[1],
+							  self.area_full[0][0] + self.padding[0]:self.area_full[0][1] + self.padding[0], :]
+		return x[self.area_full[1][0]:self.area_full[1][1] ,
+							  self.area_full[0][0]:self.area_full[0][1], :]
+
+	def apply(self, data):
+		for j in range(min(self.data.shape[-1], data.shape[-1])):
+			self.data[self.area_full[1][0] + self.padding[1]:self.area_full[1][1] + self.padding[1], 
+				self.area_full[0][0] + self.padding[0]:self.area_full[0][1] + self.padding[0], j] = data[:, :, j]
+
 	def iteration(self) -> None:
 		"""
 		Does one iteration of the method.
 
 		"""
-		crop_area = lambda x: x[self.area[0][0]:self.area[1][0],
-							  self.area[0][1]:self.area[1][1], :]
-		working_area = crop_area(self.data)
+		#crop_area = lambda x: x[self.area_full[1][0] + self.padding[1]:self.area_full[1][1]  + self.padding[1],
+		#					  self.area_full[0][0] + self.padding[0]:self.area_full[0][1] + self.padding[0], :]
+		#crop_area_area = lambda x: x[self.area_full[1][0]:self.area_full[1][1] ,
+		#					  self.area_full[0][0]:self.area_full[0][1], :]
+		working_area = self.crop(self.data)
+		working_area_source = self.crop(self.source.data, False)
 
-		if(self.bird):
-			h = lambda i: self.get_laplace(crop_area(self.source.data)[:, :, i]) #0.25 * crop_area(self.target)[:, :, i]) #self.target)#source.data[:, :, i]) #crop_area(self.source.data)[:, :, i])
-		else:
-			h = lambda i: self.get_laplace(self.source.data[:, :, i]) #0.25 * crop_area(self.target)[:, :, i]) #self.target)#source.data[:, :, i]) #crop_area(self.source.data)[:, :, i])
-		operator = lambda i=None: self.get_laplace(crop_area(self.target)[:, :, i]) 
+	#	print(working_area_source.shape)
+	#	print(working_area.shape)
+	#	exit(0)
+	#	import numpy as np
+	#	from PIL import Image
+	#	Image.fromarray((255 * working_area_source).astype(np.uint8)).show()
+	#	Image.fromarray((255 * working_area).astype(np.uint8)).show()
+
+		#if(self.bird):
+		h = lambda i: self.get_laplace((working_area_source)[:, :, i]) #0.25 * crop_area(self.target)[:, :, i]) #self.target)#source.data[:, :, i]) #crop_area(self.source.data)[:, :, i])
+	#	else:
+	#		h = lambda i: self.get_laplace(working_area_source[:, :, i]) #0.25 * crop_area(self.target)[:, :, i]) #self.target)#source.data[:, :, i]) #crop_area(self.source.data)[:, :, i])
+		operator = lambda i=None: self.get_laplace(working_area[:, :, i])#crop_area(self.target)[:, :, i]) 
 		working_area = self.solve(working_area,operator, h, apply_boundary=False) #* self.alpha
-			
+
+		import numpy as np
+		from PIL import Image
+	#	x = np.zeros((working_area_source.shape + (3, )))
+	#	print(working_area_source.shape)
+	#	Image.fromarray((working_area_source * 255).astype(np.uint8)).convert('RGB').show()
+	#	Image.fromarray((working_area * 255).astype(np.uint8)).convert('RGB').show()
+	#	print(np.all(working_area == working_area_source))
+		#print(working_area)
+		#self.data[self.area_full[1][0] + self.padding[1]:self.area_full[1][1] + self.padding[1], 
+		#self.area_full[0][0] + self.padding[0]:self.area_full[0][1] + self.padding[0]] =
+		self.apply(working_area.clip(0, 1))
+
 		"""
 		Huh, so setting it as abs seems to solve the problem when working with implicit....
 		I will ask Ivar if this is supposed to happen
@@ -118,8 +195,18 @@ class matting(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		# TODO : make this "nice"
 		#print(working_area.max())
 		#print(working_area.min())
-		self.data[self.area[0][0]:self.area[1][0], self.area[0][1]:self.area[1][1]] = working_area.clip(0, 1)
 
+
+	def bad_fit(self):
+#		print(self.area_full)
+		working_area_source = self.crop(self.source.data, with_padding=False)
+		from PIL import Image
+#		print(working_area_source)
+#		Image.fromarray(working_area_source).convert('RGB').show()
+		self.apply(working_area_source)
+#		print(working_area_source.shape)
+
+		#	= working_area_source.clip(0, 1)
 
 	def fit(self, epochs=1) -> matting:
 		"""
