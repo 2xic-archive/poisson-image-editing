@@ -37,7 +37,7 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		self.data = self.data_copy.copy()
 
-	def h(self) -> Array:
+	def h_func(self) -> Array:
 		"""
 			The h variable of the poisson eq
 		"""
@@ -72,6 +72,10 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		Does one iteration of the method.
 
+		Returns
+		-------
+		array
+			the new image array
 		"""
 
 		"""
@@ -79,17 +83,19 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		if len(np.shape(self.data)) == 3:
 			self.data = self.data.mean(axis=2)
-			self.h = self.h()
+			self.h = self.h_func()
 		
 		self.verify_integrity()
+		
 		operator = lambda : self.get_laplace(self.data, alpha=False)
 		h = lambda x: self.h[1:-1, 1:-1]
 	
-		self.data[1:-1, 1:-1] = self.data[1:-1, 1:-1] + 0.2* (operator()- h(None))
+		self.data[1:-1, 1:-1] = self.data[1:-1, 1:-1] + 0.2 * (operator()- h(None))
 
 		self.data = self.neumann(self.data)
 		self.data = self.data.clip(0, 1)
 
+		return self.data
 
 	def fit(self, epochs) -> grayscale:
 		"""
@@ -101,6 +107,11 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		----------
 		epochs : int
 			The iteration count
+
+		Returns
+		-------
+		grayscale
+			returns self
 		"""
 		for _ in range(epochs):
 			self.iteration()

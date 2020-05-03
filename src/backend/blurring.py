@@ -37,17 +37,27 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		Does one iteration of the method.
 
+		Returns
+		-------
+		array
+			numpy array with the new image after the iteration
 		"""
 		assert 0 <= self.lambda_size <= 1, "lamda is out of scope [0, 1]"
 		self.verify_integrity()
 
+		def h(x=None, i=None):
+			if i is None:
+				return self.common_shape(self.lambda_size * (self.data - self.data_copy))
+			else:
+				return self.common_shape(self.lambda_size * (self.data[:, :, i] - self.data_copy[:, :, i]))
+		
+		def operator(i=None):
+			if i is None:
+				return self.get_laplace(self.data, alpha=True) 
+			else:
+				return self.get_laplace(self.data[:, :, i], alpha=True)
 
-		# TODO : Seems like data attachment works, but it still "flickers" after some iterations, figure out why 
-
-		h = lambda x=None, i=None: (self.common_shape(self.lambda_size * (self.data - self.data_copy))) if i is None else (self.common_shape(self.lambda_size * (self.data[:, :, i] - self.data_copy[:, :, i])))
-		operator = lambda i=None: self.get_laplace(self.data) if i is None else self.get_laplace(self.data[:, :, i])
-
-		self.data = self.solve(self.data,operator, h).clip(0, 1) 
+		self.data = (self.solve(self.data,operator, h)).clip(0, 1) 
 
 		return self.data
 
@@ -61,6 +71,11 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		----------
 		epochs : int
 			The iteration count
+
+		Returns
+		-------
+		blur
+			returns self
 		"""
 		for i in range(epochs):
 			self.iteration()

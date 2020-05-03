@@ -27,8 +27,10 @@ mask = np.ones((contrast_obj.data.shape[:2]))
 
 x_m, y_m, _ = contrast_obj.data.shape
 
-mask[x_m//2:x_m//2 + 3, 
-	y_m//2: y_m // 2 + 3] = 0
+SIZE = 5
+
+mask[x_m//2: x_m//2 + SIZE, 
+	 y_m//2: y_m//2 + SIZE] = 0
 
 
 og = np.zeros((contrast_obj.data.shape))

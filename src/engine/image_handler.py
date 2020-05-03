@@ -24,7 +24,16 @@ class ImageHandler:
 			self.change_photo(path)
 
 	def change_photo(self, path):
+		"""
+		Change out the photo 
 
+		Changes out the photo, but keeps the same size as the old photo.
+
+		Returns
+		-------
+		list
+			returns the change in size
+		"""
 		self.path = path
 		image = Image.open(path)
 		image.load()
@@ -45,7 +54,6 @@ class ImageHandler:
 		"""
 		assert 0 <= self.data.max() <= 1, "data is out of scope [0, 1]"
 		assert 0 <= self.data.min() <= 1, "data is out of scope [0, 1]"
-
 
 	def change_color_state(self):
 		"""
@@ -208,4 +216,7 @@ class ImageHandler:
 		return self.data
 
 	def __repr__(self):
+		"""
+		String representation of the object
+		"""
 		return self.path

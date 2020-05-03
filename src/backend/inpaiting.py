@@ -74,6 +74,11 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		----------
 		strength : int
 			a number from 1 to 10, this is used to set the level of noise added
+
+		Returns
+		-------
+		array
+			the image mask (where the data was removed)
 		"""
 		if self.mask is None or create_new_mask:
 			noise = np.random.randint(0, 10, size=self.data.shape[:2])
@@ -84,7 +89,6 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 			self.mask = mask
 		
 		if(len(self.data.shape) == 3 ):
-			print("im runned")
 			for i in range(self.data.shape[-1]):
 				 self.data[:, :, i] *= self.mask
 		else:
@@ -96,9 +100,17 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		Does one iteration of the method.
 
+		Returns
+		-------
+		array
+			the new image array
 		"""
-		operator = lambda i=None: self.get_laplace(self.data) if i is None else (self.get_laplace(self.data[:, :, i]))
 
+		def operator(i=None):
+			if i is None:
+				return self.get_laplace(self.data)	
+			else:
+				return self.get_laplace(self.data[:, :, i])
 		"""
 		mask content
 			original value = 1 
@@ -106,14 +118,14 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		response = self.solve(self.data, operator, apply_boundary=False)
 		if(len(self.data.shape) == 3):
-			print(response.shape)
 			for i in range(self.data.shape[-1]):
-				print(self.original_data_copy.shape)
 				self.data[:, :, i] = (response[:, :, i] * (1 - self.mask)) + (self.original_data_copy[:, :, i] * (self.mask))
 		else:
 			self.data = (response * (1 - self.mask)) + (self.original_data_copy * (self.mask))
 			
 		self.data = self.diriclet(self.data, self.mask)
+
+		return self.data
 
 
 	def fit(self, original=None, data=None, mask=None, epochs:int=1) -> Array:
@@ -132,6 +144,11 @@ class inpaint(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 			Set mask of the image
 		epochs : int
 			The iteration count
+
+		Returns
+		-------
+		array
+			the new image array
 		"""
 		if not mask is None:
 			self.set_mask(mask)

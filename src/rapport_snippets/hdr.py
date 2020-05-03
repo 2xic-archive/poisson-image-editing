@@ -1,3 +1,6 @@
+import sys
+sys.path.append("./")
+
 #from backend import hdr
 from extra import local_adaptive_histogram
 from engine import hdr_image_handler
@@ -5,6 +8,14 @@ from PIL import Image
 from rapport_snippets.figs import *
 import numpy as np
 from backend import hdr_reconstruction
+from engine import image_handler
+
+images = [
+				image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00064.png'),
+				image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00128.png'),
+				image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00256.png'),
+				image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00512.png')
+			]
 
 def compile(output_path):
 	"""
@@ -36,6 +47,22 @@ def compile(output_path):
 	results_doc.add_row()
 	
 	results_doc.save(output_path + "results.tex")
+
+def plot_function():
+	global images
+	x = hdr_image_handler.hdr_handler(images)
+	plot = x.get_radiance()
+	import matplotlib.pyplot as plt
+#	print(plot.shape)
+#	for i in 
+	plt.plot(plot[:, 0])
+	plt.title("Red")
+	plt.show()
+
+
+if __name__ == "__main__":
+	plot_function()
+
 
 	"""
 	results_doc.add_row_element(subfigure(path=path_latex + "/source.png", text="Source image"))

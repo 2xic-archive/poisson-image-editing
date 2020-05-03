@@ -23,20 +23,39 @@ class Contrast(image_handler.ImageHandler, poisson.poisson,boundary.Boundary):
 
 		self.alpha = 0.2
 		self.k = 5
-		self.h = self.k * self.get_laplace(np.copy(self.data))
+		if len(self.data.shape) == 2:
+			self.h = self.k * self.get_laplace(np.copy(self.data))
+		else:
+			self.h = self.k * (np.asarray([self.get_laplace(np.copy(self.data[:, :, i]))
+				for i in range(self.data.shape[-1])]))
+			#print(self.h.shape)
 
 	def iteration(self) -> None:
 		"""
 		Does one iteration of the method.
 
+		Returns
+		-------
+		array
+			the new image array
 		"""		
 		self.verify_integrity()
 
-		operator = lambda : self.get_laplace(self.data)
-		h = lambda x: self.h
+		def operator(i):
+			if i is None:
+				return 0.2 * self.get_laplace(self.data, alpha=False) 
+			else:
+				return 0.2 * self.get_laplace(self.data[:, :, i], alpha=False)
+
+		def h(i=None):
+			if len(self.h.shape) == 3:
+				return self.h[i, :, :]
+			else:
+				return self.h
 		
 		self.data = self.solve(self.data, operator, h)
-		
+		return self.data
+
 	def fit(self, epochs=1):
 		"""
 		Makes multiple iterations of the method
@@ -47,6 +66,11 @@ class Contrast(image_handler.ImageHandler, poisson.poisson,boundary.Boundary):
 		----------
 		epochs : int
 			The iteration count
+
+		Returns
+		-------
+		Contrast
+			returns self
 		"""
 		for i in range(epochs):
 			self.iteration()

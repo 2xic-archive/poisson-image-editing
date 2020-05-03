@@ -43,7 +43,7 @@ class anonymous(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 	"""
 	mask: list
 
-	def __init__(self, path: str, color: bool = False):
+	def __init__(self, path: str, color: bool = True):
 		image_handler.ImageHandler.__init__(self, path, color)
 		poisson.poisson.__init__(self)
 		boundary.Boundary.__init__(self)
@@ -62,9 +62,10 @@ class anonymous(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		for mask in self.mask:
 			blur.set_data(self.data.copy()[mask[0]:mask[1], mask[2]:mask[3]])
 			self.data[mask[0]:mask[1], mask[2]:mask[3]] = blur.iteration()#apply_boundary=False)
-			data_mask = np.zeros((self.data.shape))
-			data_mask[mask[0]:mask[1], mask[2]:mask[3]] = 1
-			self.data = self.diriclet(self.data, data_mask)			
+			data_mask = np.ones((self.data.shape))
+			data_mask[mask[0]:mask[1], mask[2]:mask[3]] = 0
+			self.data = self.diriclet(self.data, data_mask)
+			#print("???")
 
 	def fit(self, epochs: int):
 		"""
@@ -76,6 +77,11 @@ class anonymous(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		----------
 		epochs : int
 			The iteration count
+
+		Returns
+		-------
+		anonymous
+			returns self
 		"""
 		for _ in range(epochs):
 			self.iteration()

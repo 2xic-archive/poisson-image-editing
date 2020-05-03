@@ -30,12 +30,20 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		self.simulated = False
 
 	def reset(self):
+		"""
+		Reset the method
+
+		sets the image to the orignal image. Removes the mosaic. 
+		"""
 		self.data = self.data_copy.copy()
 		self.simulated = False
 		self.get_mosaic()
 		self.inpaint.data = self.mosaic        
 
 	def get_mosaic(self):
+		"""
+		Simulates the mosaic
+		"""
 		u = self.data
 		self.mosaic = np.zeros(u.shape[:2])  # Alloker plass
 		self.mosaic[::2, ::2] = u[::2, ::2, 0]  # R-kanal
@@ -47,6 +55,10 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		Simualtes a image into a state where we can preform demosaic
 
+		Returns
+		-------
+		array
+			the simulated mosaic image
 		"""
 		u = self.data
 		self.get_mosaic()
@@ -79,6 +91,10 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		Does one iteration of the method.
 
+		Returns
+		-------
+		array
+			the new image array
 		"""
 		self.verify_integrity()
 
@@ -90,8 +106,11 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 #		self.data = self.solve(self.results, operator) 
 		for i in range(3):
 			self.results[:, :, i] = self.inpaint.fit(self.rgb_mosaic[:, :, i], self.results[:, :, i], self.mask[:, :, i])
+
 		self.data = self.results
 		self.data = self.data.clip(0, 1)
+		
+		return self.data
 
 	def fit(self, epochs: int = 1) -> Demosaic:
 		"""
@@ -103,6 +122,11 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		----------
 		epochs : int
 			The iteration count
+
+		Returns
+		-------
+		Demosaic
+			returns self
 		"""
 		if not self.simulated:
 			raise Exception("You have to simulate the mosaic first")

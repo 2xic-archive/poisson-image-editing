@@ -67,9 +67,9 @@ class hdr_handler:
 
 	def get_pixel(self, image, sample):
 		"""
-		[TODO:summary]
+		Get the pixel from the sample (x, y) in the image
 
-		[TODO:description]
+		
 		"""
 		results = np.zeros(sample.shape)
 		image_flat = image.flatten()
@@ -79,9 +79,9 @@ class hdr_handler:
 
 	def sample(self, size=100):
 		"""
-		[TODO:summary]
+		Sample pixel values from all the iamges
 
-		[TODO:description]
+		Randomly selects pixels from all of the images as a sample
 		"""
 		sample_space = np.ceil(np.random.rand(1, size) * self.pixel_area)
 
@@ -94,9 +94,8 @@ class hdr_handler:
 
 	def get_radiance(self):
 		"""
-		[TODO:summary]
+		Get the radiance of (R,G,B)
 
-		[TODO:description]
 		"""
 		self.radiance = np.zeros((255, 3))
 		for channel in range(3):
@@ -107,9 +106,22 @@ class hdr_handler:
 
 
 	def get_Ab(self, Z, n=256):
+		"""
+		Creates the A and b matrices 
+
+		Returns
+		-------
+		array
+			the A matrice
+		array
+			the b matrice
+		int 
+			n (pixel interval) TODO : find better word
+		"""
 		k = 0
 		A = np.zeros((Z.shape[0] * Z.shape[1] + n + 1, n + Z.shape[0]))
 		b = np.zeros((A.shape[0], 1))
+		
 		for i in range(Z.shape[0]):
 			for j in range(Z.shape[1]):
 				Z_ij = int(round(Z[i, j]))
@@ -134,9 +146,12 @@ class hdr_handler:
 
 	def gsolve(self, Z, index):
 		"""
-		[TODO:summary]
+		Gets the resposne function
 
-		[TODO:description]
+		From the paper : "Given a set of pixel values observed for several pixels in several
+		images with different exposure times, this function returns the
+		imaging system’s response function g as well as the log film irradiance
+		values for the observed pixels."
 		"""
 		A, b, n = self.get_Ab(Z)
 		#	https://github.com/numpy/numpy/issues/9563
@@ -153,16 +168,19 @@ class hdr_handler:
 		return g, lE
 
 	def look_up_pixel(self, radiance, image):
+		"""
+		Check the radiance value on the (x, y) from the image
+		"""
 		out_image = np.zeros((image.shape))
 		for i in range(image.shape[0]):
 			for j in range(image.shape[1]):
 				out_image[i, j] = radiance[int(image[i, j]) - 1]
 		return out_image
 
-	'''
-	Equation 6 from the paper
-	'''
 	def get_radiance_log(self, radiance):
+		"""
+		Equation 6 from the paper
+		"""
 		x = np.ones(self.images[0].data.shape)
 		y = np.zeros(self.images[0].data.shape)
 
@@ -171,9 +189,12 @@ class hdr_handler:
 			for rgb in range(3):
 				g[:, :, rgb] = self.look_up_pixel(radiance[:, rgb], g[:, :, rgb])
 			g -= self.B[index]
+			
 			f = np.vectorize(self.weigth_function)
 			wi = f(g.copy())
 			x += wi * g
 			y += wi
 		rad = (x / y)
-		return rad  # (x/y).clip(0, 255)
+		return rad 
+
+

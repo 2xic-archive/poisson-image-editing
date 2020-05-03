@@ -2,8 +2,6 @@ from __future__ import annotations
 from engine import hdr_image_handler
 from engine import image_handler
 
-# TODO : http://www.pauldebevec.com/Research/HDR/debevec-siggraph97.pdf
-
 class hdr_reconstruction(image_handler.ImageHandler):
 	"""
 	This class describes a HDR image.
@@ -30,6 +28,9 @@ class hdr_reconstruction(image_handler.ImageHandler):
 		image_handler.ImageHandler.__init__(self, path, color)
 
 	def update_images(self, images):
+		"""
+			update the class with another set of images
+		"""
 		self.handler = hdr_image_handler.hdr_handler(images=
 			[image_handler.ImageHandler(i) for i in images]
 		)
@@ -44,6 +45,11 @@ class hdr_reconstruction(image_handler.ImageHandler):
 		----------
 		epochs : int
 			The iteration count
+
+		Returns
+		-------
+		hdr_reconstruction
+			returns self
 		"""
 		radiance = self.handler.get_radiance()
 		self.radiance_log = self.handler.get_radiance_log(radiance)

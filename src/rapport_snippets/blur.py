@@ -1,5 +1,8 @@
 #from gui.interfaces import blurring_qt
 import time
+import sys
+sys.path.append("./")
+from engine import image_handler
 
 # https://stackoverflow.com/a/5478448
 def timing(f):
@@ -22,6 +25,8 @@ from matplotlib.pyplot import imread, imshow
 import numpy as np
 from scipy import ndimage
 
+
+# http://www.adeveloperdiary.com/data-science/computer-vision/applying-gaussian-smoothing-to-an-image-using-python-from-scratch/
 def dnorm(x, mu, sd):
     return 1 / (np.sqrt(2 * np.pi) * sd) * np.e ** (-np.power((x - mu) / sd, 2) / 2)
 
@@ -30,7 +35,6 @@ def gaussian_kernel(size, sigma=1, verbose=False):
     for i in range(size):
         kernel_1D[i] = dnorm(kernel_1D[i], 0, sigma)
     kernel_2D = np.outer(kernel_1D.T, kernel_1D.T)
- 
     kernel_2D *= 1.0 / kernel_2D.max()
  
     if verbose:
@@ -42,16 +46,10 @@ def gaussian_kernel(size, sigma=1, verbose=False):
 
 @timing
 def test_blur_filter():
-	#face = imread("./files/test_images/lena.png")
 	blurring_obj = blurring.blur("./files/test_images/lena.png", False)
 	image = blurring_obj.data
-	#blurred_face = scipy.ndimage.gaussian_filter(face, sigma=3)
-	kernel = gaussian_kernel(3, sigma=52)
-#	print(x.shape)
-#	print(face.sh)
-#	ndimage.convolve2d(face, x, mode='nearest')
-#	imshow(scipy.ndimage.convolve(face, x, mode='nearest'))
-#	plt.show()
+	kernel = gaussian_kernel(3, sigma=1)
+
 	image_row, image_col = image.shape
 	kernel_row, kernel_col = kernel.shape
 	 
@@ -63,30 +61,24 @@ def test_blur_filter():
 	padded_image = np.zeros((image_row + (2 * pad_height), image_col + (2 * pad_width)))
 	padded_image[pad_height:padded_image.shape[0] - pad_height, pad_width:padded_image.shape[1] - pad_width] = image
 
-#	for i in range(4):
-	if(False):
-		for row in range(image_row):
-			for col in range(image_col):
-				output[row, col] = np.sum(kernel * padded_image[row:row + kernel_row, col:col + kernel_col])#.clip(0,1)
-#		padded_image[pad_height:padded_image.shape[0] - pad_height, pad_width:padded_image.shape[1] - pad_width] = out
+	print(np.max(padded_image))
+	for row in range(image_row):
+		for col in range(image_col):
+			output[row, col] = np.sum(kernel * padded_image[row:row + kernel_row, col:col + kernel_col])#.clip(0, 1)
+#	image = image_handler.ImageHandler(None, False)
+#	image.data = np.uint8(output * 255)
+#	image.save("test.jpg")
+	from PIL import Image
+	Image.fromarray(np.uint8(output * 255).astype(np.uint32)).convert("RGB").save("test.png")
 
-	output = scipy.ndimage.gaussian_filter(image, sigma=5)
-
-#	imshow(output, cmap='gray')#scipy.ndimage.convolve(image, x, mode='nearest'))
+#	plt.imshow(output, cmap='gray')
 #	plt.show()
-
 
 @timing
 def test_blur_poision():
 	blurring_obj = blurring.blur("./files/test_images/lena.png", False)
 	blurring_obj.fit(50)
 	#blurring_obj.show()
-
-#test_blur_poision()
-#test_blur_filter()
-
-#imshow(very_blurred)
-#plt.show()
 
 
 def compile(output_path="./rapport_snippets/output/glatting/"):
@@ -112,7 +104,8 @@ def compile(output_path="./rapport_snippets/output/glatting/"):
 				"glatting/blur{}".format(naming))
 			results_doc.save("{}/blur{}/results.tex".format(output_path,naming))
 
-
+if __name__ == "__main__":
+	test_blur_filter()
 
 
 
