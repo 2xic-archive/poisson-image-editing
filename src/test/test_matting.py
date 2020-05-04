@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from backend import matting
-
+import pytest
 
 class test_matting(unittest.TestCase):
 	def test_fit(self):

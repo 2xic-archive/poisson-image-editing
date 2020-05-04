@@ -66,8 +66,8 @@ class App(QMainWindow):
 
 	def alpha_chnage(self):
 		value: int = self.alpha_slider.value()
-		self.method.set_alpha(value/10)
-		self.alpha_label.setText("Alpha ({})".format(value/10))
+		self.method.set_alpha(value/100)
+		self.alpha_label.setText("Alpha ({})".format(value/100))
 
 	def boundary_change(self):
 		if not self.boundary_group is None:
@@ -194,7 +194,7 @@ class App(QMainWindow):
 		"""
 		self.prepare()
 		if lock_run:
-			print(lock_run)
+			#print(lock_run)
 			QTimer.singleShot(100, lambda:self.action_button.setEnabled(False))
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 		QApplication.processEvents()
@@ -214,7 +214,7 @@ class App(QMainWindow):
 		self.total_epochs = 0
 		self.undo()
 		self.reset_button.setEnabled(False)
-		QTimer.singleShot(100, lambda:self.action_button.setEnabled(True))
+		QTimer.singleShot(100, lambda: self.action_button.setEnabled(True))
 		self.method.reset()
 		self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))
 

@@ -76,7 +76,7 @@ class general_window(interface_class):
 		"""
 		Showing the epoch slider
 		"""
-		self.alpha_slider = self.add_slider('Alpha', action=self.alpha_chnage, value=2)
+		self.alpha_slider = self.add_slider('Alpha', action=self.alpha_chnage, value=25)
 		self.update_geometry(self.pixmap.width(), 30)
 		self.alpha_chnage()
 

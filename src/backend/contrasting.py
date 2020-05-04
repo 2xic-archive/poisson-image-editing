@@ -41,7 +41,7 @@ class Contrast(image_handler.ImageHandler, poisson.poisson,boundary.Boundary):
 		"""		
 		self.verify_integrity()
 
-		def operator(i):
+		def operator(i=None):
 			if i is None:
 				return 0.2 * self.get_laplace(self.data, alpha=False) 
 			else:

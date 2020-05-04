@@ -109,6 +109,9 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 
 		self.data = self.results
 		self.data = self.data.clip(0, 1)
+
+		print(self.data.shape)
+		print(len(self.data.shape))
 		
 		return self.data
 

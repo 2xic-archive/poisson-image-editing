@@ -5,6 +5,7 @@ from gui.interfaces import demosaic_qt
 from PyQt5 import QtCore
 #from test.general import *
 import test.general 
+import pytest
 
 class test_demosaic(unittest.TestCase):
 	def test_fit(self):
@@ -24,6 +25,7 @@ class test_demosaic(unittest.TestCase):
 			# should fail because we have not simulated  
 			pass
 
+#@pytest.mark.gui
 def test_basics(qtbot):
 	ex = demosaic_qt.demonsaic_window()
 	ex.init_UI()
@@ -31,7 +33,7 @@ def test_basics(qtbot):
 	assert ex.isVisible()
 	assert ex.windowTitle() == "lena.png"
 
-	qtbot.add_widget(ex)
+	#qtbot.add_widget(ex)
 
 	current_image = ex.method.data.copy()
 
@@ -41,22 +43,33 @@ def test_basics(qtbot):
 
 	#	make sure change is made
 	qtbot.waitUntil(lambda: not ex.method.data.shape == current_image.shape, timeout=3000) #np.allclose(ex.method.data, current_image), timeout=10000)
-
-	current_image = ex.method.data.copy()
-	current_image = ex.method.results.copy()
+	#current_image = ex.method.data.copy()
+	#current_image = ex.method.results.copy()
 
 	qtbot.mousePress(ex.action_button, QtCore.Qt.LeftButton, delay=10)
 	qtbot.mouseRelease(ex.action_button, QtCore.Qt.LeftButton, delay=10)
 
-	qtbot.waitUntil(lambda: not len(ex.method.data) == 3, timeout=3000)
-	qtbot.waitUntil(lambda: not np.allclose(ex.method.results, current_image), timeout=3000)
+	print(ex.method.data.shape)
 
+	def view_updated():
+		print(1, ex.method.data.shape == current_image.shape)
+		return ( ex.method.data.shape == current_image.shape)
+
+		# np.allclose(ex.method.data, current_image) #view_model.count() > 10
+
+	qtbot.wait(300)
+	qtbot.waitUntil(view_updated)
+	ex.close()
+
+
+#@pytest.mark.gui
 def test_noisy_clicker(qtbot):
 #	ex = demosaic_qt.demonsaic_window()
 	def setup(qtbot, ex, current_image):
 		qtbot.mousePress(ex.mosaic_button, QtCore.Qt.LeftButton, delay=10)
 		qtbot.mouseRelease(ex.mosaic_button, QtCore.Qt.LeftButton, delay=10)
 
+		qtbot.wait(300)
 		qtbot.waitUntil(lambda: not ex.method.data.shape == current_image.shape, timeout=3000) 
 
 	ex = demosaic_qt.demonsaic_window()

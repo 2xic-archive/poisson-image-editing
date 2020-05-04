@@ -7,7 +7,7 @@ from gui.interfaces import grayscale_qt
 from PyQt5 import QtCore
 #from test.general import *
 import test.general 
-
+import pytest
 
 class test_grayscale(unittest.TestCase):
 	def test_fit(self):
@@ -16,6 +16,7 @@ class test_grayscale(unittest.TestCase):
 		grayscale_object.fit(1)
 		self.assertFalse(np.all(old_image == grayscale_object))
 
+	@pytest.mark.gui
 	def test_reset(self):
 		grayscale_object = grayscale.grayscale("./files/test_images/lena.png")
 		old_image = grayscale_object.get_data().copy()
@@ -23,6 +24,7 @@ class test_grayscale(unittest.TestCase):
 		grayscale_object.reset()
 		assert(np.allclose(old_image, grayscale_object.get_data()))
 
+@pytest.mark.gui
 def test_noisy_clicker(qtbot):
 	ex = grayscale_qt.grayscale_window()
 	ex.init_UI()

@@ -3,7 +3,7 @@ import numpy as np
 from backend import inpaiting
 from gui.interfaces import inpaiting_qt
 from PyQt5 import QtCore
-
+import pytest
 
 class test_inpaiting(unittest.TestCase):
 	def test_fit(self):
@@ -16,10 +16,11 @@ class test_inpaiting(unittest.TestCase):
 			# should fail because we have not destroyed any information/set a mask
 			pass
 		inpaint_object.destroy_information()
-		inpaint_object.fit(1)
+		inpaint_object.fit(epochs=1)
 		self.assertFalse(np.all(old_image == inpaint_object))
 
 
+@pytest.mark.gui
 def test_basics(qtbot):
 	ex = inpaiting_qt.inpait_window()
 	ex.init_UI()

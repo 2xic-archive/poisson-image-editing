@@ -15,31 +15,44 @@ def test_rest(_qt_bot_, interface_app, setup_code=lambda x, y, z: 0):#, change_d
 	for index, i in enumerate(interface_app.screen_elements):
 		elemenets.append(i.element.isEnabled())
 
-	long_sleep = 100
 
 	setup_code(_qt_bot_, interface_app, current_image)
 
-	for i in range(3):
-		_qt_bot_.mousePress(interface_app.action_button, QtCore.Qt.LeftButton, delay=10)
-		_qt_bot_.mouseRelease(interface_app.action_button, QtCore.Qt.LeftButton, delay=10)
+	_qt_bot_.mousePress(interface_app.action_button, QtCore.Qt.LeftButton, delay=10)
+	_qt_bot_.mouseRelease(interface_app.action_button, QtCore.Qt.LeftButton, delay=10)
+#	return 
 
-	_qt_bot_.waitUntil(lambda: (interface_app.method.data.shape != current_image.shape) or not np.allclose(interface_app.method.data, current_image) , timeout=long_sleep)
+	_qt_bot_.wait(10)
 
-	_qt_bot_.waitUntil(lambda: interface_app.reset_button.isEnabled(), timeout=long_sleep) 
+	print((interface_app.method.data.shape != current_image.shape) or not np.allclose(interface_app.method.data, current_image))
+	_qt_bot_.wait(100)
+	print((interface_app.method.data.shape != current_image.shape) or not np.allclose(interface_app.method.data, current_image))
+	_qt_bot_.wait(100)
+	print((interface_app.method.data.shape != current_image.shape) or not np.allclose(interface_app.method.data, current_image))
+	_qt_bot_.waitUntil(lambda: (interface_app.method.data.shape != current_image.shape) or not np.allclose(interface_app.method.data, current_image) , timeout=3000)
 	
+	_qt_bot_.waitUntil(lambda: interface_app.reset_button.isEnabled(), timeout=3000) 
+	
+	_qt_bot_.wait(100)
+	#exit(0)
+#	return 
+
+
 	#	reset and verify that the state is the same
 	_qt_bot_.mousePress(interface_app.reset_button, QtCore.Qt.LeftButton, delay=10)
 	_qt_bot_.mouseRelease(interface_app.reset_button, QtCore.Qt.LeftButton, delay=10)
 
+	_qt_bot_.wait(300)
 #	if custom_check is None:
-	_qt_bot_.waitUntil(lambda: not interface_app.reset_button.isEnabled(), timeout=long_sleep) 
+	_qt_bot_.waitUntil(lambda: not interface_app.reset_button.isEnabled(), timeout=3000) 
 #	_qt_bot_.waitUntil(lambda: not interface_app.reset_button.isEnabled(), timeout=3000) 
 	
 #	if not change_dimension is None:
 #		change_dimension(_qt_bot_, interface_app, current_image)
-
-	_qt_bot_.waitUntil(lambda: interface_app.method.data.shape == current_image.shape, timeout=long_sleep) 
-	_qt_bot_.waitUntil(lambda: np.allclose(interface_app.method.data, current_image), timeout=long_sleep)
+	
+	_qt_bot_.wait(300)
+	_qt_bot_.waitUntil(lambda: interface_app.method.data.shape == current_image.shape, timeout=3000) 
+	_qt_bot_.waitUntil(lambda: np.allclose(interface_app.method.data, current_image), timeout=3000)
 
 	"""
 	AFTER
@@ -49,5 +62,3 @@ def test_rest(_qt_bot_, interface_app, setup_code=lambda x, y, z: 0):#, change_d
 
 
 	interface_app.close()
-
-

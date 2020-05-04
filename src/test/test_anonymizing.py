@@ -16,7 +16,6 @@ class test_anonymous(unittest.TestCase):
 		anonymous_object.fit(1)
 		self.assertFalse(np.all(old_image == anonymous_object))
 
-
 def test_noisy_clicker(qtbot):
 	ex = anonymizing_qt.anonymizing_window()
 	ex.init_UI()

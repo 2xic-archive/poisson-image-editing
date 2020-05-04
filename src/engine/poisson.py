@@ -15,8 +15,8 @@ class poisson(object):
 		self.NEUMANN = 0
 		self.DIRICHLET = 1
 
-		self._mode_poisson = 0 
-		self._mode_boundary =  1
+		self._mode_poisson = self.EXPLICIT
+		self._mode_boundary =  self.DIRICHLET
 		self.alpha = 0.25
 
 	@property

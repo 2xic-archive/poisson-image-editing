@@ -280,7 +280,7 @@ class interface_class(App):
 		"""
 		slider = QSlider(Qt.Horizontal, self)
 		slider.setMinimum(1)
-		slider.setMaximum(10)
+		slider.setMaximum(100)
 		slider.setSingleStep(1)
 		if 0 < len(text):
 			slider.setToolTip(text)
