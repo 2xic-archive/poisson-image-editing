@@ -4,6 +4,7 @@ from engine import poisson
 import numpy as np
 from backend import inpaiting
 from engine import poisson, boundary
+from nptyping import Array
 
 class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 	"""
@@ -20,14 +21,83 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 	"""
 
 	def __init__(self, path: str, color: bool = True):
+		self.inpaint = inpaiting.inpaint(None)
 		image_handler.ImageHandler.__init__(self, path, color)
 		poisson.poisson.__init__(self)
 		boundary.Boundary.__init__(self)
-		
-		self.inpaint = inpaiting.inpaint(None)
-		self.inpaint.alpha = 0.05
-
 		self.simulated = False
+
+	@property
+	def alpha(self):
+		"""
+		Get the alpha value for inpait
+
+		Returns
+		-------
+		float
+			alpha value
+		"""
+		return self.inpaint.alpha
+
+	@alpha.setter
+	def alpha(self, alpha):
+		"""
+		Sets the alpha value for inpait
+
+		Parameters
+		----------
+		alpha : float
+			The alpha value to use
+		"""
+		self.inpaint.alpha = alpha
+
+	@property
+	def mode_poisson(self):
+		"""
+		Get the mode for the poission backend
+
+		Returns
+		----------
+		int
+			the mode id
+		"""
+		return self.inpaint.mode_poisson
+
+	@mode_poisson.setter
+	def mode_poisson(self, mode_poisson):
+		"""
+		Set the mode for the poission backend
+		
+		Parameters
+		----------
+		mode_poisson : int
+			The mode value to use
+		"""
+		self.inpaint.mode_poisson = mode_poisson
+
+	@property
+	def mode_boundary(self):
+		"""
+		Get the mode for the boundary
+
+		Returns
+		----------
+		int
+			the mode id
+		"""
+		return self.inpaint.mode_boundary
+
+	@mode_boundary.setter
+	def mode_boundary(self, mode_boundary):
+		"""
+		Set the mode for the boundary
+
+		Returns
+		----------
+		int
+			the mode id
+		"""
+		self.inpaint.mode_boundary = mode_boundary
 
 	def reset(self):
 		"""
@@ -44,12 +114,11 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		Simulates the mosaic
 		"""
-		u = self.data
-		self.mosaic = np.zeros(u.shape[:2])  # Alloker plass
-		self.mosaic[::2, ::2] = u[::2, ::2, 0]  # R-kanal
-		self.mosaic[1::2, ::2] = u[1::2, ::2, 1]  # G-kanal
-		self.mosaic[::2, 1::2] = u[::2, 1::2, 1]  # G-kanal
-		self.mosaic[1::2, 1::2] = u[1::2, 1::2, 2]  # B-kanal
+		self.mosaic = np.zeros(self.data.shape[:2])
+		self.mosaic[::2, ::2] = self.data[::2, ::2, 0]
+		self.mosaic[1::2, ::2] = self.data[1::2, ::2, 1]
+		self.mosaic[::2, 1::2] = self.data[::2, 1::2, 1]
+		self.mosaic[1::2, 1::2] = self.data[1::2, 1::2, 2]
 
 	def simulate(self):
 		"""
@@ -60,13 +129,12 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		array
 			the simulated mosaic image
 		"""
-		u = self.data
 		self.get_mosaic()
-		self.rgb_mosaic = np.zeros(self.mosaic.shape + (3,))
-		self.rgb_mosaic[:, :, 0] = self.mosaic[:, :]
-		self.rgb_mosaic[:, :, 1] = self.mosaic[:, :]
-		self.rgb_mosaic[:, :, 1] = self.mosaic[:, :]
-		self.rgb_mosaic[:, :, 2] = self.mosaic[:, :]
+		self.rgb_mosaic = np.asarray([
+			self.mosaic,
+			self.mosaic,
+			self.mosaic
+		]).reshape(self.mosaic.shape + (3, ))
 
 		self.mask = np.zeros(np.shape(self.mosaic) + (3,))
 		self.mask[::2, ::2, 0] = 1
@@ -74,6 +142,7 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		self.mask[::2, 1::2, 1] = 1
 		self.mask[1::2, 1::2, 2] = 1
 
+		#	set the inpait data
 		self.inpaint.data = self.mosaic.copy()
 		self.inpaint.data_copy = self.mosaic.copy()
 
@@ -87,7 +156,7 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 
 		return self.mosaic
 
-	def iteration(self) -> None:
+	def iteration(self) -> Array:
 		"""
 		Does one iteration of the method.
 
@@ -98,21 +167,10 @@ class Demosaic(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		self.verify_integrity()
 
-		self.inpaint.mode_poisson = self.mode_poisson
-		self.inpaint.mode_boundary = self.mode_boundary
-		self.inpaint.alpha = 0.005
-
-#		operator = lambda i: self.common_shape(self.inpaint.fit(self.rgb_mosaic[:, :, i], self.results[:, :, i], self.mask[:, :, i]))
-#		self.data = self.solve(self.results, operator) 
 		for i in range(3):
 			self.results[:, :, i] = self.inpaint.fit(self.rgb_mosaic[:, :, i], self.results[:, :, i], self.mask[:, :, i])
-
 		self.data = self.results
-		self.data = self.data.clip(0, 1)
-
-		print(self.data.shape)
-		print(len(self.data.shape))
-		
+		self.data = self.data.clip(0, 1)		
 		return self.data
 
 	def fit(self, epochs: int = 1) -> Demosaic:

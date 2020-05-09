@@ -5,7 +5,7 @@ from backend import blurring
 from engine.image_handler import ImageHandler
 import numpy as np
 from engine import boundary
-
+from nptyping import Array
 
 def get_mask(path: str) -> list:
 	"""
@@ -16,6 +16,11 @@ def get_mask(path: str) -> list:
 	----------
 	path : str
 		path to the image file to anonymize
+
+	Returns
+	-------
+	list
+		a list with bounding boxes of (x, x1, y, y1) for the faces
 	"""
 	from cv2 import CascadeClassifier, imread, cvtColor, COLOR_BGR2GRAY
 	face_cascade = CascadeClassifier('./files/haarcascade_frontalface_default.xml')
@@ -53,21 +58,29 @@ class anonymous(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		self.u0 = self.data.copy()
 		self.set_u0(self.u0)
 
-	def iteration(self) -> None:
+	def iteration(self) -> Array:
 		"""
 		Does one iteration of the method.
 
+		Returns
+		-------
+		ndarray
+			returns the new computed image
 		"""
 		blur = blurring.blur(None)
 		for mask in self.mask:
 			blur.set_data(self.data.copy()[mask[0]:mask[1], mask[2]:mask[3]])
-			self.data[mask[0]:mask[1], mask[2]:mask[3]] = blur.iteration()#apply_boundary=False)
+			blur.set_boundary("neumann")
+			self.data[mask[0]:mask[1], mask[2]:mask[3]] = blur.iteration()
+
+			# creates the mask for diriclet
 			data_mask = np.ones((self.data.shape))
 			data_mask[mask[0]:mask[1], mask[2]:mask[3]] = 0
-			self.data = self.diriclet(self.data, data_mask)
-			#print("???")
 
-	def fit(self, epochs: int):
+			self.data = self.diriclet(self.data, data_mask)
+		return self.data
+
+	def fit(self, epochs: int):# -> anonymous:
 		"""
 		Makes multiple iterations of the method
 

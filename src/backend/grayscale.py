@@ -26,7 +26,7 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		poisson.poisson.__init__(self)
 		boundary.Boundary.__init__(self)
 
-		self.alpha = 0.25
+		self.mode_boundary = "neumann"
 
 		self.avg = self.data.copy().mean(axis=2)
 		self.results = np.zeros((self.data.shape[:2]))
@@ -39,19 +39,14 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 
 	def h_func(self) -> Array:
 		"""
-			The h variable of the poisson eq
-		"""
-		# why does this not work ? Find out !
-		#g_length = np.sum(self.get_gradient_norm(self.data_copy[:, :, i]) for i in range(3))#/ np.sqrt(3)
-		image_r_x, image_r_y = self.get_gradient(self.data_copy[:, :, 0])
-		image_g_x, image_g_y = self.get_gradient(self.data_copy[:, :, 1])
-		image_b_x, image_b_y = self.get_gradient(self.data_copy[:, :, 2])
-		g_length = np.sqrt(
-			(image_r_x**2 + image_r_y**2 +
-			 image_g_x**2 + image_g_y**2 +
-			 image_b_x**2 + image_b_y**2) / 3
-		)
+		The h variable of the poisson equation
 
+		Returns
+		-------
+		array
+			the h value array
+		"""
+		g_length = np.sum(self.get_gradient_norm(self.data_copy[:, :, i]) for i in range(3))/ np.sqrt(3)
 		rgb_sum = np.sum(self.data_copy[:, :, i] for i in range(self.data_copy.shape[-1]))
 		rgb_sx, rgb_sy = self.get_gradient(rgb_sum)
 
@@ -77,25 +72,37 @@ class grayscale(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		array
 			the new image array
 		"""
-
-		"""
-			Reset the dimension on first round
-		"""
-		if len(np.shape(self.data)) == 3:
-			self.data = self.data.mean(axis=2)
-			self.h = self.h_func()
-		
 		self.verify_integrity()
 		
-		operator = lambda : self.get_laplace(self.data, alpha=False)
-		h = lambda x: self.h[1:-1, 1:-1]
-	
-		self.data[1:-1, 1:-1] = self.data[1:-1, 1:-1] + 0.2 * (operator()- h(None))
-
-		self.data = self.neumann(self.data)
-		self.data = self.data.clip(0, 1)
-
+		#	Reset the dimension on first round
+		if len(np.shape(self.data)) == 3:
+			self.data = self.data.mean(axis=2)
+			self.h_array = self.h_func()
+		
+		self.data = self.solve(self.data, self.opeartor, self.h, apply_boundary=True)
 		return self.data
+
+	def opeartor(self):
+		"""
+		Solves the "u" part of the poisson equation
+
+		Returns
+		-------
+		array
+			the u value
+		"""
+		return self.get_laplace(self.data, alpha=False)
+
+	def h(self, data=None):
+		"""
+		Solves the "h" part of the poisson equation
+
+		Returns
+		-------
+		array
+			the h value
+		"""
+		return self.h_array[1:-1, 1:-1]
 
 	def fit(self, epochs) -> grayscale:
 		"""

@@ -7,12 +7,14 @@ class blur_window(general_window):
 	This class describes a blur window.
 	"""
 	def __init__(self, parent=None):
-		general_window.__init__(self, load_before=lambda x: self.load_extra_now())
+		general_window.__init__(self, load_before=lambda x: self.load_before)
 		self.method = blurring.blur(self.image)
 
-	def load_extra_now(self):
+	def load_before(self):
 		"""
-		Adds the option for data attacment
+		Adds the option for data attacment 
+
+		This element is added after the image
 		"""
 		self.data_attachment_label = self.add_label("Data attachment")
 		self.update_geometry(self.pixmap.height(), 30, x=10)
@@ -29,10 +31,16 @@ class blur_window(general_window):
 		self.color_checkbox = self.add_checkbox('Use color?', action=self.update_image_color) 
 		self.update_geometry(self.pixmap.width(), 30)
 
-	def update_image_color(self, state):
+	def update_image_color(self, _):
+		"""
+		Allows you to change the image from grayscale to color
+		"""
 		self.method.change_color_state()
 		self.update_image_label()
 
 	def update_lambda(self):
+		"""
+		Update the lambda constant
+		"""
 		self.method.set_lambda_size(self.lambda_size.value()/self.lambda_size.maximum() ) 
 		self.run_method()

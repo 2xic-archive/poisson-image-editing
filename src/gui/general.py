@@ -13,6 +13,11 @@ def pil2pixmap(input_image):
 	----------
 	input_image : ndarray
 		the input_image to convert to QT format
+
+	Returns
+	-------
+	QImage
+		a QImage with the input_image data
 	"""
 	if input_image.mode == "RGB":
 		pass

@@ -122,16 +122,15 @@ class general_window(interface_class):
 		width, height = self.position()
 		self.setGeometry(0, 0, width, height)
 		self.center()
-#	self.setFixedSize(self.size())
 
 	def save(self):
+		"""
+		Saves the image
+		"""
 		qm = QMessageBox
-		ret = qm.question(self,'', "Are you sure to reset all the values?", qm.Yes | qm.No)
+		ret = qm.question(self,'', "Are you sure to save the image?", qm.Yes | qm.No)
 		if ret == qm.Yes:
-			#print("lagrer")
 			self.method.save(str(self.total_epochs) + "_" + self.title)
-			#print(self.total_epochs + "_" + self.title)
-			#print(self.method.)
 
 
 

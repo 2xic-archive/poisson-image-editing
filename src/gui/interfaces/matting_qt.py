@@ -41,7 +41,7 @@ class matting_window(general_window):
 	"""
 	def __init__(self, parent=None):
 		general_window.__init__(self, lambda x: Image.fromarray((x * 255).astype(np.uint8)), load_before=lambda x: self.load_extra_now())#, mode='RGBA'))
-		self.method = matting.matting(self.image)
+		self.method = matting.matting()#self.image)
 
 	def get_int(self, field):
 		response = re.findall(r'\d+', field)
@@ -82,20 +82,12 @@ class matting_window(general_window):
 				self.update_image_label(self.method.preview_box(*list(map(lambda x: self.get_int(x.text()), self.boundary_group_iamge_end + self.boundary_group_iamge))))
 			except Exception as e:
 				print(e)
-
-		"""
-		self.boundary_box_max_fake, _ = self.add_input_button("End value", [
-				"Preview", "Reset box"
-			], [
-				lambda x: QTimer.singleShot(100, lambda: update_func()),
-				lambda x: QTimer.singleShot(100, lambda: update_func()),
-				lambda x: QTimer.singleShot(100, lambda: update_func())
-			], 0)
-		self.update_geometry(self.boundary_box_max_fake.width(), 90, x=10 + self.boundary_box_max.width() + self.boundary_box.width(), y=-42)
-		"""
 		self.update_image_size()
 
 	def update_image_size(self):
+		"""
+		Update the image size based on the input siz
+		"""
 		x0, y0, x1, y1 = list(map(lambda x: self.get_int(x.text()), self.boundary_group_iamge_end + self.boundary_group_iamge))
 		if x0 == None:
 			x0 = 0
@@ -112,21 +104,37 @@ class matting_window(general_window):
 			print("Feil størelse")
 
 	def prepare(self):
-		self.method.area_full = self.area
+		"""
+		Prepare the method before run
+		"""
+		self.method.working_area = self.area
 		self.method.padding = [self.label_.pos().x(), self.label_.pos().y()]
-		#print(self.label_.pos().x())
-		#print(self.label_.pos().y())
 		self.label_.setVisible(False)
 
 	def undo(self):
 		self.label_.setVisible(True)
 
 	def dragEnterEvent(self, e):
-		print(e)
+		"""
+		Drag event handler for the source image
+
+		Parameters
+		----------
+		e : QDragEnterEvent
+			The drag event
+		"""
 		e.accept()
 		
 	def dropEvent(self, e):
-		print(e)
+		"""
+		Drop event handler for the source image
+
+		Parameters
+		----------
+		e : QDropEvent
+			The drop event
+		"""
+		print(type(e))
 		position = e.pos()
 		self.label_.move(position)
 

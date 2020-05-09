@@ -6,6 +6,16 @@ import numpy as np
 
 
 def compile(output_dir="./rapport_snippets/output/"):
+	"""
+	Compiles a .tex file for the matting function
+
+	Parameters
+	----------
+	output_dir : str
+		the location to store the .tex with images
+	"""
+
+	make_dir(output_dir)
 	contrast_obj = matting.matting()
 	
 	epoch_count = {
@@ -20,27 +30,39 @@ def compile(output_dir="./rapport_snippets/output/"):
 	results_doc.add_row_element(subfigure(path=path_latex + "/bad_fit.png", text="bad fit image"))
 	results_doc.add_row()
 
-	results_doc = compile_doc(contrast_obj, epoch_count, "{}/matting/".format(output_dir), path_latex,
+	results_doc = compile_doc(contrast_obj, epoch_count, "{}/".format(output_dir), path_latex,
 								extra=lambda x: x.reset_full(), results_doc=results_doc)
 	results_doc.padding_heigth=0.3
 
-	results_doc.save("{}/matting/results.tex".format(output_dir))
-	naming = "matting"
+	results_doc.save("{}/results.tex".format(output_dir))
 
-	Image.fromarray(np.uint8(255 * contrast_obj.source.data_copy)).save("{}{}/source.png".format(output_dir,naming))
+	Image.fromarray(np.uint8(255 * contrast_obj.source.data_copy)).save("{}/source.png".format(output_dir))
 	contrast_obj.reset()
-	Image.fromarray(np.uint8(255 * contrast_obj.data_copy)).save("{}{}/target.png".format(output_dir,naming))
+	Image.fromarray(np.uint8(255 * contrast_obj.data_copy)).save("{}/target.png".format(output_dir))
 	contrast_obj.bad_fit()
-	Image.fromarray(np.uint8(255 * contrast_obj.data)).save("{}{}/bad_fit.png".format(output_dir,naming))
+	Image.fromarray(np.uint8(255 * contrast_obj.data)).save("{}/bad_fit.png".format(output_dir))
 
 
 def compile_noisy(output_dir="./rapport_snippets/output/"):
+	"""
+	Compiles a .tex file for the matting function
+
+	Showing that using the correct image is important
+
+	Parameters
+	----------
+	output_dir : str
+		the location to store the .tex with images
+	"""
+
+	make_dir(output_dir)
+
 	#contrast_obj = matting.matting()
 	contrast_obj = matting.matting("./files/test_images/sky.jpg", "./files/test_images/moon.png")
 	contrast_obj.padding = [
 		200, 600
 	]
-	contrast_obj.area_full = [(None, None), (None, None)]
+	contrast_obj.working_area = [(None, None), (None, None)]
 
 	epoch_count = {
 		0.2:[1, 100, 1000],
@@ -54,46 +76,55 @@ def compile_noisy(output_dir="./rapport_snippets/output/"):
 	results_doc.add_row_element(subfigure(path=path_latex + "/bad_fit.png", text="bad fit image"))
 	results_doc.add_row()
 
-	results_doc = compile_doc(contrast_obj, epoch_count, "{}/matting_noise/".format(output_dir), path_latex,
+	results_doc = compile_doc(contrast_obj, epoch_count, "{}/".format(output_dir), path_latex,
 								extra=lambda x: x.reset_full(), results_doc=results_doc)
 	results_doc.padding_heigth=0.3
 
-	results_doc.save("{}/matting_noise/results.tex".format(output_dir))
-	naming = "matting_noise"
+	results_doc.save("{}/results.tex".format(output_dir))
 
-	Image.fromarray(np.uint8(255 * contrast_obj.source.data_copy)).save("{}{}/source.png".format(output_dir,naming))
+	Image.fromarray(np.uint8(255 * contrast_obj.source.data_copy)).save("{}/source.png".format(output_dir))
 	contrast_obj.reset()
-	Image.fromarray(np.uint8(255 * contrast_obj.data_copy)).save("{}{}/target.png".format(output_dir,naming))
+	Image.fromarray(np.uint8(255 * contrast_obj.data_copy)).save("{}/target.png".format(output_dir))
 	contrast_obj.bad_fit()
-	Image.fromarray(np.uint8(255 * contrast_obj.data)).save("{}{}/bad_fit.png".format(output_dir,naming))
+	Image.fromarray(np.uint8(255 * contrast_obj.data)).save("{}/bad_fit.png".format(output_dir))
 
 def compile_parameters(output_dir="./rapport_snippets/output/"):
-	path = "parametere"
+	"""
+	Compiles a .tex file for the anonymizing function
+
+	Showing that parameters are important
+
+	Parameters
+	----------
+	output_dir : str
+		the location to store the .tex with images
+	"""
+	make_dir(output_dir)
 
 	contrast_obj = matting.matting()
 
 	contrast_obj.padding = [50, 250]
-	contrast_obj.area_full = [
+	contrast_obj.working_area = [
 					[0, 70],
 					[0, 70],
 				]
 	contrast_obj.bad_fit()
-	contrast_obj.save("{}/{}/bad_fit.png".format(output_dir, path))
+	contrast_obj.save("{}/bad_fit.png".format(output_dir))
 
 	contrast_obj.reset()
 	contrast_obj.fit(epochs=100)
-	contrast_obj.save("{}/{}/good_fit.png".format(output_dir, path))
+	contrast_obj.save("{}/good_fit.png".format(output_dir))
 
 	contrast_obj.reset()
-	contrast_obj.area_full = [
+	contrast_obj.working_area = [
 					[10, 65],
 					[10, 65],
 				]
 	contrast_obj.fit(epochs=100)
-	contrast_obj.save("{}/{}/best_fit.png".format(output_dir, path))
+	contrast_obj.save("{}/best_fit.png".format(output_dir))
 
 	contrast_obj.bad_fit()
-	contrast_obj.save("{}/{}/best_ugly_fit.png".format(output_dir, path))
+	contrast_obj.save("{}/best_ugly_fit.png".format(output_dir))
 
 	x = doc()
 	x.add_row_element(subfigure(path="./sømløs kloning/parametere/bad_fit.png", text="Target bilde lagt på source bilde"))
@@ -104,11 +135,24 @@ def compile_parameters(output_dir="./rapport_snippets/output/"):
 	x.add_row()
 	x.add_caption("Parametere er viktig")
 	x.add_ref("parametere")
-	x.save("{}/{}/results.tex".format(output_dir, path))
+	x.save("{}/results.tex".format(output_dir))
 
 def compile_moapple(output_dir="./rapport_snippets/output/"):
+	"""
+	Compiles a .tex file for the anonymizing function
+
+	Creates a oraple
+
+	Parameters
+	----------
+	output_dir : str
+		the location to store the .tex with images
+	"""
+
+	make_dir(output_dir)
+
 	contrast_obj = matting.matting("./files/test_images/orange.png", "./files/test_images/apple.png")
-	contrast_obj.area_full = [
+	contrast_obj.working_area = [
 		(300, None),
 		(10, None)
 	]
@@ -129,29 +173,20 @@ def compile_moapple(output_dir="./rapport_snippets/output/"):
 	results_doc.add_row()
 
 
-	results_doc = compile_doc(contrast_obj, epoch_count, "{}/moragen/".format(output_dir), path_latex,
+	results_doc = compile_doc(contrast_obj, epoch_count, "{}/".format(output_dir), path_latex,
 								extra=lambda x: x.reset_full(), results_doc=results_doc)
 	results_doc.padding_heigth=0.3
 
 
 	results_doc.add_caption("Oraple")
 	results_doc.add_ref("Oraple")
-	results_doc.save("{}/moragen/results.tex".format(output_dir))
-	naming = "moragen"
+	results_doc.save("{}/results.tex".format(output_dir))
 
-	Image.fromarray(np.uint8(255 * contrast_obj.source.data_copy)).save("{}{}/source.png".format(output_dir,naming))
+	Image.fromarray(np.uint8(255 * contrast_obj.source.data_copy)).save("{}/source.png".format(output_dir))
 	contrast_obj.reset()
-	Image.fromarray(np.uint8(255 * contrast_obj.data_copy)).save("{}{}/target.png".format(output_dir,naming))
+	Image.fromarray(np.uint8(255 * contrast_obj.data_copy)).save("{}/target.png".format(output_dir))
 	contrast_obj.bad_fit()
-	Image.fromarray(np.uint8(255 * contrast_obj.data)).save("{}{}/bad_fit.png".format(output_dir,naming))
-
-
-
-
-
-
-
-
+	Image.fromarray(np.uint8(255 * contrast_obj.data)).save("{}/bad_fit.png".format(output_dir))
 
 
 

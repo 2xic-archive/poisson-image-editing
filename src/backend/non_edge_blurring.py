@@ -26,8 +26,9 @@ class non_edge_blur(image_handler.ImageHandler, poisson.poisson, boundary.Bounda
 		poisson.poisson.__init__(self)
 		boundary.Boundary.__init__(self)
 		self.set_u0(self.data.copy())
+		self.k = 1000
 
-	def D(self, k=10000) -> Array:
+	def D(self) -> Array:
 		"""
 		The D function 
 
@@ -37,7 +38,7 @@ class non_edge_blur(image_handler.ImageHandler, poisson.poisson, boundary.Bounda
 			the new D array
 		"""
 		fraction = 1 / \
-				   (1 + k * (self.get_gradient_norm(self.data_copy)) ** 2)
+				   (1 + self.k * (self.get_gradient_norm(self.data_copy)) ** 2)
 		return fraction
 
 	def iteration(self) -> Array: 
@@ -49,33 +50,26 @@ class non_edge_blur(image_handler.ImageHandler, poisson.poisson, boundary.Bounda
 		array
 			the new image array
 		"""
+		self.data = self.solve(self.data, self.operator)
+		return self.data
+
+	def operator(self, i=None):
 		D = self.D()
 		assert np.all(D <= 1), "D function error" 
 
 		d_xy = np.asarray(self.get_gradient(D))
 		data_xy = np.asarray(self.get_gradient(self.data))
 		combined = np.sum(d_xy * data_xy, axis=0)
-        
-		def operator(i=None):
-			if i is None:
-				return (self.alpha * \
-						(self.common_shape(D) * self.get_laplace_explicit(self.data, alpha=False) 
-							+ self.common_shape(combined))
-				)
-			else:
-				return (self.alpha * \
-						(self.common_shape(D)[:, :, i] * self.get_laplace_explicit(self.data[:, :, i], alpha=False) 
-							+ self.common_shape(combined[:, :, i]))
-				)
-
-		"""
-		operator = lambda i=None: (self.alpha * \
-					(self.common_shape(D) * self.get_laplace_explicit(self.data, alpha=False) + self.common_shape(combined))
-		)
-		"""
-		self.data = self.solve(self.data, operator).clip(0, 1)
-
-		return self.data
+		if i is None:
+			return (self.alpha * \
+					(self.common_shape(D) * self.get_laplace_explicit(self.data, alpha=False) 
+						+ self.common_shape(combined))
+			)
+		else:
+			return (self.alpha * \
+					(self.common_shape(D)[:, :, i] * self.get_laplace_explicit(self.data[:, :, i], alpha=False) 
+						+ self.common_shape(combined[:, :, i]))
+			)
 
 	def fit(self, epochs) -> non_edge_blur:
 		"""

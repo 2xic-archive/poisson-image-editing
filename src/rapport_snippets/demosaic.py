@@ -4,9 +4,15 @@ from PIL import Image
 from rapport_snippets.figs import *
 import numpy as np
 
-
-
 def compile(output_dir="demosaic"):
+	"""
+	Compiles a .tex file for the demosaic function
+
+	Parameters
+	----------
+	output_dir : str
+		the location to store the .tex with images
+	"""
 	demosaic_obj = demosaicing.Demosaic("./files/test_images/lena.png", True)
 
 	epoch_count = {
@@ -14,30 +20,20 @@ def compile(output_dir="demosaic"):
 		0.5:[5, 50, 500],
 		0.75:[5, 50, 500]
 	}
+	make_dir(output_dir)
 
-	for color in [True]:
-		for numeric in [0]:#, 1]:
-			demosaic_obj.mode_poisson = numeric
+	results_doc = doc()
+	results_doc.add_row_element(subfigure(path="demosaicing/{}/input.png".format(naming), text="Input image"))
+	results_doc.add_row_element(subfigure(path="demosaicing/{}/mosaic.png".format(naming), text="simulated mosaic"))
+	results_doc.add_row()
 
-			naming = "demosaic"
-			naming += "_color" if color else "_gray"
-			naming += "_explicit" if demosaic_obj.mode_poisson == 0 else "_implicit"
+	results_doc = compile_doc(demosaic_obj, epoch_count, "{}/".format(output_dir), "demosaicing/{}".format(naming), extra=lambda x: x.simulate(),
+		results_doc=results_doc)
+	results_doc.save("{}/{}/results.tex".format(output_dir))
 
-			if not os.path.isdir("{}/{}/".format(output_dir, naming)):
-				os.mkdir("{}/{}/".format(output_dir, naming))
-
-			results_doc = doc()
-			results_doc.add_row_element(subfigure(path="demosaicing/{}/input.png".format(naming), text="Input image"))
-			results_doc.add_row_element(subfigure(path="demosaicing/{}/mosaic.png".format(naming), text="simulated mosaic"))
-			results_doc.add_row()
-
-			results_doc = compile_doc(demosaic_obj, epoch_count, "{}/{}/".format(output_dir, naming), "demosaicing/{}".format(naming), extra=lambda x: x.simulate(),
-			results_doc=results_doc)#,
-			results_doc.save("{}/{}/results.tex".format(output_dir, naming))
-
-			Image.fromarray(np.uint8(255 * demosaic_obj.data_copy)).save("{}{}/input.png".format(output_dir,naming))
-			demosaic_obj.reset()
-			Image.fromarray(np.uint8(255 * demosaic_obj.simulate())).save("{}{}/mosaic.png".format(output_dir,naming))
+	Image.fromarray(np.uint8(255 * demosaic_obj.data_copy)).save("{}/input.png".format(output_dir))
+	demosaic_obj.reset()
+	Image.fromarray(np.uint8(255 * demosaic_obj.simulate())).save("{}/mosaic.png".format(output_dir))
 
 
 

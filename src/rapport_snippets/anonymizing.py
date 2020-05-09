@@ -6,19 +6,22 @@ import numpy as np
 
 
 def compile(output_dir="./rapport_snippets/output"):
+	"""
+	Compiles a .tex file for the anonymizing function
+
+	Parameters
+	----------
+	output_dir : str
+		the location to store the .tex with images
+	"""
+	make_dir(output_dir)
+
 	anon_obj = anonymizing.anonymous("./files/test_images/lena.png", True)
-
 	epoch_count = {
-		0.25:[1, 5, 10],
+		0.25:[1, 5, 10, 100],
 		0.3:[15, 30, 50]
-	#	0.5:[5, 10, 15],
-	#	0.75:[5, 10, 15]
 	}
+	path_latex = "anonymisering/resultat/"
 
-
-	#	https://previews.123rf.com/images/kurhan/kurhan1610/kurhan161000486/64970219-collection-of-smiling-faces-set-of-people-men-women-seniors-diversity-.jpg
-
-	results_doc = compile_doc(anon_obj, epoch_count, "{}/anonymizing/".format(output_dir), "anonymisering/anonymizing")
-	results_doc.save("{}/anonymizing/results.tex".format(output_dir))
-
-
+	results_doc = compile_doc(anon_obj, epoch_count, output_path=output_dir, path_latex=path_latex)
+	results_doc.save("{}/resultat.tex".format(output_dir))

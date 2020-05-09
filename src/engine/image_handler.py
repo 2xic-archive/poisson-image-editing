@@ -5,19 +5,19 @@ from nptyping import Array
 
 class ImageHandler:
 	"""
-	This class describes the abstracts functions for a image
+	This class describes the functions for making it easy to interact with a image
 	"""
-
 	def __init__(self, path: str = None, color: bool = True):
 		"""
-		[TODO:summary]
-
-		[TODO:description]
+		init the class
 
 		Parameters
 		----------
-		path : String
-			[TODO:description]
+		path : str
+			the location of the image, can be none (if you want to set 
+			the data manually)
+		color : bool
+			if you want to have a color image and want to make it to grayscale
 		"""
 		if not path is None:
 			self.color = color
@@ -28,6 +28,12 @@ class ImageHandler:
 		Change out the photo 
 
 		Changes out the photo, but keeps the same size as the old photo.
+
+		Parameters
+		----------
+		path : str
+			the location of the image, can be none (if you want to set 
+			the data manually)
 
 		Returns
 		-------
@@ -64,7 +70,7 @@ class ImageHandler:
 		assert len(self.original_data.shape ) == 3, "the original image was not with color"
 		self.color =  not self.color
 		self.data = self.original_data.copy()
-		self.scale_image()
+		self.convert_image()
 
 	def resize(self, scale=8):
 		"""
@@ -80,7 +86,7 @@ class ImageHandler:
 		im = im.resize((width//scale, height//scale))
 		self.process(im)
 
-	def scale_image(self):
+	def convert_image(self):
 		"""
 		Converts image to scale [0, 1] 
 
@@ -97,7 +103,8 @@ class ImageHandler:
 		"""
 		Processes the given image.
 		
-		Makes the image from a PIL image to numpy array
+		Makes the image from a PIL image to numpy array and normalize it. 
+		Will aslo convert the image to grayscale if specified.
 
 		Parameters
 		----------
@@ -105,7 +112,7 @@ class ImageHandler:
 			the input iamge
 		"""
 		self.data = np.asarray(image, dtype="float64").copy()
-		self.scale_image()
+		self.convert_image()
 
 	def set_data(self, data: Array):
 		"""
@@ -121,7 +128,7 @@ class ImageHandler:
 
 	def reset(self):
 		"""
-		Reset the data 
+		Reset the data (set's the image to the original)
 
 		Using the data copy
 		"""
@@ -170,6 +177,16 @@ class ImageHandler:
 		Makes the color image a grayscale image
 
 		Asummes a color image
+
+		Parameters
+		----------
+		data : Array
+			the color image
+
+		Returns
+		-------
+		ndarray
+			the grayscale image
 		"""
 		if data is None:
 			data = self.data
@@ -182,6 +199,15 @@ class ImageHandler:
 		"""
 		Normalize the image [0, 1]
 
+		Parameters
+		----------
+		data : Array
+			the color image
+
+		Returns
+		-------
+		ndarray
+			the grayscale image
 		"""
 		if data is None:
 			data = self.data
@@ -190,18 +216,23 @@ class ImageHandler:
 
 		return data
 
-	def save(self, name: str):
+	def save(self, path: str):
 		"""
 		Save the data array as a image
 
 		Parameters
 		----------
-		name : str
-			the image name
+		path : str
+			the image path for saving
+
+		Returns
+		-------
+		str
+			the image path
 		"""
 		im = Image.fromarray(np.uint8(255 * self.data))
-		im.save(name)
-		return name
+		im.save(path)
+		return path
 
 	def show(self):
 		"""

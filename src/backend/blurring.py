@@ -1,4 +1,6 @@
 from engine import poisson, boundary, image_handler
+import numpy as np
+from nptyping import Array
 
 class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 	"""
@@ -33,7 +35,7 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		self.lambda_size = lambda_size
 		
-	def iteration(self):
+	def iteration(self) -> Array:
 		"""
 		Does one iteration of the method.
 
@@ -44,24 +46,38 @@ class blur(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		assert 0 <= self.lambda_size <= 1, "lamda is out of scope [0, 1]"
 		self.verify_integrity()
-
-		def h(x=None, i=None):
-			if i is None:
-				return self.common_shape(self.lambda_size * (self.data - self.data_copy))
-			else:
-				return self.common_shape(self.lambda_size * (self.data[:, :, i] - self.data_copy[:, :, i]))
-		
-		def operator(i=None):
-			if i is None:
-				return self.get_laplace(self.data, alpha=True) 
-			else:
-				return self.get_laplace(self.data[:, :, i], alpha=True)
-
-		self.data = (self.solve(self.data,operator, h)).clip(0, 1) 
-
+		self.data = self.solve(self.data, self.opeartor, self.h)
 		return self.data
 
-	def fit(self, epochs):
+	def opeartor(self, i=None):
+		"""
+		Solves the "u" part of the poisson equation
+
+		Returns
+		-------
+		array
+			the u value
+		"""
+		if i is None:
+			return self.get_laplace(self.data, alpha=True) 
+		else:
+			return self.get_laplace(self.data[:, :, i], alpha=True)		
+
+	def h(self, i=None):
+		"""
+		Solves the "h" part of the poisson equation
+
+		Returns
+		-------
+		array
+			the h value
+		"""
+		if i is None:
+			return self.common_shape(self.lambda_size * (self.data - self.data_copy))
+		else:
+			return self.common_shape(self.lambda_size * (self.data[:, :, i] - self.data_copy[:, :, i]))
+		
+	def fit(self, epochs):# -> blur:
 		"""
 		Makes multiple iterations of the method
 

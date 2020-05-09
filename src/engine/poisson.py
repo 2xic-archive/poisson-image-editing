@@ -50,12 +50,11 @@ class poisson(object):
 			self._mode_poisson = self.IMPLICIT
 		else:
 			raise Exception("Illegal mode ({})".format(mode))
-		print('set value to ' +str(self._mode_poisson) ) 
 
 	def set_boundary(self, mode):
-		if mode == "Dirichlet" or mode == self.DIRICHLET:
+		if (type(mode) == str and mode.lower() == "Dirichlet".lower()) or mode == self.DIRICHLET:
 			self._mode_boundary = self.DIRICHLET
-		elif mode == "Neumann" or mode == self.NEUMANN:
+		elif (type(mode) == str and mode.lower() == "Neumann".lower()) or mode == self.NEUMANN:
 			self._mode_boundary = self.NEUMANN
 		else:
 			raise Exception("Illegal boundary ({})".format(mode))
@@ -178,7 +177,7 @@ class poisson(object):
 		else:
 			raise Exception("not supported")
 
-	def apply_boundary(self, data):
+	def apply_boundary(self, data) -> Array:
 		"""
 		Apply the boundary
 
@@ -190,12 +189,12 @@ class poisson(object):
 		if self.mode_boundary == self.NEUMANN:
 			return self.neumann(data)
 		elif self.mode_boundary == self.DIRICHLET:
-			print("Diriclet")
+			#print("Diriclet")
 			return self.diriclet(data)
 		else:
 			raise Exception("not supported")
 
-	def solve(self, data, operator, h=lambda x=None, i=None: 0, apply_boundary=True):
+	def solve(self, data, operator, h=lambda x=None, i=None: 0, apply_boundary=True) -> Array:
 		"""
 		Solve the poisson equation
 
@@ -210,11 +209,12 @@ class poisson(object):
 
 		"""
 		if self.mode_poisson == self.EXPLICIT:
+			resultat = data.copy()
 			if(len(data.shape) == 3):
-				for i in range(3):#data.shape[-1]):
-					data[1:-1, 1:-1, i] += operator(i) - h(i=i)
+				for i in range(3):
+					resultat[1:-1, 1:-1, i] = resultat[1:-1, 1:-1, i] +  self.alpha * (operator(i) - h(i=i))
 			else:
-				data[1:-1, 1:-1] += operator() - h(data)
+				resultat[1:-1, 1:-1] = resultat[1:-1, 1:-1] + self.alpha * (operator()- h(None))
 		elif self.mode_poisson == self.IMPLICIT:
 			if(len(data.shape) == 3):
 				for i in range(3):#data.shape[-1]):
@@ -223,9 +223,10 @@ class poisson(object):
 				data[:, :] = operator() - h(data)
 		else:
 			raise Exception("Not supported")
+
 		if apply_boundary:
-			return self.apply_boundary(data)
+			return self.apply_boundary(resultat).clip(0, 1)
 		else:
-			return data
+			return resultat.clip(0, 1)
 
 

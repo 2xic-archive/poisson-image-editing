@@ -10,7 +10,7 @@ class inpait_window(general_window):
 	This class describes an inpait window.
 	"""
 	def __init__(self, parent=None):	
-		general_window.__init__(self, load_extra=lambda x: self.load_extra_now(), load_before=lambda x: self.load_before_now())
+		general_window.__init__(self, load_extra=lambda x: self.load_after(), load_before=lambda x: self.load_before_now())
 		self.method = inpaiting.inpaint(self.image)
 		self.input_image = self.method.get_data().copy()
 
@@ -32,11 +32,14 @@ class inpait_window(general_window):
 		self.color_checkbox = self.add_checkbox('Use color?', action=self.update_image_color) 
 		self.update_geometry(self.pixmap.width(), 30)
 
-	def update_image_color(self, state):
+	def update_image_color(self, _):
+		"""
+		Update the image if the color state is chanaged
+		"""
 		self.method.change_color_state()
 		self.update_image_label()
 
-	def load_extra_now(self):
+	def load_after(self):
 		"""
 		Generate the extra row
 		"""
@@ -53,7 +56,14 @@ class inpait_window(general_window):
 		self.update_geometry(self.pixmap.width(), 30, x=self.PADDING, y=self.action_button.pos().y())			
 
 	def pixmap_handler(self, data):
-#		print(self.pixmap_converter)
+		"""
+		Makes sure the pixel format is correct
+
+		Parameters
+		----------
+		data : Array
+			The data to convert to correct format
+		"""
 		return  (self.pixmap_converter(x)) if not self.pixmap_converter is None else (lambda x: Image.fromarray((255 * x).astype(np.uint8)))(data)
 
 	def update_median(self):
@@ -82,12 +92,6 @@ class inpait_window(general_window):
 		Update the image after noise was added
 		"""
 		self.method.destroy_information(self.noise_slider.value())		
-
-#		self.method.show()
-#		print(Image.fromarray((255 * self.method.data).astype(np.uint8)).show())
-#		exit(0)
-#		print(self.method.data.max())
-#		print(self.method.data.min())
 		self.extra_label.setPixmap(pil2pixmap(self.pixmap_handler(self.method.data)))
 		self.label.setPixmap(pil2pixmap(self.pixmap_handler(self.method.data)))
 

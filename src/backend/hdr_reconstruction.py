@@ -6,7 +6,7 @@ class hdr_reconstruction(image_handler.ImageHandler):
 	"""
 	This class describes a HDR image.
 
-	This contains all the functions needed to perform HDR reconstruction on a image over multiple iterations
+	This contains all the functions needed to perform HDR reconstruction on a image.
 
 	Parameters
 	----------
@@ -39,7 +39,9 @@ class hdr_reconstruction(image_handler.ImageHandler):
 		"""
 		Makes multiple iterations of the method
 
-		Calls iteration as many times as spesifed in by the parameter epochs
+		Calls iteration as many times as specified in by the parameter epochs
+		NOTE : This is kept for keepign the API the same, calling this method
+		multiple times does not change anything.
 
 		Parameters
 		----------

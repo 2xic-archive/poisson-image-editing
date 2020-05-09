@@ -7,14 +7,10 @@ class hdr_window(interface_class):
 	This class describes a header window.
 	"""
 	def __init__(self, parent=None):
-#		general_window.__init__(self,  (lambda x: Image.fromarray((x * 255).astype(np.uint8))))
 		interface_class.__init__(self)
 		self.method = hdr_reconstruction.hdr_reconstruction()
 		self.pixmap_converter = (lambda x: Image.fromarray((x * 255).astype(np.uint8)))
-
-		# pixmap_converter
-	#	self.init_gui()
-
+		
 	def init_UI(self):
 		"""
 		initialize the UI

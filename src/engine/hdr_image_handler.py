@@ -11,20 +11,25 @@ import re
 # as defined in equation 3
 def classic_weigth_function(intensity: float):
 	"""
-	[TODO:summary]
-
-	[TODO:description]
+	Basic way of weighing the intensity
 	"""
 	if intensity <= 128:
 		return intensity
 	return 255 - intensity
 
-
 def get_numbers(path): 
+	"""
+	Get the number from the string
+
+	Used for getting the correct **
+	"""
 	array = re.findall(r'[0-9]+', os.path.basename(path))
 	return array 
 
 class hdr_handler:
+	"""
+	This class describes how to handle HDR images.
+	"""
 	def __init__(self, images, user_defined_weigth_fuction=classic_weigth_function):
 		self.weigth_function = user_defined_weigth_fuction
 		assert(self.weigth_function(128) == 128)
@@ -36,13 +41,8 @@ class hdr_handler:
 		#      i.resize(scale=4)
 
 		for i in range(len(self.images)):
-			self.images[i].data *= 255
-			self.images[i].data = self.images[i].data.astype(np.uint8).astype(
+			self.images[i].data = (255 * self.images[i].data).astype(np.uint8).astype(
 				np.float64)
-
-		# make sure we have all images in the correct interval between 0 and 255
-		for i in range(len(self.images)):
-			assert (1 < self.images[i].data.max() <= 255)
 
 		self.B = np.array([
 				np.log(int(get_numbers(i.path)[0])) for i in self.images 
@@ -58,7 +58,19 @@ class hdr_handler:
 		self.Z = self.sample()
 
 	def normalize(self, x):
-		# rgb
+		"""
+		Normalize the image with a min-max scaling
+
+		Parameters
+		----------
+		x : array
+			The input (not normalized) image
+
+		Returns
+		-------
+		array
+			the normalized image
+		"""		
 		for i in range(x.shape[-1]):
 			max_val = np.max(x[:, :, i])
 			min_val = np.min(x[:, :, i])
@@ -69,7 +81,17 @@ class hdr_handler:
 		"""
 		Get the pixel from the sample (x, y) in the image
 
-		
+		Parameters
+		----------
+		image : array
+			The image to sample from
+		sample : array
+			the location to sample from
+
+		Returns
+		-------
+		array
+			the image values at the sampled location
 		"""
 		results = np.zeros(sample.shape)
 		image_flat = image.flatten()
@@ -82,12 +104,21 @@ class hdr_handler:
 		Sample pixel values from all the iamges
 
 		Randomly selects pixels from all of the images as a sample
+
+		Parameters
+		----------
+		size : int
+			The sample size for each image
+
+		Returns
+		-------
+		array
+			the sampled array for each channel and iamge
 		"""
 		sample_space = np.ceil(np.random.rand(1, size) * self.pixel_area)
 
 		Z = np.zeros((size, len(self.images), 3))
 		for index, image in enumerate(self.images):
-			# rgb
 			for channel in range(3):
 				Z[:, index, channel] = self.get_pixel(image.data, sample_space)
 		return Z
@@ -96,18 +127,28 @@ class hdr_handler:
 		"""
 		Get the radiance of (R,G,B)
 
+		Returns
+		-------
+		array
+			the radiance
 		"""
 		self.radiance = np.zeros((255, 3))
 		for channel in range(3):
-			g, lE = self.gsolve(self.Z[:, :, channel], channel)
+			g, lE = self.gsolve(self.Z[:, :, channel])
 			self.radiance[:, channel] = g[:, 0]
-
 		return self.radiance
 
 
 	def get_Ab(self, Z, n=256):
 		"""
 		Creates the A and b matrices 
+
+		Parameters
+		----------
+		Z : array
+			The sampled array
+		n : int
+			the color space max
 
 		Returns
 		-------
@@ -116,7 +157,7 @@ class hdr_handler:
 		array
 			the b matrice
 		int 
-			n (pixel interval) TODO : find better word
+			the color space max
 		"""
 		k = 0
 		A = np.zeros((Z.shape[0] * Z.shape[1] + n + 1, n + Z.shape[0]))
@@ -144,7 +185,7 @@ class hdr_handler:
 			k += 1
 		return A, b, n
 
-	def gsolve(self, Z, index):
+	def gsolve(self, Z):
 		"""
 		Gets the resposne function
 
@@ -152,8 +193,24 @@ class hdr_handler:
 		images with different exposure times, this function returns the
 		imaging system’s response function g as well as the log film irradiance
 		values for the observed pixels."
+
+
+		Parameters
+		----------
+		Z : array
+			The sampled array of pixel values
+
+		Returns
+		-------
+		array
+			the response function
+		array
+			the "log film irradiance values for the observed pixels." - paper qoute
 		"""
+
 		A, b, n = self.get_Ab(Z)
+
+		#	using leastsq did not work 
 		#	https://github.com/numpy/numpy/issues/9563
 		def leastsq(X, Y):
 			""" Solves the problem Y = XB """
@@ -161,8 +218,8 @@ class hdr_handler:
 			cross = np.dot(inv, X.T)
 			beta = np.dot(cross, Y)
 			return beta
+		
 		x = leastsq(A, b)
-
 		g = x[1:n]
 		lE = x[n + 1:x.shape[0]]
 		return g, lE
@@ -170,6 +227,20 @@ class hdr_handler:
 	def look_up_pixel(self, radiance, image):
 		"""
 		Check the radiance value on the (x, y) from the image
+
+		Creates a new image based on the mapping of the response function
+
+		Parameters
+		----------
+		radiance : array
+			The radiance value based on the response function
+		image : array
+			The image we are working on
+
+		Returns
+		-------
+		array
+			output image
 		"""
 		out_image = np.zeros((image.shape))
 		for i in range(image.shape[0]):
@@ -180,6 +251,16 @@ class hdr_handler:
 	def get_radiance_log(self, radiance):
 		"""
 		Equation 6 from the paper
+
+		Parameters
+		----------
+		radiance : array
+			The radiance value based on the response function
+
+		Returns
+		-------
+		array
+			the log output
 		"""
 		x = np.ones(self.images[0].data.shape)
 		y = np.zeros(self.images[0].data.shape)

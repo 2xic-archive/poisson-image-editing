@@ -4,7 +4,8 @@ sys.path.append('./')
 from backend import blurring
 x = blurring.blur("./files/test_images/lena.png")
 x.set_mode("Explicit")
-x.fit(3)
+x.lambda_size = 0
+x.fit(100)
 x.show()
 
 

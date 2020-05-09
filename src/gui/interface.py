@@ -16,34 +16,42 @@ from gui.window_manager import *
 WINDOW_MANAGER = window()
 
 class draggable_style(QLabel):  
-    def __init__(self, title, parent, loc):
-        super().__init__(title, parent)
-        #label = QLabel(self)
-        self.pixmap = QPixmap(loc)
-        self.setPixmap(self.pixmap)
-        #self.size = loc.shape
-        #print(pixmap)
-        
+	def __init__(self, title, parent, loc):
+		super().__init__(title, parent)
+		self.pixmap = QPixmap(loc)
+		self.setPixmap(self.pixmap)        
 
-    def mouseMoveEvent(self, e):
-        print("???")
+	def mouseMoveEvent(self, e):
+		"""
+		Mouse event handler
 
-        if e.buttons() != Qt.RightButton:
-            return
+		Parameters
+		----------
+		QMouseEvent : e
+			the mouse event
+		"""
+		
+		# we want to only use the left
+		if e.buttons() != Qt.RightButton:
+			return
 
-        mimeData = QMimeData()
-        print("???")
+		mimeData = QMimeData()
+		drag = QDrag(self)
+		drag.setMimeData(mimeData)
+		drag.setHotSpot(e.pos() - self.rect().topLeft())
 
-        drag = QDrag(self)
-        drag.setMimeData(mimeData)
-        drag.setHotSpot(e.pos() - self.rect().topLeft())
+		dropAction = drag.exec_(Qt.MoveAction)
 
-        dropAction = drag.exec_(Qt.MoveAction)
-
-    def mousePressEvent(self, e):
-        super().mousePressEvent(e)
-        if e.button() == Qt.LeftButton:
-            print('press')
+	def mousePressEvent(self, e):
+		"""
+		Mouse press event handler
+		
+		Parameters
+		----------
+		QMouseEvent : e
+			the mouse event
+		"""
+		super().mousePressEvent(e)
 
 class screen_element:
 	"""
@@ -217,8 +225,6 @@ class interface_class(App):
 			the pixmap of the image
 		"""
 		label = draggable_style("", parrent, pil2pixmap(parse(data)))
-		#pixmap = pil2pixmap(parse(data))
-		#label.setPixmap(pixmap)
 		screen_el = screen_element(label, free_floating=True)
 		screen_el.size_element = label.pixmap
 		self.screen_elements.append(screen_el)

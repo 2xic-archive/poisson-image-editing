@@ -1,7 +1,7 @@
 from engine import poisson, boundary
 from engine import image_handler
 import numpy as np
-
+from nptyping import Array
 
 class Contrast(image_handler.ImageHandler, poisson.poisson,boundary.Boundary):
 	"""
@@ -21,16 +21,16 @@ class Contrast(image_handler.ImageHandler, poisson.poisson,boundary.Boundary):
 		poisson.poisson.__init__(self)
 		boundary.Boundary.__init__(self, self.data.copy())
 
+		self.mode_boundary = "neumann"
 		self.alpha = 0.2
-		self.k = 5
+		self.k = 2
 		if len(self.data.shape) == 2:
-			self.h = self.k * self.get_laplace(np.copy(self.data))
+			self.h_arr = self.k * self.get_laplace(np.copy(self.data), alpha=True)
 		else:
-			self.h = self.k * (np.asarray([self.get_laplace(np.copy(self.data[:, :, i]))
+			self.h_arr = self.k * (np.asarray([self.get_laplace(np.copy(self.data[:, :, i]))
 				for i in range(self.data.shape[-1])]))
-			#print(self.h.shape)
 
-	def iteration(self) -> None:
+	def iteration(self) -> Array:
 		"""
 		Does one iteration of the method.
 
@@ -41,22 +41,39 @@ class Contrast(image_handler.ImageHandler, poisson.poisson,boundary.Boundary):
 		"""		
 		self.verify_integrity()
 
-		def operator(i=None):
-			if i is None:
-				return 0.2 * self.get_laplace(self.data, alpha=False) 
-			else:
-				return 0.2 * self.get_laplace(self.data[:, :, i], alpha=False)
-
-		def h(i=None):
-			if len(self.h.shape) == 3:
-				return self.h[i, :, :]
-			else:
-				return self.h
-		
-		self.data = self.solve(self.data, operator, h)
+		self.data = self.solve(self.data, self.operator, self.h)
+		#self.data = self.neumann(self.data)
 		return self.data
 
-	def fit(self, epochs=1):
+	def operator(self, i=None):
+		"""
+		Solves the "u" part of the poisson equation
+
+		Returns
+		-------
+		array
+			the u value
+		"""
+		if i is None:
+			return self.get_laplace(self.data, alpha=True) 
+		else:
+			return self.get_laplace(self.data[:, :, i], alpha=True)
+
+	def h(self, i=None):
+		"""
+		Solves the "h" part of the poisson equation
+
+		Returns
+		-------
+		array
+			the h value
+		"""
+		if len(self.h_arr.shape) == 3:
+			return self.h_arr[i, :, :]
+		else:
+			return self.h_arr
+
+	def fit(self, epochs=1):# -> Contrast:
 		"""
 		Makes multiple iterations of the method
 

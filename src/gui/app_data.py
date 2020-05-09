@@ -65,18 +65,25 @@ class App(QMainWindow):
 		self.epoch_label.setText("Epochs ({}) (Total {})".format(epochs, self.total_epochs))
 
 	def alpha_chnage(self):
+		"""
+		update the method alpha value based on slider
+		"""
 		value: int = self.alpha_slider.value()
 		self.method.set_alpha(value/100)
 		self.alpha_label.setText("Alpha ({})".format(value/100))
 
 	def boundary_change(self):
+		"""
+		Update the boundary based on the boundary group
+		"""
 		if not self.boundary_group is None:
-			#print(self.boundary_group.checkedButton().text())
 			self.method.set_boundary(self.boundary_group.checkedButton().text())
 
 	def method_change(self):
+		"""
+		Update the method based on the boundary group
+		"""
 		if not self.method_group is None:
-			#print(self.boundary_group.checkedButton().text())
 			self.method.set_mode(self.method_group.checkedButton().text())
 
 	def mode_change(self, _):
@@ -90,6 +97,14 @@ class App(QMainWindow):
 
 	@pyqtSlot()
 	def update_image_label(self, data=None):
+		"""
+		Update image label
+
+		Parameters
+		----------
+		data : ndarray
+			The new image data
+		"""
 		if data is None:
 			self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))   
 		else:
@@ -185,12 +200,19 @@ class App(QMainWindow):
 		self.label.setPixmap(pil2pixmap(self.pixmap_converter(self.method.data)))
 
 	def prepare(self):
+		"""
+		Some functions needs some function to be run before method
+
+		This method will be overriden
+		"""
 		pass
 
 	@pyqtSlot()
 	def run_method(self, lock_run=False):
 		"""
 		Runs one of the backends methods
+
+
 		"""
 		self.prepare()
 		if lock_run:
@@ -203,6 +225,11 @@ class App(QMainWindow):
 		self.timer.start(100)
 
 	def undo(self):
+		"""
+		Some functions needs some function to be run when the method is reset
+
+		This method will be overriden
+		"""
 		pass
 
 	def reset_image(self):
@@ -217,16 +244,3 @@ class App(QMainWindow):
 		QTimer.singleShot(100, lambda: self.action_button.setEnabled(True))
 		self.method.reset()
 		self.label.setPixmap(pil2pixmap(Image.fromarray((255 * self.method.data).astype(np.uint8))))
-
-	def dragEnterEvent(self, e):
-		e.accept()
-		
-	def dropEvent(self, e):
-		print(e)
-		position = e.pos()
-		self.button.move(position)
-
-		e.setDropAction(Qt.MoveAction)
-		e.accept()
-
-

@@ -34,33 +34,37 @@ class matting(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		self.source = image_handler.ImageHandler(source_path, color)
 		self.target = self.data.copy()
 
-		self.area_full = area
+		self.working_area = area
 		self.padding = padding
 
 	@property
-	def area_full(self):
+	def working_area(self):
 		"""
 		Return the working area
+
+		Returns
+		-------
+		list
+			the working area [(x0, x1), (y0, y1)]
 		"""
 		return self._area
 
-	@area_full.setter
-	def area_full(self, mode):
+	@working_area.setter
+	def working_area(self, location):
 		"""
 		Setter for the working area
 
 		This is a setter that makes sure that the data that is set is valid.
+
+		Parameters
+		----------
+		location : int
+			The location of the working area for the images
 		"""
-		if len(mode) != 2:
+		if len(location) != 2:
 			raise ValueError("You speify the area as a 2d tuple ((x0, x1), (y0, y1))")
 
-		x0, x1 = mode[0]
-		"""
-		if x0 is None or x1 is None:
-			raise ValueError("input should be a number")
-		if not x0 < x1:
-			raise ValueError("x0 should be less than x1")
-		"""
+		x0, x1 = location[0]
 		if x0 is None:
 			x0 = 0
 		if x1 is None:
@@ -69,9 +73,7 @@ class matting(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		if x0 < 0 or self.source.data.shape[1] < x1:
 			raise ValueError("x range is ({}, {})".format(0, self.source.data.shape[1]))
 
-		y0, y1 = mode[1]
-#		if y0 is None or y1 is None:
-#			raise ValueError("input should be a number")
+		y0, y1 = location[1]
 		if y0 is None:
 			y0 = 0
 		if y1 is None:
@@ -87,16 +89,27 @@ class matting(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		Preview the crop box
 
+		Parameters
+		----------
+		x : int
+			The x0 location
+		y : int
+			The y0 location
+		x1 : int
+			The x1 location
+		y1 : int
+			The y1 location
+		
 		Returns
 		-------
 		array
 			the cropbox
 		"""
-		self.area_full = ((x, x + self.source.data.shape[1]), (y, y + self.source.data.shape[0]))
+		self.working_area = ((x, x + self.source.data.shape[1]), (y, y + self.source.data.shape[0]))
 
 		box = self.target.copy()
-		x0, x1 = self.area_full[0][0], self.area_full[0][1]
-		y0, y1 = self.area_full[1][0], self.area_full[1][1]
+		x0, x1 = self.working_area[0][0], self.working_area[0][1]
+		y0, y1 = self.working_area[1][0], self.working_area[1][1]
 		box[y0:y1,
 			x0:x1 :] = 255 
 		return box
@@ -112,6 +125,12 @@ class matting(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		"""
 		Crops the image
 
+		Parameters
+		----------
+		x : array
+			the data to crop
+		with_padding : bool
+			if you want to add the padding location to the workig_area (used on the target image)
 
 		Returns
 		-------
@@ -119,22 +138,27 @@ class matting(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 			the new cropped image array
 		"""
 		if with_padding:
-			return x[self.area_full[1][0] + self.padding[1]:self.area_full[1][1]  + self.padding[1],
-							  self.area_full[0][0] + self.padding[0]:self.area_full[0][1] + self.padding[0], :]
-		return x[self.area_full[1][0]:self.area_full[1][1] ,
-							  self.area_full[0][0]:self.area_full[0][1], :]
+			return x[self.working_area[1][0] + self.padding[1]:self.working_area[1][1]  + self.padding[1],
+							  self.working_area[0][0] + self.padding[0]:self.working_area[0][1] + self.padding[0], :]
+		return x[self.working_area[1][0]:self.working_area[1][1] ,
+							  self.working_area[0][0]:self.working_area[0][1], :]
 
 	def apply(self, data):
 		"""
 		Apply the data to the image
 
 		Sets the new data based on the padding and area size
+
+		Parameters
+		----------
+		data : Array
+			the data to set onto the image data
 		"""
 		for j in range(min(self.data.shape[-1], data.shape[-1])):
-			self.data[self.area_full[1][0] + self.padding[1]:self.area_full[1][1] + self.padding[1], 
-				self.area_full[0][0] + self.padding[0]:self.area_full[0][1] + self.padding[0], j] = data[:, :, j]
+			self.data[self.working_area[1][0] + self.padding[1]:self.working_area[1][1] + self.padding[1], 
+				self.working_area[0][0] + self.padding[0]:self.working_area[0][1] + self.padding[0], j] = data[:, :, j]
 
-	def iteration(self) -> None:
+	def iteration(self) -> Array:
 		"""
 		Does one iteration of the method.
 
@@ -142,17 +166,36 @@ class matting(image_handler.ImageHandler, poisson.poisson, boundary.Boundary):
 		-------
 		array
 			the new image array
+		"""		
+		working_area = self.crop(self.data)
+		solved_working_area = self.solve(working_area, self.operator, self.h, 
+			apply_boundary=False)
+		self.apply(solved_working_area)
+		return self.data
+
+	def operator(self, i):
+		"""
+		Solves the "u" part of the poisson equation
+
+		Returns
+		-------
+		array
+			the u value
 		"""
 		working_area = self.crop(self.data)
+		return self.get_laplace(working_area[:, :, i])
+
+	def h(self, i):
+		"""
+		Solves the "h" part of the poisson equation
+
+		Returns
+		-------
+		array
+			the h value
+		"""
 		working_area_source = self.crop(self.source.data, False)
-		
-		h = lambda i: self.get_laplace((working_area_source)[:, :, i])
-		operator = lambda i=None: self.get_laplace(working_area[:, :, i])
-		working_area = self.solve(working_area,operator, h, apply_boundary=False)
-
-		self.apply(working_area.clip(0, 1))
-
-		return self.data
+		return self.get_laplace((working_area_source)[:, :, i])
 
 	def bad_fit(self):
 		"""

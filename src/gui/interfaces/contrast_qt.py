@@ -8,15 +8,15 @@ class contrast_window(general_window):
 	This class describes a contrast window.
 	"""
 	def __init__(self, parent=None):
-		general_window.__init__(self, load_extra=lambda x: self.load_extra_now())
+		general_window.__init__(self, load_extra=lambda x: self.load_after())
 		self.image = './files/test_images/contrast.jpg'
 		self.method = contrasting.Contrast(self.image)
 		self.input_image = self.method.get_data().copy()
 		self.height = 0
 
-	def load_extra_now(self):
+	def load_after(self):
 		"""
-		Load the extra
+		Load the extra view for LAH
 		"""
 		_, self.heigth = self.position()
 		self.extra_button = self.add_button("Extra", lambda x: QTimer.singleShot(100, lambda: self.show_extra_la()))
