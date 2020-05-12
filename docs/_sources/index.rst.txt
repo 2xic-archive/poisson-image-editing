@@ -1,0 +1,39 @@
+.. Vitprog documentation master file, created by
+   sphinx-quickstart on Fri Mar 20 21:50:37 2020.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to Vitprog's documentation!
+===================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+
+vitprog backend
+===================
+.. automodule:: backend
+   :members:
+
+* :ref:`backend`
+
+
+vitprog engine
+===================
+.. automodule:: engine
+   :members:
+
+
+vitprog gui
+===================
+.. automodule:: gui
+   :members:
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

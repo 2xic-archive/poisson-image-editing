@@ -1,0 +1,529 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>engine &#8212; Vitprog  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-engine">
+<span id="engine"></span><h1>engine<a class="headerlink" href="#module-engine" title="Permalink to this headline">¶</a></h1>
+<p>Core code that that the backend uses to implement all the methods</p>
+</div>
+<div class="section" id="module-engine.boundary">
+<span id="engine-boundary"></span><h1>engine.boundary<a class="headerlink" href="#module-engine.boundary" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="engine.boundary.Boundary">
+<em class="property">class </em><code class="sig-prename descclassname">engine.boundary.</code><code class="sig-name descname">Boundary</code><span class="sig-paren">(</span><em class="sig-param">u0=None</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.boundary.Boundary" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class describes the boundary conditions</p>
+<dl class="method">
+<dt id="engine.boundary.Boundary.diriclet">
+<code class="sig-name descname">diriclet</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engine.boundary.Boundary.diriclet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies a diriclet boundary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray</em>) – The data to preform the boundary on</p></li>
+<li><p><strong>mask</strong> (<em>ndarray</em>) – if you are using a mask for the boundary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The data with a applied boundary</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.boundary.Boundary.neumann">
+<code class="sig-name descname">neumann</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engine.boundary.Boundary.neumann" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies a neumann boundary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>ndarray</em>) – The data to preform the boundary on</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The data with a applied boundary</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.boundary.Boundary.set_u0">
+<code class="sig-name descname">set_u0</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.boundary.Boundary.set_u0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the u 0.</p>
+<p>Used with diriclet</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>ndarray</em>) – the original image</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-engine.poisson">
+<span id="engine-poisson"></span><h1>engine.poisson<a class="headerlink" href="#module-engine.poisson" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="engine.poisson.Poisson">
+<em class="property">class </em><code class="sig-prename descclassname">engine.poisson.</code><code class="sig-name descname">Poisson</code><a class="headerlink" href="#engine.poisson.Poisson" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class describes the abstracts part of the poisson equation</p>
+<dl class="method">
+<dt id="engine.poisson.Poisson.apply_boundary">
+<code class="sig-name descname">apply_boundary</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span> &#x2192; nptyping.array.Array<a class="headerlink" href="#engine.poisson.Poisson.apply_boundary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the boundary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>ndarray</em>) – The data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the new array with boundary applied</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.poisson.Poisson.boundary">
+<em class="property">property </em><code class="sig-name descname">boundary</code><a class="headerlink" href="#engine.poisson.Poisson.boundary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the boundary mode (neumann or dirichlet)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the boundary mode</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.poisson.Poisson.common_shape">
+<code class="sig-name descname">common_shape</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.poisson.Poisson.common_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure the method gets the correct shape</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>ndarray</em>) – The data to get a common shape for</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.poisson.Poisson.get_laplace">
+<code class="sig-name descname">get_laplace</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">alpha=True</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.poisson.Poisson.get_laplace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the correct laplace based on mode</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>ndarray</em>) – The data to get the laplace from</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the laplace array</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.poisson.Poisson.get_laplace_explicit">
+<code class="sig-name descname">get_laplace_explicit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engine.poisson.Poisson.get_laplace_explicit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the laplace</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray</em>) – The data to get the laplace from</p></li>
+<li><p><strong>alpha</strong> (<em>bool</em>) – If you want to apply the alpha directly</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the laplace array</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.poisson.Poisson.get_laplace_implicit">
+<code class="sig-name descname">get_laplace_implicit</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.poisson.Poisson.get_laplace_implicit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the laplace</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>ndarray</em>) – The data to get the laplace from</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.poisson.Poisson.mode_boundary">
+<em class="property">property </em><code class="sig-name descname">mode_boundary</code><a class="headerlink" href="#engine.poisson.Poisson.mode_boundary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the boundary mode (neumann or dirichlet)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the boundary mode</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.poisson.Poisson.mode_poisson">
+<em class="property">property </em><code class="sig-name descname">mode_poisson</code><a class="headerlink" href="#engine.poisson.Poisson.mode_poisson" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the poisson mode (explicit or implicit)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.poisson.Poisson.set_alpha">
+<code class="sig-name descname">set_alpha</code><span class="sig-paren">(</span><em class="sig-param">value: float</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.poisson.Poisson.set_alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the alpha value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>float</em>) – The alhpa value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.poisson.Poisson.set_boundary">
+<code class="sig-name descname">set_boundary</code><span class="sig-paren">(</span><em class="sig-param">mode</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.poisson.Poisson.set_boundary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the boundary mode</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mode</strong> – the boundary mode</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.poisson.Poisson.set_mode">
+<code class="sig-name descname">set_mode</code><span class="sig-paren">(</span><em class="sig-param">mode</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.poisson.Poisson.set_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the poisson mode</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mode</strong> – the poisson mode</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.poisson.Poisson.solve">
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param">data: nptyping.array.Array</em>, <em class="sig-param">operator: callable</em>, <em class="sig-param">h: callable = &lt;function Poisson.&lt;lambda&gt;&gt;</em>, <em class="sig-param">apply_boundary: bool = True</em><span class="sig-paren">)</span> &#x2192; nptyping.array.Array<a class="headerlink" href="#engine.poisson.Poisson.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve the poisson equation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray</em>) – The data to work with</p></li>
+<li><p><strong>operator</strong> (<em>callable</em>) – The function applied</p></li>
+<li><p><strong>h</strong> (<em>callable</em>) – The h function</p></li>
+<li><p><strong>apply_boundary</strong> (<em>bool</em>) – if you want to aply the set boundary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the iterated array</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="engine-image-handler">
+<h1>engine.image_handler<a class="headerlink" href="#engine-image-handler" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-engine.image_handler"></span><dl class="class">
+<dt id="engine.image_handler.ImageHandler">
+<em class="property">class </em><code class="sig-prename descclassname">engine.image_handler.</code><code class="sig-name descname">ImageHandler</code><span class="sig-paren">(</span><em class="sig-param">path: str = None</em>, <em class="sig-param">color: bool = True</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.image_handler.ImageHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class describes the functions for making it easy to interact with a image</p>
+<dl class="method">
+<dt id="engine.image_handler.ImageHandler.change_color_state">
+<code class="sig-name descname">change_color_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engine.image_handler.ImageHandler.change_color_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Goes from color to gray, or gray to color</p>
+<p>Assuming the original image was a color image</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.image_handler.ImageHandler.change_photo">
+<code class="sig-name descname">change_photo</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.image_handler.ImageHandler.change_photo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change out the photo</p>
+<p>Changes out the photo, but keeps the same size as the old photo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – the location of the image, can be none (if you want to set
+the data manually)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns the change in size</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.image_handler.ImageHandler.convert_Grayscale">
+<code class="sig-name descname">convert_Grayscale</code><span class="sig-paren">(</span><em class="sig-param">data=None</em><span class="sig-paren">)</span> &#x2192; nptyping.array.Array<a class="headerlink" href="#engine.image_handler.ImageHandler.convert_Grayscale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes the color image a grayscale image</p>
+<p>Asummes a color image</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Array</em>) – the color image</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the grayscale image</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.image_handler.ImageHandler.convert_image">
+<code class="sig-name descname">convert_image</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engine.image_handler.ImageHandler.convert_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts image to scale [0, 1]</p>
+<p>Will also convert to grayscale if specified</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.image_handler.ImageHandler.get_data">
+<code class="sig-name descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; nptyping.array.Array<a class="headerlink" href="#engine.image_handler.ImageHandler.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the image</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.image_handler.ImageHandler.get_gradient">
+<code class="sig-name descname">get_gradient</code><span class="sig-paren">(</span><em class="sig-param">data: nptyping.array.Array</em><span class="sig-paren">)</span> &#x2192; nptyping.array.Array<a class="headerlink" href="#engine.image_handler.ImageHandler.get_gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the image gradient</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>ndarray</em>) – the image data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the gradient for x and y</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.image_handler.ImageHandler.get_gradient_norm">
+<code class="sig-name descname">get_gradient_norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engine.image_handler.ImageHandler.get_gradient_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the image gradient norm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>ndarray</em>) – the image data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the gradient norm of the data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.image_handler.ImageHandler.normalize">
+<code class="sig-name descname">normalize</code><span class="sig-paren">(</span><em class="sig-param">data=None</em><span class="sig-paren">)</span> &#x2192; nptyping.array.Array<a class="headerlink" href="#engine.image_handler.ImageHandler.normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize the image [0, 1]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Array</em>) – the color image</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the grayscale image</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.image_handler.ImageHandler.process">
+<code class="sig-name descname">process</code><span class="sig-paren">(</span><em class="sig-param">image</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.image_handler.ImageHandler.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processes the given image.</p>
+<p>Makes the image from a PIL image to numpy array and normalize it.
+Will aslo convert the image to grayscale if specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image</strong> (<em>PIL.Image</em>) – the input iamge</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.image_handler.ImageHandler.reset">
+<code class="sig-name descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engine.image_handler.ImageHandler.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the data (set’s the image to the original)</p>
+<p>Using the data copy</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.image_handler.ImageHandler.resize">
+<code class="sig-name descname">resize</code><span class="sig-paren">(</span><em class="sig-param">scale=8</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.image_handler.ImageHandler.resize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resize the image</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>scale</strong> (<em>int</em>) – Set the scale you want to resize</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.image_handler.ImageHandler.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">path: str</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.image_handler.ImageHandler.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the data array as a image</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – the image path for saving</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the image path</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.image_handler.ImageHandler.set_data">
+<code class="sig-name descname">set_data</code><span class="sig-paren">(</span><em class="sig-param">data: nptyping.array.Array</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.image_handler.ImageHandler.set_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the data (image)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>ndarray</em>) – the image data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.image_handler.ImageHandler.show">
+<code class="sig-name descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engine.image_handler.ImageHandler.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show the data array as a image</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.image_handler.ImageHandler.verify_integrity">
+<code class="sig-name descname">verify_integrity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engine.image_handler.ImageHandler.verify_integrity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that the image is in scope</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Vitprog</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Brage og Sigurd.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/engine.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,62 @@
+
+vitprog backend.blurring
+===================
+.. automodule:: backend.blurring
+   :members:
+
+
+vitprog backend.contrasting
+===================
+.. automodule:: backend.contrasting
+   :members:
+
+
+vitprog backend.demosaicing
+===================
+.. automodule:: backend.demosaicing
+   :members:
+
+vitprog backend.contrasting 
+===================
+.. automodule:: backend.contrasting 
+    :members: 
+
+vitprog backend.grayscale 
+===================
+.. automodule:: backend.grayscale 
+    :members: 
+
+vitprog backend.anonymizing 
+===================
+.. automodule:: backend.anonymizing 
+    :members: 
+
+vitprog backend.matting 
+===================
+.. automodule:: backend.matting 
+    :members: 
+
+vitprog backend.demosaicing 
+===================
+.. automodule:: backend.demosaicing 
+    :members: 
+
+vitprog backend.hdr_reconstruction 
+===================
+.. automodule:: backend.hdr_reconstruction 
+    :members: 
+
+vitprog backend.non_edge_blurring 
+===================
+.. automodule:: backend.non_edge_blurring 
+    :members: 
+
+vitprog backend.inpaiting 
+===================
+.. automodule:: backend.inpaiting 
+    :members: 
+
+vitprog backend.blurring 
+===================
+.. automodule:: backend.blurring 
+    :members: 

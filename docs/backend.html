@@ -1,0 +1,1137 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>backend &#8212; Vitprog  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-backend">
+<span id="backend"></span><h1>backend<a class="headerlink" href="#module-backend" title="Permalink to this headline">¶</a></h1>
+<p>Code for all the methods (blurring, inpainting, etc)</p>
+</div>
+<div class="section" id="module-backend.blurring">
+<span id="backend-blurring"></span><h1>backend.blurring<a class="headerlink" href="#module-backend.blurring" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="backend.blurring.Blur">
+<em class="property">class </em><code class="sig-prename descclassname">backend.blurring.</code><code class="sig-name descname">Blur</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">color=False</em><span class="sig-paren">)</span><a class="headerlink" href="#backend.blurring.Blur" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class describes a blured image.</p>
+<p>This contains all the functions needed to blur a image over multiple iterations</p>
+<dl class="method">
+<dt id="backend.blurring.Blur.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">epochs</em><span class="sig-paren">)</span> &#x2192; backend.blurring.Blur<a class="headerlink" href="#backend.blurring.Blur.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes multiple iterations of the method</p>
+<p>Calls iteration as many times as spesifed in by the parameter epochs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>epochs</strong> (<em>int</em>) – The iteration count</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns self</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>blur</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.blurring.Blur.h">
+<code class="sig-name descname">h</code><span class="sig-paren">(</span><em class="sig-param">i=None</em><span class="sig-paren">)</span> &#x2192; Array<a class="headerlink" href="#backend.blurring.Blur.h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves the “h” part of the poisson equation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the h value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.blurring.Blur.iteration">
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Array<a class="headerlink" href="#backend.blurring.Blur.iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does one iteration of the method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>numpy array with the new image after the iteration</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.blurring.Blur.opeartor">
+<code class="sig-name descname">opeartor</code><span class="sig-paren">(</span><em class="sig-param">i=None</em><span class="sig-paren">)</span> &#x2192; Array<a class="headerlink" href="#backend.blurring.Blur.opeartor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves the “u”(gradient) part of the poisson equation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the u value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.blurring.Blur.set_lambda_size">
+<code class="sig-name descname">set_lambda_size</code><span class="sig-paren">(</span><em class="sig-param">lambda_size</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#backend.blurring.Blur.set_lambda_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the lambda fro data attachment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lambda_size</strong> (<em>float</em>) – The lambda parameter</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-backend.contrasting">
+<span id="backend-contrasting"></span><h1>backend.contrasting<a class="headerlink" href="#module-backend.contrasting" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="backend.contrasting.Contrast">
+<em class="property">class </em><code class="sig-prename descclassname">backend.contrasting.</code><code class="sig-name descname">Contrast</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">color=False</em><span class="sig-paren">)</span><a class="headerlink" href="#backend.contrasting.Contrast" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class describes a contrast image.</p>
+<p>This contains all the functions needed to improve the contrast of a image over multiple iterations</p>
+<dl class="method">
+<dt id="backend.contrasting.Contrast.calculate_h">
+<code class="sig-name descname">calculate_h</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#backend.contrasting.Contrast.calculate_h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds the array for the “h” part of the poisson equation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.contrasting.Contrast.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">epochs=1</em><span class="sig-paren">)</span> &#x2192; backend.contrasting.Contrast<a class="headerlink" href="#backend.contrasting.Contrast.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes multiple iterations of the method</p>
+<p>Calls iteration as many times as spesifed in by the parameter epochs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>epochs</strong> (<em>int</em>) – The iteration count</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns self</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#backend.contrasting.Contrast" title="backend.contrasting.Contrast">Contrast</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.contrasting.Contrast.h">
+<code class="sig-name descname">h</code><span class="sig-paren">(</span><em class="sig-param">i=None</em><span class="sig-paren">)</span> &#x2192; Array<a class="headerlink" href="#backend.contrasting.Contrast.h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves the “h” part of the poisson equation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the h value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.contrasting.Contrast.iteration">
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Array<a class="headerlink" href="#backend.contrasting.Contrast.iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does one iteration of the method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the new image array</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.contrasting.Contrast.k">
+<em class="property">property </em><code class="sig-name descname">k</code><a class="headerlink" href="#backend.contrasting.Contrast.k" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the k variable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.contrasting.Contrast.operator">
+<code class="sig-name descname">operator</code><span class="sig-paren">(</span><em class="sig-param">i=None</em><span class="sig-paren">)</span> &#x2192; Array<a class="headerlink" href="#backend.contrasting.Contrast.operator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves the “u” part of the poisson equation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the u value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-backend.demosaicing">
+<span id="backend-demosaicing"></span><h1>backend.demosaicing<a class="headerlink" href="#module-backend.demosaicing" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="backend.demosaicing.Demosaic">
+<em class="property">class </em><code class="sig-prename descclassname">backend.demosaicing.</code><code class="sig-name descname">Demosaic</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">color: bool = True</em><span class="sig-paren">)</span><a class="headerlink" href="#backend.demosaicing.Demosaic" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class describes a demosaic image.</p>
+<p>This contains all the functions needed to perform demosaic on a image over multiple iterations</p>
+<dl class="method">
+<dt id="backend.demosaicing.Demosaic.alpha">
+<em class="property">property </em><code class="sig-name descname">alpha</code><a class="headerlink" href="#backend.demosaicing.Demosaic.alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the alpha value for inpait</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>alpha value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.demosaicing.Demosaic.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">epochs: int = 1</em><span class="sig-paren">)</span> &#x2192; backend.demosaicing.Demosaic<a class="headerlink" href="#backend.demosaicing.Demosaic.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes multiple iterations of the method</p>
+<p>Calls iteration as many times as spesifed in by the parameter epochs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>epochs</strong> (<em>int</em>) – The iteration count</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns self</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#backend.demosaicing.Demosaic" title="backend.demosaicing.Demosaic">Demosaic</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.demosaicing.Demosaic.get_mosaic">
+<code class="sig-name descname">get_mosaic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#backend.demosaicing.Demosaic.get_mosaic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulates the mosaic</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.demosaicing.Demosaic.iteration">
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Array<a class="headerlink" href="#backend.demosaicing.Demosaic.iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does one iteration of the method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the new image array</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.demosaicing.Demosaic.mode_boundary">
+<em class="property">property </em><code class="sig-name descname">mode_boundary</code><a class="headerlink" href="#backend.demosaicing.Demosaic.mode_boundary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the mode for the boundary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the mode id</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.demosaicing.Demosaic.mode_poisson">
+<em class="property">property </em><code class="sig-name descname">mode_poisson</code><a class="headerlink" href="#backend.demosaicing.Demosaic.mode_poisson" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the mode for the poission backend</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the mode id</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.demosaicing.Demosaic.reset">
+<code class="sig-name descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#backend.demosaicing.Demosaic.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the method</p>
+<p>sets the image to the orignal image. Removes the mosaic.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.demosaicing.Demosaic.simulate">
+<code class="sig-name descname">simulate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#backend.demosaicing.Demosaic.simulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simualtes a image into a state where we can preform demosaic</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the simulated mosaic image</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="id1">
+<h1>backend.contrasting<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-backend.contrasting"></span><dl class="class">
+<dt>
+<em class="property">class </em><code class="sig-prename descclassname">backend.contrasting.</code><code class="sig-name descname">Contrast</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">color=False</em><span class="sig-paren">)</span></dt>
+<dd><p>This class describes a contrast image.</p>
+<p>This contains all the functions needed to improve the contrast of a image over multiple iterations</p>
+<dl class="method">
+<dt>
+<code class="sig-name descname">calculate_h</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Builds the array for the “h” part of the poisson equation</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">epochs=1</em><span class="sig-paren">)</span> &#x2192; backend.contrasting.Contrast</dt>
+<dd><p>Makes multiple iterations of the method</p>
+<p>Calls iteration as many times as spesifed in by the parameter epochs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>epochs</strong> (<em>int</em>) – The iteration count</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns self</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#backend.contrasting.Contrast" title="backend.contrasting.Contrast">Contrast</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">h</code><span class="sig-paren">(</span><em class="sig-param">i=None</em><span class="sig-paren">)</span> &#x2192; Array</dt>
+<dd><p>Solves the “h” part of the poisson equation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the h value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Array</dt>
+<dd><p>Does one iteration of the method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the new image array</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">k</code></dt>
+<dd><p>Returns the k variable</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">operator</code><span class="sig-paren">(</span><em class="sig-param">i=None</em><span class="sig-paren">)</span> &#x2192; Array</dt>
+<dd><p>Solves the “u” part of the poisson equation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the u value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-backend.grayscale">
+<span id="backend-grayscale"></span><h1>backend.grayscale<a class="headerlink" href="#module-backend.grayscale" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="backend.grayscale.Grayscale">
+<em class="property">class </em><code class="sig-prename descclassname">backend.grayscale.</code><code class="sig-name descname">Grayscale</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">color=True</em><span class="sig-paren">)</span><a class="headerlink" href="#backend.grayscale.Grayscale" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class describes a grayscaled image.</p>
+<p>This contains all the functions needed to make a color image into a grayscaled image over multiple iterations</p>
+<dl class="method">
+<dt id="backend.grayscale.Grayscale.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">epochs</em><span class="sig-paren">)</span> &#x2192; grayscale<a class="headerlink" href="#backend.grayscale.Grayscale.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes multiple iterations of the method</p>
+<p>Calls iteration as many times as spesifed in by the parameter epochs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>epochs</strong> (<em>int</em>) – The iteration count</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns self</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>grayscale</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.grayscale.Grayscale.h">
+<code class="sig-name descname">h</code><span class="sig-paren">(</span><em class="sig-param">i=None</em><span class="sig-paren">)</span><a class="headerlink" href="#backend.grayscale.Grayscale.h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves the “h” part of the poisson equation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the h value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.grayscale.Grayscale.h_func">
+<code class="sig-name descname">h_func</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Array<a class="headerlink" href="#backend.grayscale.Grayscale.h_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>The h variable of the poisson equation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the h value array</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.grayscale.Grayscale.iteration">
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#backend.grayscale.Grayscale.iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does one iteration of the method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the new image array</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.grayscale.Grayscale.opeartor">
+<code class="sig-name descname">opeartor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#backend.grayscale.Grayscale.opeartor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves the “u” part of the poisson equation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the u value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.grayscale.Grayscale.reset">
+<code class="sig-name descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#backend.grayscale.Grayscale.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the method</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-backend.anonymizing">
+<span id="backend-anonymizing"></span><h1>backend.anonymizing<a class="headerlink" href="#module-backend.anonymizing" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="backend.anonymizing.Anonymous">
+<em class="property">class </em><code class="sig-prename descclassname">backend.anonymizing.</code><code class="sig-name descname">Anonymous</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">color: bool = True</em><span class="sig-paren">)</span><a class="headerlink" href="#backend.anonymizing.Anonymous" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class describes a anymous image.</p>
+<p>This contains all the functions needed to anonymize a image over multiple iterations</p>
+<dl class="method">
+<dt id="backend.anonymizing.Anonymous.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">epochs: int</em><span class="sig-paren">)</span> &#x2192; backend.anonymizing.Anonymous<a class="headerlink" href="#backend.anonymizing.Anonymous.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes multiple iterations of the method</p>
+<p>Calls iteration as many times as spesifed in by the parameter epochs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>epochs</strong> (<em>int</em>) – The iteration count</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns self</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>anonymous</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.anonymizing.Anonymous.iteration">
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Array<a class="headerlink" href="#backend.anonymizing.Anonymous.iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does one iteration of the method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>returns the new computed image</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="backend.anonymizing.get_mask">
+<code class="sig-prename descclassname">backend.anonymizing.</code><code class="sig-name descname">get_mask</code><span class="sig-paren">(</span><em class="sig-param">path: str</em><span class="sig-paren">)</span> &#x2192; list<a class="headerlink" href="#backend.anonymizing.get_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a(ll) the mask(s) boxes to blur some face(s)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – path to the image file to anonymize</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list with bounding boxes of (x, x1, y, y1) for the faces</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-backend.matting">
+<span id="backend-matting"></span><h1>backend.matting<a class="headerlink" href="#module-backend.matting" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="backend.matting.Matting">
+<em class="property">class </em><code class="sig-prename descclassname">backend.matting.</code><code class="sig-name descname">Matting</code><span class="sig-paren">(</span><em class="sig-param">target_path='./files/test_images/target.png', source_path='./files/test_images/source_v2.png', area=[[10, 65], [10, 65]], padding=[50, 250], color=True</em><span class="sig-paren">)</span><a class="headerlink" href="#backend.matting.Matting" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class describes a matting image.</p>
+<p>This contains all the functions needed to merge a image over another image over multiple iterations</p>
+<dl class="method">
+<dt id="backend.matting.Matting.apply">
+<code class="sig-name descname">apply</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#backend.matting.Matting.apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the data to the image</p>
+<p>Sets the new data based on the padding and area size</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Array</em>) – the data to set onto the image data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.matting.Matting.bad_fit">
+<code class="sig-name descname">bad_fit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#backend.matting.Matting.bad_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will directly paste the source image onto the target image</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.matting.Matting.crop">
+<code class="sig-name descname">crop</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">with_padding=True</em><span class="sig-paren">)</span><a class="headerlink" href="#backend.matting.Matting.crop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Crops the image</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – the data to crop</p></li>
+<li><p><strong>with_padding</strong> (<em>bool</em>) – if you want to add the padding location to the workig_area (used on the target image)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the new cropped image array</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.matting.Matting.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">epochs=1</em><span class="sig-paren">)</span> &#x2192; matting<a class="headerlink" href="#backend.matting.Matting.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes multiple iterations of the method</p>
+<p>Calls iteration as many times as spesifed in by the parameter epochs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>epochs</strong> (<em>int</em>) – The iteration count</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns self</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>matting</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.matting.Matting.h">
+<code class="sig-name descname">h</code><span class="sig-paren">(</span><em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#backend.matting.Matting.h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves the “h” part of the poisson equation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the h value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.matting.Matting.iteration">
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Array<a class="headerlink" href="#backend.matting.Matting.iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does one iteration of the method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the new image array</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.matting.Matting.operator">
+<code class="sig-name descname">operator</code><span class="sig-paren">(</span><em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#backend.matting.Matting.operator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves the “u” part of the poisson equation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the u value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.matting.Matting.preview_box">
+<code class="sig-name descname">preview_box</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">x1</em>, <em class="sig-param">y1</em><span class="sig-paren">)</span><a class="headerlink" href="#backend.matting.Matting.preview_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preview the crop box</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>int</em>) – The x0 location</p></li>
+<li><p><strong>y</strong> (<em>int</em>) – The y0 location</p></li>
+<li><p><strong>x1</strong> (<em>int</em>) – The x1 location</p></li>
+<li><p><strong>y1</strong> (<em>int</em>) – The y1 location</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the cropbox</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.matting.Matting.reset_full">
+<code class="sig-name descname">reset_full</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#backend.matting.Matting.reset_full" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the image source and target</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.matting.Matting.working_area">
+<em class="property">property </em><code class="sig-name descname">working_area</code><a class="headerlink" href="#backend.matting.Matting.working_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the working area</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the working area [(x0, x1), (y0, y1)]</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="id2">
+<h1>backend.demosaicing<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-backend.demosaicing"></span><dl class="class">
+<dt>
+<em class="property">class </em><code class="sig-prename descclassname">backend.demosaicing.</code><code class="sig-name descname">Demosaic</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">color: bool = True</em><span class="sig-paren">)</span></dt>
+<dd><p>This class describes a demosaic image.</p>
+<p>This contains all the functions needed to perform demosaic on a image over multiple iterations</p>
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">alpha</code></dt>
+<dd><p>Get the alpha value for inpait</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>alpha value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">epochs: int = 1</em><span class="sig-paren">)</span> &#x2192; backend.demosaicing.Demosaic</dt>
+<dd><p>Makes multiple iterations of the method</p>
+<p>Calls iteration as many times as spesifed in by the parameter epochs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>epochs</strong> (<em>int</em>) – The iteration count</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns self</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#backend.demosaicing.Demosaic" title="backend.demosaicing.Demosaic">Demosaic</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">get_mosaic</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Simulates the mosaic</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Array</dt>
+<dd><p>Does one iteration of the method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the new image array</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">mode_boundary</code></dt>
+<dd><p>Get the mode for the boundary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the mode id</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">mode_poisson</code></dt>
+<dd><p>Get the mode for the poission backend</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the mode id</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Reset the method</p>
+<p>sets the image to the orignal image. Removes the mosaic.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">simulate</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Simualtes a image into a state where we can preform demosaic</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the simulated mosaic image</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="backend-hdr-reconstruction">
+<h1>backend.hdr_reconstruction<a class="headerlink" href="#backend-hdr-reconstruction" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="backend-non-edge-blurring">
+<h1>backend.non_edge_blurring<a class="headerlink" href="#backend-non-edge-blurring" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-backend.non_edge_blurring"></span><dl class="class">
+<dt id="backend.non_edge_blurring.NonEdgeBlur">
+<em class="property">class </em><code class="sig-prename descclassname">backend.non_edge_blurring.</code><code class="sig-name descname">NonEdgeBlur</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">color=False</em><span class="sig-paren">)</span><a class="headerlink" href="#backend.non_edge_blurring.NonEdgeBlur" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class describes a edge edge preserving blurred image.</p>
+<p>This contains all the functions needed to preform a edge preserving blur on a image over multiple iterations</p>
+<dl class="method">
+<dt id="backend.non_edge_blurring.NonEdgeBlur.D">
+<code class="sig-name descname">D</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Array<a class="headerlink" href="#backend.non_edge_blurring.NonEdgeBlur.D" title="Permalink to this definition">¶</a></dt>
+<dd><p>The D function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the new D array</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.non_edge_blurring.NonEdgeBlur.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">epochs</em><span class="sig-paren">)</span> &#x2192; non_edge_blur<a class="headerlink" href="#backend.non_edge_blurring.NonEdgeBlur.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes multiple iterations of the method</p>
+<p>Calls iteration as many times as spesifed in by the parameter epochs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>epochs</strong> (<em>int</em>) – The iteration count</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns self</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>non_edge_blur</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.non_edge_blurring.NonEdgeBlur.iteration">
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Array<a class="headerlink" href="#backend.non_edge_blurring.NonEdgeBlur.iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does one iteration of the method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the new image array</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.non_edge_blurring.NonEdgeBlur.k">
+<em class="property">property </em><code class="sig-name descname">k</code><a class="headerlink" href="#backend.non_edge_blurring.NonEdgeBlur.k" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the k variable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.non_edge_blurring.NonEdgeBlur.operator">
+<code class="sig-name descname">operator</code><span class="sig-paren">(</span><em class="sig-param">i=None</em><span class="sig-paren">)</span><a class="headerlink" href="#backend.non_edge_blurring.NonEdgeBlur.operator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves the “u” part of the poisson equation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.non_edge_blurring.NonEdgeBlur.set_D_gradient">
+<code class="sig-name descname">set_D_gradient</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#backend.non_edge_blurring.NonEdgeBlur.set_D_gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the gradient array (for x and y) of the D function</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-backend.inpaiting">
+<span id="backend-inpaiting"></span><h1>backend.inpaiting<a class="headerlink" href="#module-backend.inpaiting" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="backend.inpaiting.Inpaint">
+<em class="property">class </em><code class="sig-prename descclassname">backend.inpaiting.</code><code class="sig-name descname">Inpaint</code><span class="sig-paren">(</span><em class="sig-param">path: str</em>, <em class="sig-param">color: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#backend.inpaiting.Inpaint" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class describes a inpaited image.</p>
+<p>This contains all the functions needed to inpait a image over multiple iterations</p>
+<dl class="method">
+<dt id="backend.inpaiting.Inpaint.destroy_information">
+<code class="sig-name descname">destroy_information</code><span class="sig-paren">(</span><em class="sig-param">strength=2</em>, <em class="sig-param">create_new_mask=False</em><span class="sig-paren">)</span> &#x2192; Array<a class="headerlink" href="#backend.inpaiting.Inpaint.destroy_information" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes parts of the image</p>
+<p>Will also return a mask for the deleted parts of the image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>strength</strong> (<em>int</em>) – a number from 1 to 10, this is used to set the level of noise added</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the image mask (where the data was removed)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.inpaiting.Inpaint.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">original=None</em>, <em class="sig-param">data=None</em>, <em class="sig-param">mask=None</em>, <em class="sig-param">epochs: int = 1</em><span class="sig-paren">)</span> &#x2192; Array<a class="headerlink" href="#backend.inpaiting.Inpaint.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes multiple iterations of the method</p>
+<p>Calls iteration as many times as spesifed in by the parameter epochs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>original</strong> (<em>ndarray</em>) – The original version of the image</p></li>
+<li><p><strong>data</strong> (<em>ndarray</em>) – Set current data (TODO : MAKE BETTER NAME)</p></li>
+<li><p><strong>mask</strong> (<em>ndarray</em>) – Set mask of the image</p></li>
+<li><p><strong>epochs</strong> (<em>int</em>) – The iteration count</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the new image array</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.inpaiting.Inpaint.iteration">
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Array<a class="headerlink" href="#backend.inpaiting.Inpaint.iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does one iteration of the method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the new image array</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.inpaiting.Inpaint.operator">
+<code class="sig-name descname">operator</code><span class="sig-paren">(</span><em class="sig-param">i=None</em><span class="sig-paren">)</span><a class="headerlink" href="#backend.inpaiting.Inpaint.operator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves the “u” part of the poisson equation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the u value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.inpaiting.Inpaint.set_data">
+<code class="sig-name descname">set_data</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#backend.inpaiting.Inpaint.set_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the data used by the class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>ndarray</em>) – sets the data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.inpaiting.Inpaint.set_mask">
+<code class="sig-name descname">set_mask</code><span class="sig-paren">(</span><em class="sig-param">mask</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#backend.inpaiting.Inpaint.set_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the mask used by the class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mask</strong> (<em>ndarray</em>) – sets the mask</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="backend.inpaiting.Inpaint.set_orignal">
+<code class="sig-name descname">set_orignal</code><span class="sig-paren">(</span><em class="sig-param">original</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#backend.inpaiting.Inpaint.set_orignal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the original verison of the data(image) used by the class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>original</strong> (<em>ndarray</em>) – sets the original</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="id3">
+<h1>backend.blurring<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-backend.blurring"></span><dl class="class">
+<dt>
+<em class="property">class </em><code class="sig-prename descclassname">backend.blurring.</code><code class="sig-name descname">Blur</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">color=False</em><span class="sig-paren">)</span></dt>
+<dd><p>This class describes a blured image.</p>
+<p>This contains all the functions needed to blur a image over multiple iterations</p>
+<dl class="method">
+<dt>
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">epochs</em><span class="sig-paren">)</span> &#x2192; backend.blurring.Blur</dt>
+<dd><p>Makes multiple iterations of the method</p>
+<p>Calls iteration as many times as spesifed in by the parameter epochs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>epochs</strong> (<em>int</em>) – The iteration count</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns self</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>blur</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">h</code><span class="sig-paren">(</span><em class="sig-param">i=None</em><span class="sig-paren">)</span> &#x2192; Array</dt>
+<dd><p>Solves the “h” part of the poisson equation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the h value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Array</dt>
+<dd><p>Does one iteration of the method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>numpy array with the new image after the iteration</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">opeartor</code><span class="sig-paren">(</span><em class="sig-param">i=None</em><span class="sig-paren">)</span> &#x2192; Array</dt>
+<dd><p>Solves the “u”(gradient) part of the poisson equation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the u value</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">set_lambda_size</code><span class="sig-paren">(</span><em class="sig-param">lambda_size</em><span class="sig-paren">)</span> &#x2192; None</dt>
+<dd><p>Sets the lambda fro data attachment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lambda_size</strong> (<em>float</em>) – The lambda parameter</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Vitprog</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Brage og Sigurd.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/backend.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
