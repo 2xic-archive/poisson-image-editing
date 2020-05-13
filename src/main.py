@@ -1,9 +1,3 @@
-"""
-main.py
-====================================
-The core module of the project
-"""
-
 import sys
 
 from PyQt5.QtWidgets import QApplication

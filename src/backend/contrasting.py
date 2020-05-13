@@ -21,9 +21,9 @@ class Contrast(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Parameters
         ----------
         path : str
-            path to a image file
+            Path to a image file
         color : bool
-            if the image should be shown with colors
+            If the image should be shown with colors
         """
         image_handler.ImageHandler.__init__(self, path, color)
         poisson.Poisson.__init__(self)
@@ -59,7 +59,7 @@ class Contrast(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Parameters
         -------
         k
-            the the new k value
+            The the new k value
         """
         assert type(k) == float or type(k) == int, "k should be a number"
         self._k = k
@@ -71,8 +71,8 @@ class Contrast(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
 
         Returns
         -------
-        array
-            the new image array
+        ndarray
+            The new image array
         """
         self.verify_integrity()
 
@@ -83,10 +83,15 @@ class Contrast(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         """
         Solves the "u" part of the Poisson equation
 
+        Parameters
+        ----------
+        i : int
+            The channel to "work" on
+
         Returns
         -------
-        array
-            the u value
+        ndarray
+            The u value
         """
         if i is None:
             return self.get_laplace(self.data, alpha=True)
@@ -97,10 +102,15 @@ class Contrast(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         """
         Solves the "h" part of the Poisson equation
 
+        Parameters
+        ----------
+        i : int
+            The channel to "work" on
+
         Returns
         -------
-        array
-            the h value
+        ndarray
+            The h value
         """
         if len(self.h_arr.shape) == 3:
             return self.h_arr[i, :, :]
@@ -121,7 +131,7 @@ class Contrast(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Returns
         -------
         Contrast
-            returns self
+            Returns self
         """
         for i in range(epochs):
             self.iteration()

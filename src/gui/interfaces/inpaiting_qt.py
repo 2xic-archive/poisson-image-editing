@@ -66,19 +66,22 @@ class inpait_window(general_window):
                                                    setEnabled=False)
         self.update_geometry(self.pixmap.width(), 30, x=self.PADDING, y=self.action_button.pos().y())
 
+        # need to set a mask first
+        self.action_button.setEnabled(False)
+
     def pixmap_handler(self, data) -> Array:
         """
         Makes sure the pixel format is correct
 
         Parameters
         ----------
-        data : Array
+        data : ndarray
             The data to convert to correct format
 
         Returns
         -------
-        Array
-            the converted image to a format QImage likes
+        ndarray
+            The converted image to a format QImage likes
         """
         return ((lambda x: self.pixmap_converter(x))) if not self.pixmap_converter is None else (
             lambda x: Image.fromarray((255 * x).astype(np.uint8)))(data)

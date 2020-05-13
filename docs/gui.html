@@ -38,25 +38,25 @@
 <span id="gui-interface"></span><h1>gui.interface<a class="headerlink" href="#module-gui.interface" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="gui.interface.draggable_style">
-<em class="property">class </em><code class="sig-prename descclassname">gui.interface.</code><code class="sig-name descname">draggable_style</code><span class="sig-paren">(</span><em class="sig-param">title</em>, <em class="sig-param">parent</em>, <em class="sig-param">loc</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interface.draggable_style" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gui.interface.</code><code class="sig-name descname">draggable_style</code><span class="sig-paren">(</span><em class="sig-param">title</em>, <em class="sig-param">parent</em>, <em class="sig-param">image</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interface.draggable_style" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
 <dt id="gui.interface.draggable_style.mouseMoveEvent">
-<code class="sig-name descname">mouseMoveEvent</code><span class="sig-paren">(</span><em class="sig-param">e</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interface.draggable_style.mouseMoveEvent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">mouseMoveEvent</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interface.draggable_style.mouseMoveEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mouse event handler</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>QMouseEvent</strong> (<em>e</em>) – the mouse event</p>
+<dd class="field-odd"><p><strong>event</strong> (<em>QMouseEvent</em>) – the mouse event</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.interface.draggable_style.mousePressEvent">
-<code class="sig-name descname">mousePressEvent</code><span class="sig-paren">(</span><em class="sig-param">e</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interface.draggable_style.mousePressEvent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">mousePressEvent</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interface.draggable_style.mousePressEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mouse press event handler</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>QMouseEvent</strong> (<em>e</em>) – the mouse event</p>
+<dd class="field-odd"><p><strong>event</strong> (<em>QMouseEvent</em>) – the mouse event</p>
 </dd>
 </dl>
 </dd></dl>
@@ -131,6 +131,27 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="gui.interface.interface_class.add_input_group">
+<code class="sig-name descname">add_input_group</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">info</em>, <em class="sig-param">action</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interface.interface_class.add_input_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a QGroupBox with input boxes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> (<em>str</em>) – the text to set for the box</p></li>
+<li><p><strong>info</strong> (<em>list</em>) – the text to be set to a box</p></li>
+<li><p><strong>action</strong> (<em>lambda</em>) – the action to run when a new button is toggled</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a QGroupBox with the given buttons</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>QGroupBox</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="gui.interface.interface_class.add_label">
 <code class="sig-name descname">add_label</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interface.interface_class.add_label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a QLabel</p>
@@ -169,15 +190,16 @@
 
 <dl class="method">
 <dt id="gui.interface.interface_class.add_radio_buttons">
-<code class="sig-name descname">add_radio_buttons</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">button_text</em>, <em class="sig-param">action</em>, <em class="sig-param">enabled</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interface.interface_class.add_radio_buttons" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_radio_buttons</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">button_text</em>, <em class="sig-param">action</em>, <em class="sig-param">enabled</em>, <em class="sig-param">disabled_box=False</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interface.interface_class.add_radio_buttons" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a QPushButton</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>text</strong> (<em>str</em>) – a string describing the box</p></li>
 <li><p><strong>button_text</strong> (<em>list</em>) – a list of button text</p></li>
-<li><p><strong>action</strong> (<em>lambda</em>) – the action to run when a new button is toggeled</p></li>
+<li><p><strong>action</strong> (<em>lambda</em>) – the action to run when a new button is toggled</p></li>
 <li><p><strong>enabled</strong> (<em>int</em>) – the button index to have enabled from the start</p></li>
+<li><p><strong>disabled_box</strong> (<em>bool</em>) – if the entire box should be disabled</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -191,13 +213,14 @@
 
 <dl class="method">
 <dt id="gui.interface.interface_class.add_slider">
-<code class="sig-name descname">add_slider</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">action: Callable</em>, <em class="sig-param">value: int = -1</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interface.interface_class.add_slider" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_slider</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">action: Callable</em>, <em class="sig-param">value: int = -1</em>, <em class="sig-param">max_value=100</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interface.interface_class.add_slider" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a QSlider</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>text</strong> (<em>str</em>) – set the QSlider tool tip</p></li>
 <li><p><strong>action</strong> (<em>lambda</em>) – set the button action</p></li>
+<li><p><strong>max_value</strong> (<em>int</em>) – the max value of the slider</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -248,7 +271,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>heigth</strong> (<em>int</em>) – set the height of a image</p></li>
+<li><p><strong>height</strong> (<em>int</em>) – set the height of a image</p></li>
 <li><p><strong>width</strong> (<em>int</em>) – set the width of a image</p></li>
 <li><p><strong>element_id</strong> (<em>str</em>) – the element_id to check against</p></li>
 <li><p><strong>x</strong> (<em>int</em>) – sets the x position</p></li>
@@ -278,12 +301,12 @@
 <dl class="class">
 <dt id="gui.general_window.general_window">
 <em class="property">class </em><code class="sig-prename descclassname">gui.general_window.</code><code class="sig-name descname">general_window</code><span class="sig-paren">(</span><em class="sig-param">pixmap_converter=None</em>, <em class="sig-param">load_extra=None</em>, <em class="sig-param">load_before=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.general_window.general_window" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convers the input into a format QT liks</p>
+<dd><p>Converts the input into a format QT likes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pixmap_converter</strong> (<em>lambda</em>) – a lambda function used to parse a image into QT</p></li>
-<li><p><strong>load_extra</strong> (<em>lambda</em>) – a lambda function used to parse a load extra content</p></li>
+<li><p><strong>pixmap_converter</strong> (<em>lambda</em>) – Lambda function used to parse a image into QT</p></li>
+<li><p><strong>load_extra</strong> (<em>lambda</em>) – Lambda function used to parse a load extra content</p></li>
 </ul>
 </dd>
 </dl>
@@ -364,7 +387,7 @@
 <dt id="gui.app_data.App.prepare">
 <code class="sig-name descname">prepare</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.app_data.App.prepare" title="Permalink to this definition">¶</a></dt>
 <dd><p>Some functions needs some function to be run before method</p>
-<p>This method will be overriden</p>
+<p>This method will be overridden</p>
 </dd></dl>
 
 <dl class="method">
@@ -413,7 +436,7 @@
 <dt id="gui.app_data.App.undo">
 <code class="sig-name descname">undo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.app_data.App.undo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Some functions needs some function to be run when the method is reset</p>
-<p>This method will be overriden</p>
+<p>This method will be overridden</p>
 </dd></dl>
 
 <dl class="method">
@@ -441,7 +464,7 @@
 <dl class="function">
 <dt id="gui.general.pil2pixmap">
 <code class="sig-prename descclassname">gui.general.</code><code class="sig-name descname">pil2pixmap</code><span class="sig-paren">(</span><em class="sig-param">input_image</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.general.pil2pixmap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convers the input into a format QT liks</p>
+<dd><p>Converts the input into a format QT likes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>input_image</strong> (<em>ndarray</em>) – the input_image to convert to QT format</p>
@@ -471,6 +494,19 @@
 <dt id="gui.interfaces.non_edge_blurring_qt.non_edge_blurring_window">
 <em class="property">class </em><code class="sig-prename descclassname">gui.interfaces.non_edge_blurring_qt.</code><code class="sig-name descname">non_edge_blurring_window</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.non_edge_blurring_qt.non_edge_blurring_window" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class describes a non edge blurring window.</p>
+<dl class="method">
+<dt id="gui.interfaces.non_edge_blurring_qt.non_edge_blurring_window.load_before_content">
+<code class="sig-name descname">load_before_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.non_edge_blurring_qt.non_edge_blurring_window.load_before_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the option for data attachment</p>
+<p>This element is added after the image</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.interfaces.non_edge_blurring_qt.non_edge_blurring_window.update_K">
+<code class="sig-name descname">update_K</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.non_edge_blurring_qt.non_edge_blurring_window.update_K" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the k value for the method</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -509,22 +545,39 @@
 <dd><p>This class describes a matting window.</p>
 <dl class="method">
 <dt id="gui.interfaces.matting_qt.matting_window.dragEnterEvent">
-<code class="sig-name descname">dragEnterEvent</code><span class="sig-paren">(</span><em class="sig-param">e</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.matting_qt.matting_window.dragEnterEvent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dragEnterEvent</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.matting_qt.matting_window.dragEnterEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Drag event handler for the source image</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>e</strong> (<em>QDragEnterEvent</em>) – The drag event</p>
+<dd class="field-odd"><p><strong>event</strong> (<em>QDragEnterEvent</em>) – The drag event</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.interfaces.matting_qt.matting_window.dropEvent">
-<code class="sig-name descname">dropEvent</code><span class="sig-paren">(</span><em class="sig-param">e</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.matting_qt.matting_window.dropEvent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dropEvent</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.matting_qt.matting_window.dropEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Drop event handler for the source image</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>e</strong> (<em>QDropEvent</em>) – The drop event</p>
+<dd class="field-odd"><p><strong>event</strong> (<em>QDropEvent</em>) – The drop event</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.interfaces.matting_qt.matting_window.get_int">
+<code class="sig-name descname">get_int</code><span class="sig-paren">(</span><em class="sig-param">field</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#gui.interfaces.matting_qt.matting_window.get_int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes sure the pixel format is correct</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>field</strong> (<em>str</em>) – Text to extract the number from</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>int from the text</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -544,14 +597,13 @@
 <dl class="method">
 <dt id="gui.interfaces.matting_qt.matting_window.undo">
 <code class="sig-name descname">undo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.matting_qt.matting_window.undo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Some functions needs some function to be run when the method is reset</p>
-<p>This method will be overriden</p>
+<dd><p>When the image is reset we need to show the source image again</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.interfaces.matting_qt.matting_window.update_image_size">
 <code class="sig-name descname">update_image_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.matting_qt.matting_window.update_image_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the image size based on the input siz</p>
+<dd><p>Update the image size based on the input size</p>
 </dd></dl>
 
 </dd></dl>
@@ -594,9 +646,22 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="gui.interfaces.contrast_qt.contrast_window.load_before_content">
+<code class="sig-name descname">load_before_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.contrast_qt.contrast_window.load_before_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the option for data attachment</p>
+<p>This element is added after the image</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="gui.interfaces.contrast_qt.contrast_window.show_extra_la">
 <code class="sig-name descname">show_extra_la</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.contrast_qt.contrast_window.show_extra_la" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resize the window</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.interfaces.contrast_qt.contrast_window.update_K">
+<code class="sig-name descname">update_K</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.contrast_qt.contrast_window.update_K" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the k value for the method</p>
 </dd></dl>
 
 <dl class="method">
@@ -613,7 +678,7 @@
 <span class="target" id="module-gui.interfaces.inpaiting_qt"></span><dl class="class">
 <dt id="gui.interfaces.inpaiting_qt.inpait_window">
 <em class="property">class </em><code class="sig-prename descclassname">gui.interfaces.inpaiting_qt.</code><code class="sig-name descname">inpait_window</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.inpaiting_qt.inpait_window" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class describes an inpait window.</p>
+<dd><p>This class describes an inpaint window.</p>
 <dl class="method">
 <dt id="gui.interfaces.inpaiting_qt.inpait_window.load_after">
 <code class="sig-name descname">load_after</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.inpaiting_qt.inpait_window.load_after" title="Permalink to this definition">¶</a></dt>
@@ -621,18 +686,24 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="gui.interfaces.inpaiting_qt.inpait_window.load_before_now">
-<code class="sig-name descname">load_before_now</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.inpaiting_qt.inpait_window.load_before_now" title="Permalink to this definition">¶</a></dt>
+<dt id="gui.interfaces.inpaiting_qt.inpait_window.load_before_content">
+<code class="sig-name descname">load_before_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.inpaiting_qt.inpait_window.load_before_content" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds the option to remove information</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.interfaces.inpaiting_qt.inpait_window.pixmap_handler">
-<code class="sig-name descname">pixmap_handler</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.inpaiting_qt.inpait_window.pixmap_handler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">pixmap_handler</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span> &#x2192; nptyping.array.Array<a class="headerlink" href="#gui.interfaces.inpaiting_qt.inpait_window.pixmap_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes sure the pixel format is correct</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>Array</em>) – The data to convert to correct format</p>
+<dd class="field-odd"><p><strong>data</strong> (<em>ndarray</em>) – The data to convert to correct format</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The converted image to a format QImage likes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -646,7 +717,7 @@
 <dl class="method">
 <dt id="gui.interfaces.inpaiting_qt.inpait_window.update_image_color">
 <code class="sig-name descname">update_image_color</code><span class="sig-paren">(</span><em class="sig-param">_</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.interfaces.inpaiting_qt.inpait_window.update_image_color" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the image if the color state is chanaged</p>
+<dd><p>Update the image if the color state is changed</p>
 </dd></dl>
 
 <dl class="method">

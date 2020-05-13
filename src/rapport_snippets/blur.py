@@ -41,7 +41,7 @@ def compile(output_dir="./rapport_snippets/output/glatting/"):
         results_doc = compile_doc(blurring_obj, epoch_count, output_path=output_path_location,
                                   path_latex=output_path_location_latex)
         # results_doc.add_ref(naming)
-        results_doc.add_caption("Resultat med ulike verdier av $\\alpha$ og iteration")
+        results_doc.add_caption("Resultat med ulike verdier av $\\alpha$ og iterasjoner")
         results_doc.save("{}/results.tex".format(output_path_location, naming))
 
 

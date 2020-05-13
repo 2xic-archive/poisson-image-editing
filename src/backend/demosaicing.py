@@ -22,9 +22,9 @@ class Demosaic(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Parameters
         ----------
         path : str
-            path to a image file
+            Path to a image file
         color : bool
-            if the image should be shown with colors
+            If the image should be shown with colors
         """
         self.inpaint = inpaiting.Inpaint(None)
         image_handler.ImageHandler.__init__(self, path, color)
@@ -40,7 +40,7 @@ class Demosaic(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Returns
         -------
         float
-            alpha value
+            The set alpha value
         """
         return self.inpaint.alpha
 
@@ -64,7 +64,7 @@ class Demosaic(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Returns
         ----------
         int
-            the mode id
+            The mode id
         """
         return self.inpaint.mode_poisson
 
@@ -88,7 +88,7 @@ class Demosaic(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Returns
         ----------
         int
-            the mode id
+            The mode id
         """
         return self.inpaint.mode_boundary
 
@@ -100,7 +100,7 @@ class Demosaic(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Returns
         ----------
         int
-            the mode id
+            The mode id
         """
         self.inpaint.mode_boundary = mode_boundary
 
@@ -134,8 +134,8 @@ class Demosaic(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
 
         Returns
         -------
-        array
-            the simulated mosaic image
+        ndarray
+            The simulated mosaic image
         """
         self.get_mosaic()
         self.rgb_mosaic = np.asarray([
@@ -170,8 +170,8 @@ class Demosaic(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
 
         Returns
         -------
-        array
-            the new image array
+        ndarray
+            The new image array
         """
         self.verify_integrity()
 
@@ -196,7 +196,7 @@ class Demosaic(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Returns
         -------
         Demosaic
-            returns self
+            Returns self
         """
         if not self.simulated:
             raise Exception("You have to simulate the mosaic first")

@@ -19,9 +19,9 @@ class Blur(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Parameters
         ----------
         path : str
-            path to a image file
+            Path to a image file
         color : bool
-            if the image should be shown with colors
+            If the image should be shown with colors
         """
 
         image_handler.ImageHandler.__init__(self, path, color)
@@ -49,8 +49,8 @@ class Blur(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
 
         Returns
         -------
-        array
-            numpy array with the new image after the iteration
+        ndarray
+            The numpy array with the new image after the iteration
         """
         assert 0 <= self.lambda_size <= 1, "lamda is out of scope [0, 1]"
         self.verify_integrity()
@@ -61,10 +61,15 @@ class Blur(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         """
         Solves the "u"(gradient) part of the Poisson equation
 
+        Parameters
+        ----------
+        i : int
+            The channel to "work" on
+
         Returns
         -------
-        array
-            the u value
+        ndarray
+            The u value
         """
         if i is None:
             return self.get_laplace(self.data, alpha=True)
@@ -75,10 +80,15 @@ class Blur(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         """
         Solves the "h" part of the Poisson equation
 
+        Parameters
+        ----------
+        i : int
+            The channel to "work" on
+
         Returns
         -------
-        array
-            the h value
+        ndarray
+            The h value
         """
         if i is None:
             return self.common_shape(self.lambda_size * (self.data - self.data_copy))
@@ -98,8 +108,8 @@ class Blur(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
 
         Returns
         -------
-        blur
-            returns self
+        Blur
+            Returns self
         """
         for i in range(epochs):
             self.iteration()

@@ -41,7 +41,7 @@ def compile_NonEdgeBlur(output_dir="./rapport_snippets/output/"):
                 non_edge_blur.save("{}/kant_blur_{}_{}_{}.png".format(output_dir, color, alpha, epochs))
                 results_doc.add_row_element(
                     subfigure(path=path_latex + "/kant_blur_{}_{}_{}.png".format(color, alpha, epochs),
-                              text="fancy Blur($K={}, \\alpha = {}$, iteration={})".format(non_edge_blur.k, alpha,
+                              text="fancy Blur($K={}, \\alpha = {}$, iterasjoner={})".format(non_edge_blur.k, alpha,
                                                                                            epochs)))
 
             """
@@ -55,7 +55,7 @@ def compile_NonEdgeBlur(output_dir="./rapport_snippets/output/"):
 
                 results_doc.add_row_element(
                     subfigure(path=path_latex + "/blur_{}_{}_{}.png".format(color, alpha, epochs),
-                              text="Vanlig Blur($\\alpha = {}$, iteration={})".format(alpha, epochs)))
+                              text="Vanlig Blur($\\alpha = {}$, iterasjoner={})".format(alpha, epochs)))
                 blur.save("{}/blur_{}_{}_{}.png".format(output_dir, color, alpha, epochs))
             results_doc.add_row()
 

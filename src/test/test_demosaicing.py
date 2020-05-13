@@ -27,8 +27,6 @@ class test_demosaic(unittest.TestCase):
             # should fail because we have not simulated
             pass
 
-
-# @pytest.mark.gui
 def test_basics(qtbot):
     ex = demosaic_qt.demonsaic_window()
     ex.init_UI()
@@ -52,8 +50,6 @@ def test_basics(qtbot):
 
     qtbot.mousePress(ex.action_button, QtCore.Qt.LeftButton, delay=10)
     qtbot.mouseRelease(ex.action_button, QtCore.Qt.LeftButton, delay=10)
-
-    print(ex.method.data.shape)
 
     def view_updated():
         return (ex.method.data.shape == current_image.shape)

@@ -16,7 +16,7 @@ def median_filter(image, mask):
     Returns
     -------
     ndarray
-        the image with a median filter applied
+        The image with a median filter applied
 	"""
     kernel_size = 3
     switch_back = False

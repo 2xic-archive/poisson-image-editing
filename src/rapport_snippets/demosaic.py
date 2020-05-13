@@ -24,8 +24,8 @@ def compile(output_dir="demosaic"):
     make_dir(output_dir)
 
     results_doc = doc()
-    results_doc.add_row_element(subfigure(path="demosaicing/{}/input.png".format(naming), text="Input image"))
-    results_doc.add_row_element(subfigure(path="demosaicing/{}/mosaic.png".format(naming), text="simulated mosaic"))
+    results_doc.add_row_element(subfigure(path="demosaicing/{}/input.png".format(naming), text="Orginal bilde"))
+    results_doc.add_row_element(subfigure(path="demosaicing/{}/mosaic.png".format(naming), text="simulert gråtone mosaikk"))
     results_doc.add_row()
 
     results_doc = compile_doc(demosaic_obj, epoch_count, "{}/".format(output_dir), "demosaicing/{}".format(naming),

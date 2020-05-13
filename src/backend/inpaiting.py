@@ -23,9 +23,9 @@ class Inpaint(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Parameters
         ----------
         path : str
-            path to a image file
+            Path to a image file
         color : bool
-            if the image should be shown with colors
+            If the image should be shown with colors
         """
         if not path is None:
             image_handler.ImageHandler.__init__(self, path, color)
@@ -44,7 +44,7 @@ class Inpaint(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Parameters
         ----------
         data : ndarray
-            sets the data
+            Sets the data
         """
         assert type(data) == np.ndarray, "wrong argument"
         self.data = data
@@ -56,7 +56,7 @@ class Inpaint(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Parameters
         ----------
         mask : ndarray
-            sets the mask
+            Sets the mask
         """
         assert type(mask) == np.ndarray, "wrong argument"
         self.mask = mask
@@ -68,7 +68,7 @@ class Inpaint(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Parameters
         ----------
         original : ndarray
-            sets the original
+            The orignal image before any iteration
         """
         assert type(original) == np.ndarray, "wrong argument"
         self.original_data_copy = original
@@ -82,12 +82,12 @@ class Inpaint(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Parameters
         ----------
         strength : int
-            a number from 1 to 10, this is used to set the level of noise added
+            Number from 1 to 10, this is used to set the level of noise added
 
         Returns
         -------
-        array
-            the image mask (where the data was removed)
+        ndarray
+            The image mask (where the data was removed)
         """
         assert 0 <= strength and strength <= 10, "strength should be in the interval between 0 and 10"
         if self.mask is None or create_new_mask:
@@ -98,7 +98,7 @@ class Inpaint(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
             mask[noise < strength] = 0
             self.mask = mask
 
-        if (len(self.data.shape) == 3):
+        if len(self.data.shape) == 3:
             for i in range(self.data.shape[-1]):
                 self.data[:, :, i] *= self.mask
         else:
@@ -112,31 +112,36 @@ class Inpaint(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
 
         Returns
         -------
-        array
+        ndarray
             the new image array
         """
 
         response = self.solve(self.data, self.operator, apply_boundary=False)
 
         # Update the values where the data has been lost
-        if (len(self.data.shape) == 3):
+        if len(self.data.shape) == 3:
             for i in range(self.data.shape[-1]):
                 self.data[:, :, i] = (response[:, :, i] * (1 - self.mask)) + (
                             self.original_data_copy[:, :, i] * (self.mask))
         else:
             self.data = (response * (1 - self.mask)) + (self.original_data_copy * (self.mask))
 
-        self.data = self.diriclet(self.data, self.mask)
+        self.data = self.dirichlet(self.data, self.mask)
         return self.data
 
     def operator(self, i=None) -> Array:
         """
         Solves the "u" part of the Poisson equation
 
+        Parameters
+        ----------
+        i : int
+            The channel to "work" on
+
         Returns
         -------
-        array
-            the u value
+        ndarray
+            The u value
         """
         if i is None:
             return self.get_laplace(self.data)
@@ -162,8 +167,8 @@ class Inpaint(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
 
         Returns
         -------
-        array
-            the new image array
+        ndarray
+            The new image array
         """
         if not mask is None:
             self.set_mask(mask)

@@ -15,44 +15,55 @@ from gui.window_manager import *
 
 WINDOW_MANAGER = window()
 
-
 class draggable_style(QLabel):
-    def __init__(self, title, parent, loc):
+    def __init__(self, title, parent, image):
+        """
+        Constructs a new instance.
+        
+        Parameters
+        ----------
+        title : str
+            the text to set for label
+        parent : str
+            the id of the parrent
+        image : QImage
+            the image to set for the label
+        """
         super().__init__(title, parent)
-        self.pixmap = QPixmap(loc)
+        self.pixmap = QPixmap(image)
         self.setPixmap(self.pixmap)
 
-    def mouseMoveEvent(self, e):
+    def mouseMoveEvent(self, event):
         """
         Mouse event handler
 
         Parameters
         ----------
-        QMouseEvent : e
+        event : QMouseEvent
             the mouse event
         """
 
         # we want to only use the left
-        if e.buttons() != Qt.RightButton:
+        if event.buttons() != Qt.RightButton:
             return
 
-        mimeData = QMimeData()
+        mime_data = QMimeData()
         drag = QDrag(self)
-        drag.setMimeData(mimeData)
-        drag.setHotSpot(e.pos() - self.rect().topLeft())
+        drag.setMimeData(mime_data)
+        drag.setHotSpot(event.pos() - self.rect().topLeft())
 
         dropAction = drag.exec_(Qt.MoveAction)
 
-    def mousePressEvent(self, e):
+    def mousePressEvent(self, event):
         """
         Mouse press event handler
 
         Parameters
         ----------
-        QMouseEvent : e
+        event : QMouseEvent
             the mouse event
         """
-        super().mousePressEvent(e)
+        super().mousePressEvent(event)
 
 
 class screen_element:
@@ -61,6 +72,16 @@ class screen_element:
     """
 
     def __init__(self, element, free_floating=False):
+        """
+        Constructs a new instance.
+        
+        Parameters
+        ----------
+        element : *
+            the QT element
+        free_floating : bool
+            set true if you don't want to set a position
+        """
         self.element = element
         self.height = None
         self.width = None
@@ -165,6 +186,7 @@ class interface_class(App):
             the action to run on change of index
         element_id : str
             a id given to the element
+
         Returns
         -------
         QComboBox

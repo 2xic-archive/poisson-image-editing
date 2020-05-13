@@ -25,12 +25,12 @@ class matting_window(general_window):
         Parameters
         ----------
         field : str
-            the text to extract the number from
+            Text to extract the number from
 
         Returns
         -------
         int
-            the int from the text
+           int from the text
         """
         response = re.findall(r'\d+', field)
         if (len(response) == 0):
@@ -48,23 +48,23 @@ class matting_window(general_window):
 
         self.boundary_box, self.boundary_group_iamge_end = self.add_input_group("Start coordinates", [
             "x", "y"
-        ],
-                                                                                [
-                                                                                    lambda x: QTimer.singleShot(100,
-                                                                                                                lambda: self.update_image_size()),
-                                                                                    lambda x: QTimer.singleShot(100,
-                                                                                                                lambda: self.update_image_size())
-                                                                                ])
+        ], [
+                lambda x: QTimer.singleShot(100,
+                    lambda: self.update_image_size()),
+                lambda x: QTimer.singleShot(100,
+                    lambda: self.update_image_size())
+        ])
+
         self.update_geometry(self.boundary_box.width(), 90, x=10)
 
         self.boundary_box_max, self.boundary_group_iamge = self.add_input_group("End coordinates", [
             "x1", "y1"
         ], [
-                                                                                    lambda x: QTimer.singleShot(100,
-                                                                                                                lambda: self.update_image_size()),
-                                                                                    lambda x: QTimer.singleShot(100,
-                                                                                                                lambda: self.update_image_size())
-                                                                                ])
+            lambda x: QTimer.singleShot(100,
+                lambda: self.update_image_size()),
+            lambda x: QTimer.singleShot(100,
+                lambda: self.update_image_size())
+        ])
         self.update_geometry(self.boundary_box_max.width(), 90, x=10 + self.boundary_box.width(), y=-42)
         self.update_image_size()
 
@@ -96,30 +96,33 @@ class matting_window(general_window):
         self.label_.setVisible(False)
 
     def undo(self):
+        """
+        When the image is reset we need to show the source image again
+        """
         self.label_.setVisible(True)
 
-    def dragEnterEvent(self, e):
+    def dragEnterEvent(self, event):
         """
         Drag event handler for the source image
 
         Parameters
         ----------
-        e : QDragEnterEvent
+        event : QDragEnterEvent
             The drag event
         """
-        e.accept()
+        event.accept()
 
-    def dropEvent(self, e):
+    def dropEvent(self, event):
         """
         Drop event handler for the source image
 
         Parameters
         ----------
-        e : QDropEvent
+        event : QDropEvent
             The drop event
         """
-        position = e.pos()
+        position = event.pos()
         self.label_.move(position)
 
-        e.setDropAction(Qt.MoveAction)
-        e.accept()
+        event.setDropAction(Qt.MoveAction)
+        event.accept()

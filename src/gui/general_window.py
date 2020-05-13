@@ -13,9 +13,9 @@ class general_window(interface_class):
     Parameters
     ----------
     pixmap_converter : lambda
-        a lambda function used to parse a image into QT
+        Lambda function used to parse a image into QT
     load_extra : lambda
-        a lambda function used to parse a load extra content
+        Lambda function used to parse a load extra content
     """
 
     def __init__(self, pixmap_converter=None, load_extra=None, load_before=None):
@@ -113,12 +113,12 @@ class general_window(interface_class):
                                            setEnabled=True)
         self.update_geometry(self.pixmap.width(), 30)
 
-        """
-        Position all the elements
-        """
         if not self.load_extra is None:
             self.load_extra()
 
+        """
+        Position all the elements
+        """
         width, height = self.position()
         self.setGeometry(0, 0, width, height)
         self.center()

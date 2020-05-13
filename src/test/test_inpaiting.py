@@ -23,7 +23,6 @@ class test_inpaiting(unittest.TestCase):
         self.assertFalse(np.all(old_image == inpaint_object))
 
 
-@pytest.mark.gui
 def test_basics(qtbot):
     ex = inpaiting_qt.inpait_window()
     ex.init_UI()
@@ -53,7 +52,6 @@ def test_basics(qtbot):
     # press the button and wait for action
     qtbot.mousePress(ex.action_button, QtCore.Qt.LeftButton, delay=10)
     qtbot.mouseRelease(ex.action_button, QtCore.Qt.LeftButton, delay=10)
-    print(ex.epoch_label.text().lower())
     qtbot.waitUntil(lambda: "total" in ex.epoch_label.text().lower(), timeout=10000)
 
     inpaiting_object.fit(epochs=1)

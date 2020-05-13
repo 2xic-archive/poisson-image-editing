@@ -18,10 +18,12 @@ def compile(output_dir="./rapport_snippets/output/"):
 
         blurring_obj = non_edge_blurring.NonEdgeBlur("./files/test_images/lena.png", color)
         epoch_count = {
-            0.25: [3, 5, 10],
-            0.5: [1, 3, 5, 10],
-            0.75: [1, 3, 5, 10]
+            0.25: [1, 10, 100],
+            0.5: [1, 10, 100],
+            0.75: [1, 10, 100]
         }
         results_doc = compile_doc(blurring_obj, epoch_count, "{}/".format(output_dir_path),
-                                  "glatting/non_edge_blur_{}/".format(name))
+                                  "glatting/non_edge_blur/{}/".format(name))
+        results_doc.add_caption("Resultat med ulike verdier av $\\alpha$ og iterasjoner. $K={}$ på alle bildene.".format(blurring_obj.k))
+        results_doc.add_ref("nonEdgeBlur" + name)
         results_doc.save("{}/results.tex".format(output_dir_path))

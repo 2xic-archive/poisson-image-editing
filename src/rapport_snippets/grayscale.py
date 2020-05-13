@@ -12,14 +12,14 @@ def compile(output_dir="./rapport_snippets/output"):
     output_dir : str
         the location to store the .tex with images
     """
-    contrast_obj = grayscale.Grayscale("./files/test_images/lena.png", True)
+    grayscale_obj = grayscale.Grayscale("./files/test_images/lena.png", True)
 
     epoch_count = {
         0.25: [1, 3, 5],
         0.5: [1, 3, 5],
         0.75: [1, 3, 5]
     }
-    results_doc = compile_doc(contrast_obj, epoch_count, "{}/".format(output_dir), "farge_gråtone/grayscale")
+    results_doc = compile_doc(grayscale_obj, epoch_count, "{}/".format(output_dir), "farge_gråtone/grayscale")
     results_doc.save("{}/results.tex".format(output_dir))
 
 
@@ -48,12 +48,12 @@ def compule_side_by_side(output_dir="./rapport_snippets/output/"):
     grayscale_obj.save("{}/metode.png".format(output_dir))
 
     # load a grayscale image with weighing
-    contrast_obj = image_handler.ImageHandler("./files/test_images/lena.png", False)
-    contrast_obj.save("{}/standard.png".format(output_dir))
+    grayscale_obj = image_handler.ImageHandler("./files/test_images/lena.png", False)
+    grayscale_obj.save("{}/standard.png".format(output_dir))
 
     results_doc.add_row_element(subfigure(path=path_latex + "/standard.png", text="vektet image"))
     results_doc.add_row_element(subfigure(path=path_latex + "/metode.png",
-                                          text="poisson image($\\alpha={}$, iteration={})".format(grayscale_obj.alpha,
+                                          text="poisson image($\\alpha={}$, iterasjoner={})".format(grayscale_obj.alpha,
                                                                                                   epochs)))
     results_doc.add_row()
     results_doc.add_caption("Sammenligning av metode")

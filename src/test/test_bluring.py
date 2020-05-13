@@ -6,7 +6,6 @@ import numpy as np
 from PyQt5 import QtCore
 
 from backend import blurring
-# from test.general import *
 from gui.interfaces import blurring_qt
 
 # Because travis does not have a screen ~

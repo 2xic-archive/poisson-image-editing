@@ -6,7 +6,7 @@ class Poisson(object):
     This class describes the abstracts part of the Poisson equation
     """
 
-    def __init__(self):  # , mode_boundary=1, mode_poisson=0):
+    def __init__(self):
         self.EXPLICIT = 0
         self.IMPLICIT = 1
 
@@ -25,7 +25,7 @@ class Poisson(object):
         Returns
         -------
         int
-            the boundary mode
+            The boundary mode
         """
         return self._mode_boundary
 
@@ -37,7 +37,7 @@ class Poisson(object):
         Returns
         -------
         int
-            the boundary mode
+            The boundary mode
         """
         return self._mode_boundary
 
@@ -49,7 +49,7 @@ class Poisson(object):
         Parameters
         -------
         mode
-            the boundary mode
+            The boundary mode
         """
         self.set_boundary(mode)
 
@@ -68,8 +68,7 @@ class Poisson(object):
         Parameters
         -------
         mode
-            the Poisson mode
-
+            The Poisson mode
         """
         if mode == "Explicit" or mode == self.EXPLICIT:
             self._mode_poisson = self.EXPLICIT
@@ -85,7 +84,7 @@ class Poisson(object):
         Parameters
         -------
         mode
-            the boundary mode
+            The boundary mode
         """
         if (type(mode) == str and mode.lower() == "Dirichlet".lower()) or mode == self.DIRICHLET:
             self._mode_boundary = self.DIRICHLET
@@ -101,7 +100,7 @@ class Poisson(object):
         Parameters
         -------
         mode
-            the Poisson mode
+            The Poisson mode
         """
         if mode == "Explicit" or mode == self.EXPLICIT:
             self._mode_poisson = self.EXPLICIT
@@ -117,9 +116,9 @@ class Poisson(object):
         Returns
         -------
         str
-            the string representation
+            The string representation
         """
-        return ("Neumann" if self.mode_boundary == self.NEUMANN else "Diriclet") + \
+        return ("Neumann" if self.mode_boundary == self.NEUMANN else "Dirichlet") + \
                " with " + \
                ("Explicit" if self.mode_poisson == self.EXPLICIT else "Implicit") + \
                " and " + \
@@ -132,7 +131,7 @@ class Poisson(object):
         Returns
         -------
         str
-            the string representation
+            The string representation
         """
         return self.__str__()
 
@@ -211,7 +210,7 @@ class Poisson(object):
         Returns
         -------
         ndarray
-            the Laplace array
+            The Laplace array
         """
         if self.mode_poisson == self.EXPLICIT:
             return self.get_laplace_explicit(data, alpha)
@@ -230,12 +229,12 @@ class Poisson(object):
         Returns
         -------
         ndarray
-            the new array with boundary applied
+            The new array with boundary applied
         """
         if self.mode_boundary == self.NEUMANN:
             return self.neumann(data)
         elif self.mode_boundary == self.DIRICHLET:
-            return self.diriclet(data)
+            return self.dirichlet(data)
         else:
             raise Exception("not supported")
 
@@ -258,19 +257,19 @@ class Poisson(object):
         Returns
         -------
         ndarray
-            the iterated array
+            The iterated array
         """
         if self.mode_poisson == self.EXPLICIT:
-            resultat = data.copy()
+            result = data.copy()
             if (len(data.shape) == 3):
                 for i in range(3):
-                    resultat[1:-1, 1:-1, i] += self.alpha * (operator(i) - h(i=i))
+                    result[1:-1, 1:-1, i] += self.alpha * (operator(i) - h(i=i))
             else:
-                resultat[1:-1, 1:-1] += self.alpha * (operator() - h(None))
+                result[1:-1, 1:-1] += self.alpha * (operator() - h())
         else:
             raise NotImplementedError("Not supported")
 
         if apply_boundary:
-            return self.apply_boundary(resultat).clip(0, 1)
+            return self.apply_boundary(result).clip(0, 1)
         else:
-            return resultat.clip(0, 1)
+            return result.clip(0, 1)

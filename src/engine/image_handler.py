@@ -15,10 +15,10 @@ class ImageHandler:
         Parameters
         ----------
         path : str
-            the location of the image, can be none (if you want to set
+            The location of the image, can be none (if you want to set
             the data manually)
         color : bool
-            if you want to have a color image and want to make it to grayscale
+            If you want to have a color image and want to make it to grayscale
         """
         if not path is None:
             self.color = color
@@ -33,13 +33,13 @@ class ImageHandler:
         Parameters
         ----------
         path : str
-            the location of the image, can be none (if you want to set
+            The location of the image, can be none (if you want to set
             the data manually)
 
         Returns
         -------
         list
-            returns the change in size
+            Returns the change in size
         """
         self.path = path
         image = Image.open(path)
@@ -110,7 +110,7 @@ class ImageHandler:
         Parameters
         ----------
         image : PIL.Image
-            the input iamge
+            The input iamge
         """
         self.data = np.asarray(image, dtype="float64").copy()
         self.convert_image()
@@ -122,7 +122,7 @@ class ImageHandler:
         Parameters
         ----------
         data : ndarray
-            the image data
+            The image data
         """
         self.data = data
         self.data_copy = self.data.copy()
@@ -147,7 +147,7 @@ class ImageHandler:
         Returns
         -------
         ndarray
-            the gradient norm of the data
+            The gradient norm of the data
         """
         if data is None:
             data = self.data
@@ -161,12 +161,12 @@ class ImageHandler:
         Parameters
         ----------
         data : ndarray
-            the image data
+            The image data
 
         Returns
         -------
         ndarray
-            the gradient for x and y
+            The gradient for x and y
         """
         if data is None:
             data = self.data
@@ -182,12 +182,12 @@ class ImageHandler:
         Parameters
         ----------
         data : Array
-            the color image
+            The color image
 
         Returns
         -------
         ndarray
-            the grayscale image
+            The grayscale image
         """
         if data is None:
             data = self.data
@@ -203,12 +203,12 @@ class ImageHandler:
         Parameters
         ----------
         data : Array
-            the color image
+            The color image
 
         Returns
         -------
         ndarray
-            the grayscale image
+            The grayscale image
         """
         if data is None:
             data = self.data
@@ -224,12 +224,12 @@ class ImageHandler:
         Parameters
         ----------
         path : str
-            the image path for saving
+            The image path for saving
 
         Returns
         -------
         str
-            the image path
+            The image path
         """
         im = Image.fromarray(np.uint8(255 * self.data))
         im.save(path)
@@ -248,7 +248,7 @@ class ImageHandler:
         Returns
         -------
         ndarray
-            the image
+            The image
         """
         return self.data
 
@@ -259,6 +259,6 @@ class ImageHandler:
         Returns
         -------
         str
-            the string representation
+            The string representation of the object
         """
         return self.path

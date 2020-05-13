@@ -7,8 +7,14 @@ import glob
 import os
 
 from engine import image_handler
-# import rapport_snippets
-from rapport_snippets import hdr
+from rapport_snippets import inpaiting
+from rapport_snippets import blur
+from rapport_snippets import anonymizing
+from rapport_snippets import blur_attachment
+from rapport_snippets import demosaic
+from rapport_snippets import matting
+from rapport_snippets import non_edge_blurring
+from rapport_snippets import blur_vs_blur
 
 if __name__ == "__main__":
     location = os.path.dirname(os.path.abspath(__file__))
@@ -24,7 +30,7 @@ if __name__ == "__main__":
     blur_vs_blur.compile_NonEdgeBlur(location + "/glatting/glatting_vs_glatting/")
     """
 
-    # inpaiting.compile(location + "/inpainting/")
+    #inpaiting.compile(location + "/inpainting/")
     # inpaiting.compile_zoom(location + "inpainting/extra/")
     # inpaiting.compile_zoom(location + "inpainting/extra/", SIZE=10)
     # inpaiting.compile_median(location + "inpainting/median/")
@@ -37,12 +43,11 @@ if __name__ == "__main__":
     # grayscale.compile(location + "/farge_gråtone/grayscale/")
     # grayscale.compule_side_by_side(location + "/farge_gråtone/grayscale_side/")
 
-    # matting.compile(location + "/sømløs kloning/matting/")
+    #matting.compile(location + "/sømløs kloning/")
     # matting.compile_noisy(location + "/sømløs kloning/matting_noise/")
     # matting.compile_parameters(location + "/sømløs kloning/parametere/")
     # matting.compile_moapple(location + "/sømløs kloning/oraple/")
 
-    # laplacian.compile_parameters(location + "/img/")
     """
     hdr.compile(location + "/hdr/res/", images = [
         image_handler.ImageHandler('../hdr-bilder/Adjuster/Adjuster_00064.png'),
@@ -63,10 +68,9 @@ if __name__ == "__main__":
         image_handler.ImageHandler('../hdr-bilder/Ocean/Ocean_00256.png'),
         image_handler.ImageHandler('../hdr-bilder/Ocean/Ocean_00512.png')
     ])
-    """
     hdr.compile(location + "/hdr/res3/", images=[
         image_handler.ImageHandler(i)
         for i in glob.glob('../hdr-bilder/Ocean/*.png')
     ])
-
-# non_edge_blurring.compile(location + "/glatting/non_edge_blur/")
+    """
+    non_edge_blurring.compile(location + "/glatting/non_edge_blur/")

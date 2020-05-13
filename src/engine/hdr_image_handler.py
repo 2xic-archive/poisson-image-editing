@@ -5,10 +5,11 @@ import numpy as np
 from nptyping import Array
 
 
-# as defined in equation 3
 def classic_weight_function(intensity: float) -> float:
     """
     Basic way of weighing the intensity
+
+    As defined by equation 3 from the paper
     """
     if intensity <= 128:
         return intensity
@@ -37,9 +38,9 @@ class hdr_handler:
         Parameters
         ----------
         images : list
-            a list of images to create a HDR from
+            List of images to create a HDR image from
         user_defined_weight_fuction : callable
-            if you want to use a custom weight function
+            If you want to use a custom weight function
         """
         self.weight_function = user_defined_weight_fuction
 
@@ -55,8 +56,7 @@ class hdr_handler:
 
         self.B = np.array([
             np.log(int(get_numbers(i.path)[0])) for i in self.images
-        ]
-        )
+        ])
 
         self.pixel_area = self.images[0].data.shape
         self.pixel_area = self.pixel_area[0] * self.pixel_area[1]
@@ -72,13 +72,13 @@ class hdr_handler:
 
         Parameters
         ----------
-        x : array
+        x : ndarray
             The input (not normalized) image
 
         Returns
         -------
-        array
-            the normalized image
+        ndarray
+            The normalized image
         """
         for i in range(x.shape[-1]):
             max_val = np.max(x[:, :, i])
@@ -92,15 +92,15 @@ class hdr_handler:
 
         Parameters
         ----------
-        image : array
+        image : ndarray
             The image to sample from
-        sample : array
-            the location to sample from
+        sample : ndarray
+            The location to sample from
 
         Returns
         -------
-        array
-            the image values at the sampled location
+        ndarray
+            The image values at the sampled location
         """
         results = np.zeros(sample.shape)
         image_flat = image.flatten()
@@ -121,8 +121,8 @@ class hdr_handler:
 
         Returns
         -------
-        array
-            the sampled array for each channel and image
+        ndarray
+            The sampled array for each channel and image
         """
         sample_space = np.ceil(np.random.rand(1, size) * self.pixel_area)
 
@@ -138,8 +138,8 @@ class hdr_handler:
 
         Returns
         -------
-        array
-            the radiance
+        ndarray
+            The radiance
         """
         self.radiance = np.zeros((255, 3))
         for channel in range(3):
@@ -153,19 +153,19 @@ class hdr_handler:
 
         Parameters
         ----------
-        Z : array
+        Z : ndarray
             The sampled array
         n : int
-            the color space max
+            The color space max
 
         Returns
         -------
-        array
-            the A matrix
-        array
-            the b matrix
+        ndarray
+            The A matrix
+        ndarray
+            The b matrix
         int
-            the color space max
+            The color space max
         """
         k = 0
         A = np.zeros((Z.shape[0] * Z.shape[1] + n + 1, n + Z.shape[0]))
@@ -188,8 +188,8 @@ class hdr_handler:
 
         for i in range(0, n - 3):
             A[k, i] = self.lambda_constant * self.weight_function(i + 2)
-            A[k, i + 1] = -2 * self.lambda_constant * self.weight_function(i + 2)  # + 1)
-            A[k, i + 2] = self.lambda_constant * self.weight_function(i + 2)  # + 1)
+            A[k, i + 1] = -2 * self.lambda_constant * self.weight_function(i + 2)
+            A[k, i + 2] = self.lambda_constant * self.weight_function(i + 2)
             k += 1
         return A, b, n
 
@@ -205,15 +205,15 @@ class hdr_handler:
 
         Parameters
         ----------
-        Z : array
+        Z : ndarray
             The sampled array of pixel values
 
         Returns
         -------
-        array
-            the response function
-        array
-            the "log film irradiance values for the observed pixels." - paper qoute
+        ndarray
+            The response function
+        ndarray
+            The "log film irradiance values for the observed pixels." - paper qoute
         """
 
         A, b, n = self.get_Ab(Z)
@@ -240,15 +240,15 @@ class hdr_handler:
 
         Parameters
         ----------
-        radiance : array
+        radiance : ndarray
             The radiance value based on the response function
-        image : array
+        image : ndarray
             The image we are working on
 
         Returns
         -------
-        array
-            output image
+        ndarray
+            Output image
         """
         out_image = np.zeros((image.shape))
         for i in range(image.shape[0]):
@@ -262,13 +262,13 @@ class hdr_handler:
 
         Parameters
         ----------
-        radiance : array
+        radiance : ndarray
             The radiance value based on the response function
 
         Returns
         -------
-        array
-            the log output
+        ndarray
+            The log output
         """
         x = np.ones(self.images[0].data.shape)
         y = np.zeros(self.images[0].data.shape)
@@ -283,5 +283,5 @@ class hdr_handler:
             wi = f(g.copy())
             x += wi * g
             y += wi
-        rad = (x / y)
-        return rad
+        radiance_log = (x / y)
+        return radiance_log

@@ -1,45 +1,28 @@
 import unittest
-
-# from backend import engine
 from engine import poisson
-
-
-class testDec:
-    @property
-    def x(self):
-        return self._x
-
-    @x.setter
-    def x(self, value):
-        self._x = value
-
 
 class test_engine(unittest.TestCase):
     def test_setter(self):
-        x = poisson.Poisson()
+        poisson_obj = poisson.Poisson()
 
         def test_set():
-            x.mode_boundary = 3
+            poisson_obj.mode_boundary = 3
 
         self.assertRaises(Exception, test_set)
 
         def test_set_func():
-            x.set_boundary(3)
+            poisson_obj.set_boundary(3)
 
         self.assertRaises(Exception, test_set_func)
 
-        assert type(x.mode_boundary) == int
-        x.set_boundary(1)
-        x.mode_boundary = 0
+        assert type(poisson_obj.mode_boundary) == int
+        poisson_obj.set_boundary(1)
+        poisson_obj.mode_boundary = 0
 
     def test_setter_getter(self):
-        w = testDec()
-        w.x = 10
-        assert (w.x == 10)
+        poisson_obj = poisson.Poisson()
+        poisson_obj.mode_poisson = 1
+        assert (poisson_obj.mode_poisson == 1)
 
-        x = poisson.Poisson()
-        x.mode_poisson = 1
-        assert (x.mode_poisson == 1)
-
-        x.mode_poisson = 0
-        assert (x.mode_poisson == 0)
+        poisson_obj.mode_poisson = 0
+        assert (poisson_obj.mode_poisson == 0)

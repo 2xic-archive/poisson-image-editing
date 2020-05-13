@@ -33,7 +33,7 @@ def compile(output_dir):
     name = "fit_{}_lambda_{}.png".format(epochs, 0)
     blurring_obj.save("{}/{}".format(output_dir, name))
     results_doc.add_row_element(subfigure(path="{}/{}".format(path_latex, name),
-                                          text="Bilde uten attachment ($\\alpha$ = {}, iteration = {})".format(
+                                          text="Bilde uten attachment ($\\alpha$ = {}, iterasjoner = {})".format(
                                               blurring_obj.alpha, epochs)))
 
     for epoch in [10, 100, epochs]:
@@ -44,7 +44,7 @@ def compile(output_dir):
         name = "fit_{}_lambda_{}.png".format(epoch, lambda_val)
         blurring_obj.save("{}/{}".format(output_dir, name))
         results_doc.add_row_element(subfigure(path="{}/{}".format(path_latex, name),
-                                              text="Bilde med attachment ($\\lambda$ = {}, $\\alpha$ = {}, iteration = {})".format(
+                                              text="Bilde med attachment ($\\lambda$ = {}, $\\alpha$ = {}, iterasjoner = {})".format(
                                                   lambda_val, blurring_obj.alpha, epoch)))
 
     results_doc.add_caption("Effekten av attachment")

@@ -25,15 +25,15 @@ class Matting(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Parameters
         ----------
         target_path : str
-            path to the target image
+            Path to the target image
         source_path : str
-            path to a source image to add on the target
+            Path to a source image to add on the target
         area : list
-            a list with [(x0, x1), (y0, y1)], sets the working area in the source image
+            List with [(x0, x1), (y0, y1)], sets the working area in the source image
         padding : list
-            a list with (x, y) to put the working area at the correct location in the target image
+            List with (x, y) to put the working area at the correct location in the target image
         color : bool
-            if the image should be shown with colors
+            If the image should be shown with colors
         """
         image_handler.ImageHandler.__init__(self, target_path, color)
         boundary.Boundary.__init__(self)
@@ -53,7 +53,7 @@ class Matting(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Returns
         -------
         list
-            the working area [(x0, x1), (y0, y1)]
+            The working area [(x0, x1), (y0, y1)]
         """
         return self._area
 
@@ -110,8 +110,8 @@ class Matting(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
 
         Returns
         -------
-        array
-            the cropbox
+        ndarray
+            The cropbox
         """
         self.working_area = ((x, x + self.source.data.shape[1]), (y, y + self.source.data.shape[0]))
 
@@ -129,29 +129,34 @@ class Matting(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         self.source.reset()
         self.reset()
 
-    def crop(self, x, with_padding=True) -> Array:
+    def crop(self, in_data, with_padding=True) -> Array:
         """
         Crops the image
 
         Parameters
         ----------
-        x : array
-            the data to crop
+        in_data : ndarray
+            The data to crop
         with_padding : bool
-            if you want to add the padding location to the workig_area (used on the target image)
+            If you want to add the padding location to the workig_area (used on the target image)
 
         Returns
         -------
-        array
-            the new cropped image array
+        ndarray
+            The new cropped image array
         """
         if with_padding:
-            return x[self.working_area[1][0] + self.padding[1]:self.working_area[1][1] + self.padding[1],
-                   self.working_area[0][0] + self.padding[0]:self.working_area[0][1] + self.padding[0], :]
-        return x[self.working_area[1][0]:self.working_area[1][1],
-               self.working_area[0][0]:self.working_area[0][1], :]
+            return self.convert_single(in_data[self.working_area[1][0] + self.padding[1]:self.working_area[1][1] + self.padding[1],
+                   self.working_area[0][0] + self.padding[0]:self.working_area[0][1] + self.padding[0]])
+        return self.convert_single(in_data[self.working_area[1][0]:self.working_area[1][1],
+               self.working_area[0][0]:self.working_area[0][1]])
 
-    def apply(self, data):
+    def convert_single(self, data):
+        if len(data.shape) == 3:
+            return data[:, :, :]
+        return data
+
+    def apply(self, in_data):
         """
         Apply the data to the image
 
@@ -159,12 +164,16 @@ class Matting(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
 
         Parameters
         ----------
-        data : Array
-            the data to set onto the image data
+        in_data : ndarray
+            The data to set onto the image data
         """
-        for j in range(min(self.data.shape[-1], data.shape[-1])):
+        if len(self.data.shape) == 3:
+            for channel in range(min(self.data.shape[-1], in_data.shape[-1])):
+                self.data[self.working_area[1][0] + self.padding[1]:self.working_area[1][1] + self.padding[1],
+                self.working_area[0][0] + self.padding[0]:self.working_area[0][1] + self.padding[0], channel] = in_data[:, :, channel]
+        else:
             self.data[self.working_area[1][0] + self.padding[1]:self.working_area[1][1] + self.padding[1],
-            self.working_area[0][0] + self.padding[0]:self.working_area[0][1] + self.padding[0], j] = data[:, :, j]
+                self.working_area[0][0] + self.padding[0]:self.working_area[0][1] + self.padding[0]] = in_data[:, :]
 
     def iteration(self) -> Array:
         """
@@ -172,8 +181,8 @@ class Matting(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
 
         Returns
         -------
-        array
-            the new image array
+        ndarray
+            The new image array
         """
         working_area = self.crop(self.data)
         solved_working_area = self.solve(working_area, self.operator, self.h,
@@ -181,29 +190,45 @@ class Matting(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         self.apply(solved_working_area)
         return self.data
 
-    def operator(self, i) -> Array:
+    def operator(self, i=None) -> Array:
         """
         Solves the "u" part of the Poisson equation
 
+        Parameters
+        ----------
+        i : int
+            The channel to "work" on
+
         Returns
         -------
-        array
-            the u value
+        ndarray
+            The u value
         """
         working_area = self.crop(self.data)
-        return self.get_laplace(working_area[:, :, i])
+        if i is None:            
+            return self.get_laplace(working_area[:, :])
+        else:
+            return self.get_laplace(working_area[:, :, i])
 
-    def h(self, i) -> Array:
+    def h(self, i=None) -> Array:
         """
         Solves the "h" part of the Poisson equation
 
+        Parameters
+        ----------
+        i : int
+            The channel to "work" on
+
         Returns
         -------
-        array
-            the h value
+        ndarray
+            The h value
         """
         working_area_source = self.crop(self.source.data, False)
-        return self.get_laplace((working_area_source)[:, :, i])
+        if i is None:
+            return self.get_laplace((working_area_source)[:, :])
+        else:
+            return self.get_laplace((working_area_source)[:, :, i])
 
     def bad_fit(self):
         """
@@ -225,8 +250,8 @@ class Matting(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
 
         Returns
         -------
-        matting
-            returns self
+        Matting
+            Returns self
         """
         for i in range(epochs):
             self.iteration()

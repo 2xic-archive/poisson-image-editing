@@ -18,7 +18,7 @@ def intensity(img) -> Array:
     Returns
     -------
     ndarray
-        the intensity distribution
+        The intensity distribution
     """
     intensity_scale = np.zeros(256, np.int32)
     for y in range(0, img.shape[0]):
@@ -41,7 +41,7 @@ def contrast_enhancement(img: Array) -> np.ndarray:
     Returns
     -------
     ndarray
-        the contrast enhanced image
+        The contrast enhanced image
     """
     if len(img.shape) == 2:
         img = img.reshape(img.shape + (1,))

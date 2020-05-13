@@ -32,7 +32,7 @@ class Boundary:
         data[-1, :] = data[-2, :]
         return data.clip(0, 1)
 
-    def diriclet(self, data: Array[float, float] = None, mask=None):
+    def dirichlet(self, data: Array[float, float] = None, mask=None):
         """
         Applies a Dirichlet boundary
 
@@ -41,7 +41,7 @@ class Boundary:
         data : ndarray
             The data to preform the boundary on
         mask : ndarray
-            if you are using a mask for the boundary
+            If you are using a mask for the boundary
 
         Returns
         -------

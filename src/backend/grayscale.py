@@ -22,9 +22,9 @@ class Grayscale(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Parameters
         ----------
         path : str
-            path to a image file
+            Path to a image file
         color : bool
-            if the image should be shown with colors
+            If the image should be shown with colors
         """
         assert color == True, "we can only grayscale images that have color"
 
@@ -49,8 +49,8 @@ class Grayscale(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
 
         Returns
         -------
-        array
-            the h value array
+        ndarray
+            The h value array
         """
         g_length = np.sum(self.get_gradient_norm(self.data_copy[:, :, i]) for i in range(3)) / np.sqrt(3)
         rgb_sum = np.sum(self.data_copy[:, :, i] for i in range(self.data_copy.shape[-1]))
@@ -75,8 +75,8 @@ class Grayscale(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
 
         Returns
         -------
-        array
-            the new image array
+        ndarray
+            The new image array
         """
         self.verify_integrity()
 
@@ -94,19 +94,19 @@ class Grayscale(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
 
         Returns
         -------
-        array
-            the u value
+        ndarray
+            The u value
         """
         return self.get_laplace(self.data, alpha=False)
 
-    def h(self, i=None) -> Array:
+    def h(self) -> Array:
         """
         Solves the "h" part of the Poisson equation
 
         Returns
         -------
-        array
-            the h value
+        ndarray
+            The h value
         """
         return self.common_shape(self.h_array)
 
@@ -124,7 +124,7 @@ class Grayscale(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary):
         Returns
         -------
         Grayscale
-            returns self
+            Returns self
         """
         for _ in range(epochs):
             self.iteration()

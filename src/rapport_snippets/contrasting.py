@@ -92,7 +92,7 @@ def compile(output_dir="./rapport_snippets/output/"):
     results_doc = compile_doc(contrast_obj, epoch_count, output_path=output_dir,
                               path_latex="kontrastforsterkning/contrast/")
     results_doc.add_caption(
-        "Resultat med ulike verdier av $\\alpha$ og iteration. $k = {}$ på alle bildene.".format(contrast_obj.k))
+        "Resultat med ulike verdier av $\\alpha$ og iterasjoner. $k = {}$ på alle bildene.".format(contrast_obj.k))
     results_doc.add_ref("contrastResultsGray")
     results_doc.save("{}/results.tex".format(output_dir))
 
@@ -120,6 +120,6 @@ def compile_color(output_dir):
     results_doc = compile_doc(contrast_obj, epoch_count, output_path=output_dir,
                               path_latex="kontrastforsterkning/contrast_color/")
     results_doc.add_caption(
-        "Resultat med ulike verdier av $\\alpha$ og iteration. $k = {}$ på alle bildene.".format(contrast_obj.k))
+        "Resultat med ulike verdier av $\\alpha$ og iterasjoner. $k = {}$ på alle bildene.".format(contrast_obj.k))
     results_doc.save("{}/results.tex".format(output_dir))
     intensity(output_dir, contrast_obj, epochs=10)

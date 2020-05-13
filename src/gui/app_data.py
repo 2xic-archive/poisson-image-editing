@@ -50,7 +50,6 @@ class App(QMainWindow):
     def center(self):
         """
         Center the window
-
         """
         frame_geometry = self.frameGeometry()
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
@@ -167,12 +166,12 @@ class App(QMainWindow):
                                                     options=options)
         if file_name:
             if len(file_name) == 1:
-                msg = QMessageBox()
-                msg.setIcon(QMessageBox.Critical)
-                msg.setText("Error")
-                msg.setInformativeText('Use the shift key to select more photos (one photo = bad results)')
-                msg.setWindowTitle("Error")
-                msg.exec_()
+                warning = QMessageBox()
+                warning.setIcon(QMessageBox.Critical)
+                warning.setText("Error")
+                warning.setInformativeText('Use the shift key to select more photos (one photo = bad results)')
+                warning.setWindowTitle("Error")
+                warning.exec_()
             
             movment_x, movment_y = self.method.change_photo(file_name[0])
             self.method.update_images(file_name)
@@ -219,12 +218,9 @@ class App(QMainWindow):
     def run_method(self, lock_run=False):
         """
         Runs one of the backends methods
-
-
         """
         self.prepare()
         if lock_run:
-            # print(lock_run)
             QTimer.singleShot(100, lambda: self.action_button.setEnabled(False))
         QApplication.setOverrideCursor(Qt.WaitCursor)
         QApplication.processEvents()

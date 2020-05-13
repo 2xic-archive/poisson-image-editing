@@ -17,24 +17,24 @@ def compile(output_path):
     """
 
     epoch_count = {
-        0.25: [3, 5, 8],
-        0.5: [3, 5, 8],
-        0.75: [3, 5, 8]
+        0.25: [1, 10, 100],
+        0.5: [1, 10, 100],
+        0.75: [1, 10, 100]
     }
 
     if not os.path.isdir(output_path):
         os.mkdir(output_path)
 
-    contrast_obj = inpaiting.Inpaint("./files/test_images/lena.png")
-    input_image = contrast_obj.destroy_information()  # .copy()
+    inpainting_obj = inpaiting.Inpaint("./files/test_images/lena.png")
+    input_image = inpainting_obj.destroy_information()  # .copy()
 
     for color in [True, False]:
         naming = "_color" if color else "_gray"
 
         output_path_new = "{}inpainting{}/".format(output_path, naming)
 
-        if not (color == contrast_obj.color):
-            contrast_obj.change_color_state()
+        if not (color == inpainting_obj.color):
+            inpainting_obj.change_color_state()
         make_dir(output_path_new)
 
         results_doc = doc()
@@ -42,13 +42,13 @@ def compile(output_path):
             subfigure(path="inpainting/inpainting{}/input.png".format(naming), text="Input image"))
         results_doc.add_row()
 
-        results_doc = compile_doc(contrast_obj, epoch_count, "{}".format(output_path_new),
+        results_doc = compile_doc(inpainting_obj, epoch_count, "{}".format(output_path_new),
                                   "inpainting/inpainting{}".format(naming),
                                   extra=lambda x: x.destroy_information(), results_doc=results_doc)
-        results_doc.add_caption("Resultat med ulike verdier av $\\alpha$ og iteration")
+        results_doc.add_caption("Resultat med ulike verdier av $\\alpha$ og iterasjoner")
         results_doc.add_ref("inpaitngResultat" + naming.replace("_", ""))
         results_doc.save("{}/results.tex".format(output_path_new))
-        Image.fromarray(np.uint8(255 * contrast_obj.original_data_copy)).save("{}/input.png".format(output_path_new))
+        Image.fromarray(np.uint8(255 * inpainting_obj.original_data_copy)).save("{}/input.png".format(output_path_new))
 
 
 def compile_median(output_path):
@@ -124,37 +124,37 @@ def compile_zoom(location, SIZE=5):
     size:
         the amount to zoom into the output image
     """
-    contrast_obj = inpaiting.Inpaint("./files/test_images/lena.png", True)
-    mask = np.ones((contrast_obj.data.shape[:2]))
+    inpainting_obj = inpaiting.Inpaint("./files/test_images/lena.png", True)
+    mask = np.ones((inpainting_obj.data.shape[:2]))
 
-    x_m, y_m, _ = contrast_obj.data.shape
+    x_m, y_m, _ = inpainting_obj.data.shape
 
     mask[x_m // 2: x_m // 2 + SIZE,
     y_m // 2: y_m // 2 + SIZE] = 0
 
-    og = np.zeros((contrast_obj.data.shape))
-    for i in range(contrast_obj.data.shape[-1]):
-        og[:, :, i] = contrast_obj.data[:, :, i] * mask
+    og = np.zeros((inpainting_obj.data.shape))
+    for i in range(inpainting_obj.data.shape[-1]):
+        og[:, :, i] = inpainting_obj.data[:, :, i] * mask
 
-    contrast_obj.data = og
+    inpainting_obj.data = og
 
     IN = Image.fromarray(np.uint8(og * 255))
     out_mask = zoom_at(IN,
                        x_m // 2, y_m // 2, 5)
 
     epochs = 100
-    contrast_obj.fit(
+    inpainting_obj.fit(
         og,
         og,
         mask,
         epochs=epochs
     )
 
-    IN = Image.fromarray(np.uint8(contrast_obj.data * 255))
+    IN = Image.fromarray(np.uint8(inpainting_obj.data * 255))
     out_fixed = zoom_at(IN,
                         x_m // 2, y_m // 2, 5)  # .show()
 
-    IN = Image.fromarray(np.uint8(contrast_obj.data_copy * 255))
+    IN = Image.fromarray(np.uint8(inpainting_obj.data_copy * 255))
     out_original = zoom_at(IN,
                            x_m // 2, y_m // 2, 5)  # .show()
 
@@ -162,7 +162,7 @@ def compile_zoom(location, SIZE=5):
     out_fixed.save(location + "fixed_{}.png".format(SIZE))
     out_original.save(location + "original_{}.png".format(SIZE))
 
-    Image.fromarray(np.uint8(contrast_obj.data * 255)).save(location + "full.png")
+    Image.fromarray(np.uint8(inpainting_obj.data * 255)).save(location + "full.png")
 
     x = doc()
     x.add_row_element(subfigure(path="./inpainting/extra/mask_{}.png".format(SIZE), text="Bilde med glitch"))

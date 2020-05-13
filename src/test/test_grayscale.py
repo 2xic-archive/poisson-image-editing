@@ -18,7 +18,6 @@ class test_Grayscale(unittest.TestCase):
         grayscale_object.fit(1)
         self.assertFalse(np.all(old_image == grayscale_object))
 
-    @pytest.mark.gui
     def test_reset(self):
         grayscale_object = grayscale.Grayscale("./files/test_images/lena.png")
         old_image = grayscale_object.get_data().copy()
@@ -26,8 +25,6 @@ class test_Grayscale(unittest.TestCase):
         grayscale_object.reset()
         assert (np.allclose(old_image, grayscale_object.get_data()))
 
-
-@pytest.mark.gui
 def test_noisy_clicker(qtbot):
     ex = grayscale_qt.grayscale_window()
     ex.init_UI()

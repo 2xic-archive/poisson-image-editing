@@ -92,7 +92,7 @@ class Anonymous(
 
         Returns
         -------
-        anonymous
+        Anonymous
             returns self
         """
         for _ in range(epochs):

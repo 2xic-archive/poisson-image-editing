@@ -22,9 +22,9 @@ class NonEdgeBlur(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary
         Parameters
         ----------
         path : str
-            path to a image file
+            Path to a image file
         color : bool
-            if the image should be shown with colors
+            If the image should be shown with colors
         """
 
         image_handler.ImageHandler.__init__(self, path, color)
@@ -49,7 +49,7 @@ class NonEdgeBlur(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary
         Parameters
         -------
         k
-            the the new k value
+            The the new k value
         """
         assert type(k) == float or type(k) == int, "k should be a number"
         self._k = k
@@ -61,8 +61,8 @@ class NonEdgeBlur(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary
 
         Returns
         -------
-        array
-            the new D array
+        ndarray
+            The new D array
         """
         fraction = 1 / \
                    (1 + self.k * (self.get_gradient_norm(self.data_copy)) ** 2)
@@ -84,8 +84,8 @@ class NonEdgeBlur(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary
 
         Returns
         -------
-        array
-            the new image array
+        ndarray
+            The new image array
         """
         self.data = self.solve(self.data, self.operator)
         return self.data
@@ -94,21 +94,21 @@ class NonEdgeBlur(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary
         """
         Solves the "u" part of the Poisson equation
 
+        Parameters
+        ----------
+        i : int
+            The channel to "work" on
         """
         data_xy = np.asarray(self.get_gradient(self.data))
         combined = np.sum(self.d_xy * data_xy, axis=0)
         if i is None:
-            return (self.alpha * \
-                    (self.common_shape(self.D_arr) * self.get_laplace_explicit(self.data, alpha=False)
+            return (self.common_shape(self.D_arr) * self.get_laplace(self.data, alpha=False)
                      + self.common_shape(combined))
-                    )
         else:
-            return (self.alpha * \
-                    (self.common_shape(self.D_arr)[:, :, i] * self.get_laplace_explicit(self.data[:, :, i], alpha=False)
+            return (self.common_shape(self.D_arr)[:, :, i] * self.get_laplace(self.data[:, :, i], alpha=False)
                      + self.common_shape(combined[:, :, i]))
-                    )
 
-    def fit(self, epochs) -> non_edge_blur:
+    def fit(self, epochs) -> NonEdgeBlur:
         """
         Makes multiple iterations of the method
 
@@ -121,8 +121,8 @@ class NonEdgeBlur(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary
 
         Returns
         -------
-        non_edge_blur
-            returns self
+        NonEdgeBlur
+            Returns self
         """
         for i in range(epochs):
             self.iteration()
