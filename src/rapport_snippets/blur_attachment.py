@@ -47,7 +47,7 @@ def compile(output_dir):
                                               text="Bilde med attachment ($\\lambda$ = {}, $\\alpha$ = {}, iterasjoner = {})".format(
                                                   lambda_val, blurring_obj.alpha, epoch)))
 
+    results_doc.add_row()
     results_doc.add_caption("Effekten av attachment")
     results_doc.add_ref("BlurAttachment")
-    results_doc.add_row()
     results_doc.save(output_dir + "/resultat.tex")

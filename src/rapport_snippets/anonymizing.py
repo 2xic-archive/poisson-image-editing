@@ -40,10 +40,10 @@ def compile_faces(output_dir="./rapport_snippets/output"):
     output_dir : str
         the location to store the .tex with images
     """
-    anon_obj = anonymizing.Anonymous("./files/test_images/faces.jpg", True)
+    anon_obj = anonymizing.Anonymous("./files/test_images/workshop-photo-small.jpeg", True)
     anon_obj.save(output_dir + "mange.png")
 
-    anon_obj.fit(1000)
+    anon_obj.fit(300)
     anon_obj.save(output_dir + "mange_out.png")
 
     results_doc = doc()

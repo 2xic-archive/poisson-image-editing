@@ -30,7 +30,7 @@ class NonEdgeBlur(image_handler.ImageHandler, poisson.Poisson, boundary.Boundary
         image_handler.ImageHandler.__init__(self, path, color)
         poisson.Poisson.__init__(self)
         boundary.Boundary.__init__(self)
-        self.k = 1000
+        self.k = 500
 
     @property
     def k(self):

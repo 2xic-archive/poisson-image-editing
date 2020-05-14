@@ -74,9 +74,9 @@ class Anonymous(
         """
         blur = blurring.Blur(None)
         for mask in self.mask:
-            blur.set_data(self.data.copy()[mask[0]:mask[1], mask[2]:mask[3]])
+            blur.set_data(self.data.copy()[mask[2]:mask[3], mask[0]:mask[1]])
             blur.set_boundary("dirichlet")
-            self.data[mask[0]:mask[1], mask[2]:mask[3]] = blur.iteration()
+            self.data[mask[2]:mask[3], mask[0]:mask[1]] = blur.iteration()
         return self.data
 
     def fit(self, epochs: int) -> Anonymous:

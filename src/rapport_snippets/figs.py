@@ -193,6 +193,7 @@ def compile_doc(method, alpha_epochs, output_path, path_latex="", extra=lambda x
             FILE_PATH = "alpha_{}_epoch_{}.png".format(alpha, epoch)
 
             if not (os.path.isfile(output_path + "/" + FILE_PATH)) or "ow" in sys.argv:
+                method.alpha = alpha
                 method.fit(epochs=epoch)
                 method.data = method.data.clip(0, 1)
                 method.save(output_path + "/" + FILE_PATH)
@@ -200,7 +201,7 @@ def compile_doc(method, alpha_epochs, output_path, path_latex="", extra=lambda x
                 print("{}\n\tFile already exist (add sys arg ow to overwrite)".format(FILE_PATH))
 
             results_doc.add_row_element(subfigure(path=path_latex + FILE_PATH,
-                                                  text="$\\alpha = {}$\\newline Iteration $= {}$".format(alpha, epoch)))
+                                                  text="$\\alpha = {}$\\newline iterasjoner $= {}$".format(alpha, epoch)))
         results_doc.add_row()
     return results_doc
 

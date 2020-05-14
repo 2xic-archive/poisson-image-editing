@@ -44,7 +44,7 @@ class draggable_style(QLabel):
         """
 
         # we want to only use the left
-        if event.buttons() != Qt.RightButton:
+        if event.buttons() != Qt.LeftButton:
             return
 
         mime_data = QMimeData()

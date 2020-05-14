@@ -15,11 +15,12 @@ def compile(output_dir="./rapport_snippets/output"):
     grayscale_obj = grayscale.Grayscale("./files/test_images/lena.png", True)
 
     epoch_count = {
-        0.25: [1, 3, 5],
-        0.5: [1, 3, 5],
-        0.75: [1, 3, 5]
+        0.25: [1, 10, 100],
+        0.5: [1, 10, 100],
+        0.75: [1, 10, 100]
     }
     results_doc = compile_doc(grayscale_obj, epoch_count, "{}/".format(output_dir), "farge_gråtone/grayscale")
+    results_doc.add_caption("Resultat med ulike verdier av $\\alpha$ og iterasjoner")
     results_doc.save("{}/results.tex".format(output_dir))
 
 
@@ -48,8 +49,8 @@ def compule_side_by_side(output_dir="./rapport_snippets/output/"):
     grayscale_obj.save("{}/metode.png".format(output_dir))
 
     # load a grayscale image with weighing
-    grayscale_obj = image_handler.ImageHandler("./files/test_images/lena.png", False)
-    grayscale_obj.save("{}/standard.png".format(output_dir))
+    grayscale_obj_normal = image_handler.ImageHandler("./files/test_images/lena.png", False)
+    grayscale_obj_normal.save("{}/standard.png".format(output_dir))
 
     results_doc.add_row_element(subfigure(path=path_latex + "/standard.png", text="vektet image"))
     results_doc.add_row_element(subfigure(path=path_latex + "/metode.png",
